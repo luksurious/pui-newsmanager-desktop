@@ -22,6 +22,7 @@ import application.utils.exceptions.ErrorMalFormedNews;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,6 +38,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -46,6 +48,7 @@ import javafx.stage.Window;
 import javafx.stage.FileChooser.ExtensionFilter;
 import serverConection.ConnectionManager;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Button;
 
 /**
  * @author AngelLucas
@@ -58,8 +61,27 @@ public class NewsReaderController {
 
 	@FXML
 	ListView<Article> newsList;
+	@FXML Label headline;
+	@FXML Button btnAdd;
+	@FXML Button btnLogin;
+	@FXML ListView<Categories> categoriesList;
+	@FXML WebView newsWebArea;
+	@FXML ImageView headImage;
 
 	// TODO add attributes and methods as needed
+	
+
+	@FXML
+	void initialize() {
+		
+		// ObservableList category new ObservableList<Categories>()
+		// this.categoriesList.setItems();
+		
+		WebEngine webEngine = this.newsWebArea.getEngine();
+		webEngine.loadContent("<h1>Hello</h1>");
+		
+//		headImage.setImage(new Image(this.getClass().getResource("eit-logo.png").toString(), true));
+	}
 
 	public NewsReaderController() {
 		// Uncomment next sentence to use data from server instead dummy data
@@ -72,7 +94,7 @@ public class NewsReaderController {
 		// TODO retrieve data and update UI
 		// The method newsReaderModel.retrieveData() can be used to retrieve data
 		this.newsReaderModel.retrieveData();
-		this.newsList.setItems(this.newsReaderModel.getArticles());
+		// this.newsList.setItems(this.newsReaderModel.getArticles());
 	}
 
 	/**
