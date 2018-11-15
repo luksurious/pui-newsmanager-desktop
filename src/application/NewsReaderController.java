@@ -6,6 +6,8 @@ package application;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -17,6 +19,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
 import javax.imageio.ImageIO;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -70,6 +75,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import serverConection.ConnectionManager;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 
 /**
  * @author AngelLucas
@@ -97,6 +103,7 @@ public class NewsReaderController {
 
 	// TODO add attributes and methods as needed
 	ObservableList<Categories> categoryList;
+	@FXML MenuItem btnLoadNewsFile;
 
 	public NewsReaderController() {
 		// Uncomment next sentence to use data from server instead dummy data
@@ -313,5 +320,60 @@ public class NewsReaderController {
 	// Auxiliary methods
 	private interface InitUIData<T> {
 		void initUIData(T loader);
+	}
+
+	@FXML
+	public void loadNewsFile(ActionEvent event) {
+		
+		Stage stage;
+		Parent root = null;
+
+		stage = (Stage)btnAdd.getScene().getWindow();
+
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open Resource File");
+		File file = fileChooser.showOpenDialog(stage);
+		if (file == null) {
+			return;
+		}
+		
+		JsonReader jsonReader;
+		try {
+			jsonReader = Json.createReader(new FileInputStream(file));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
+		JsonObject object = jsonReader.readObject();
+		jsonReader.close();
+
+		Article article;
+		try {
+			article = JsonArticle.jsonToArticle(object);
+		} catch (ErrorMalFormedNews e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
+
+		SceneManager.getInstance().setSceneReader(stage.getScene());
+
+		FXMLLoader loader = new FXMLLoader(getClass().getResource(AppScenes.EDITOR.getFxmlFile()));
+		
+		try {
+			root = loader.load();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+
+		NewsEditController controller = loader.<NewsEditController>getController();
+		controller.setArticle(article);
+		
+		Scene scene = new Scene(root);
+		stage.setScene(scene);
+		stage.show();
 	}
 }
