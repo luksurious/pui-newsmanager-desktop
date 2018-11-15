@@ -11,6 +11,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.web.WebView?>
 
 <BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.NewsDetailsController">
    <top>
@@ -78,7 +79,7 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </Text>
-            <ImageView fx:id="newsImage_id" fitHeight="235.0" fitWidth="856.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="newsImage_id" fitHeight="100.0" fitWidth="856.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
@@ -91,14 +92,7 @@
                   <Insets bottom="5.0" />
                </VBox.margin>
             </Text>
-            <Text fx:id="body_id" strokeType="OUTSIDE" strokeWidth="0.0" text="This is the body">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="5.0" />
-               </VBox.margin>
-            </Text>
+            <WebView fx:id="body_id" prefHeight="200.0" prefWidth="200.0" />
             <Line endX="862.5254516601562" stroke="#868282">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
