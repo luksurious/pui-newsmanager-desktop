@@ -23,12 +23,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -51,6 +49,9 @@ public class NewsEditController {
 	private NewsEditModel editingArticle;
 	private User usr;
 	// TODO add attributes and methods as needed
+
+	@FXML
+	Button btnHome;
 
 	@FXML
 	void onImageClicked(MouseEvent event) {
@@ -158,5 +159,18 @@ public class NewsEditController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	@FXML
+	public void openHome(ActionEvent event) throws IOException {
+
+		Stage stage;
+
+		stage = (Stage) btnHome.getScene().getWindow();
+
+		Scene scene = SceneManager.getInstance().getSceneReader();
+		stage.setScene(scene);
+		stage.show();
 	}
 }

@@ -38,6 +38,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -162,6 +163,22 @@ public class NewsReaderController {
 		stage.show();
 		//Show scene (form) and wait
 		//When SecondWindow is closed, retrieve the data and update de contact
+	}
+
+	@FXML
+	public void openEditor(ActionEvent event) throws IOException {
+
+		Stage stage;
+		Parent root;
+
+		stage = (Stage) btnAdd.getScene().getWindow();
+
+		SceneManager.getInstance().setSceneReader(stage.getScene());
+
+		root = FXMLLoader.load(getClass().getResource(AppScenes.EDITOR.getFxmlFile()));
+		Scene scene = new Scene(root);
+		stage.setScene(scene);
+		stage.show();
 	}
 
 	/**

@@ -31,7 +31,7 @@
             </Label>
             <HBox alignment="CENTER_RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="btnAdd" mnemonicParsing="false" prefHeight="38.0" prefWidth="80.0" style="-fx-background-color: #7a92ff#7a92ff #7a92ff#7a92ff;" text="Add" textFill="WHITE">
+                  <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#openEditor" prefHeight="38.0" prefWidth="80.0" style="-fx-background-color: #7a92ff#7a92ff #7a92ff#7a92ff;" text="Add" textFill="WHITE">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
