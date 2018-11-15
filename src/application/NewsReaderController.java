@@ -139,6 +139,30 @@ public class NewsReaderController {
 		html = String.format("<div style=\"font-family:'Segoe UI', sans-serif;padding:20px;\">%s</div>", html);
 		webEngine.loadContent(html);
 	}
+	
+	@FXML
+	public void openLogin(ActionEvent event) {
+		Pane root = null;
+    		Scene parentScene = ((Node) event.getSource()).getScene();
+    		//Load, open and pass information to SecondWindow.fxml 
+
+		FXMLLoader loader = new FXMLLoader(getClass().getResource(AppScenes.LOGIN.getFxmlFile()));
+		try {
+			root = loader.load();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Scene scene = new Scene(root);
+		Stage stage = new Stage();
+		stage.setScene(scene);
+		//user response is required before continuing with the program
+		stage.initModality(Modality.WINDOW_MODAL);
+		stage.show();
+		//Show scene (form) and wait
+		//When SecondWindow is closed, retrieve the data and update de contact
+	}
 
 	/**
 	 * @return the usr
