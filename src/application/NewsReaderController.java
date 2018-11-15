@@ -18,6 +18,13 @@ import java.util.function.Predicate;
 
 import javax.imageio.ImageIO;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDrawer;
@@ -91,6 +98,14 @@ public class NewsReaderController {
 	// TODO add attributes and methods as needed
 	ObservableList<Categories> categoryList;
 
+	public NewsReaderController() {
+		// Uncomment next sentence to use data from server instead dummy data
+		// newsReaderModel.setDummyDate(false);
+		// Get text Label
+
+		this.categoryList = this.newsReaderModel.getCategories();
+	}
+
 	@FXML
 	void initialize() {
 		this.categoriesList.setItems(this.categoryList);
@@ -114,54 +129,50 @@ public class NewsReaderController {
 				}
 			}
 		});
-//		this.newsWebArea.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
-//            @Override
-//            public void changed(ObservableValue ov, State oldState, State newState) {
-//                if (newState == Worker.State.SUCCEEDED) {
-//                    EventListener listener = new EventListener() {
-//                        @Override
-//                        public void handleEvent(Event ev) {
-//                            String domEventType = ev.getType();
-//                            //System.err.println("EventType: " + domEventType);
-//                            if (domEventType.equals(EVENT_TYPE_CLICK)) {
-//                                String href = ((Element)ev.getTarget()).getAttribute("href");
-//                                ////////////////////// 
-//                                // here do what you want with that clicked event 
-//                                // and the content of href 
-//                                //////////////////////                               
-//                            } 
-//                        }
-//                    };
-// 
-//                    Document doc = webView.getEngine().getDocument();
-//                    NodeList nodeList = doc.getElementsByTagName("a");
-//                    for (int i = 0; i < nodeList.getLength(); i++) {
-//                        ((EventTarget) nodeList.item(i)).addEventListener(EVENT_TYPE_CLICK, listener, false);
-//                        //((EventTarget) nodeList.item(i)).addEventListener(EVENT_TYPE_MOUSEOVER, listener, false);
-//                        //((EventTarget) nodeList.item(i)).addEventListener(EVENT_TYPE_MOUSEOVER, listener, false);
-//                    }
-//                }
-//            }
-//        });
-	}
-
-	public NewsReaderController() {
-		// Uncomment next sentence to use data from server instead dummy data
-		// newsReaderModel.setDummyDate(false);
-		// Get text Label
-
-		this.categoryList = FXCollections.observableArrayList();
-		this.categoryList.addAll(Categories.values());
+		this.newsWebArea.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
+            @Override
+            public void changed(ObservableValue ov, State oldState, State newState) {
+                if (newState == State.SUCCEEDED) {
+                    EventListener listener = new EventListener() {
+                        @Override
+                        public void handleEvent(Event ev) {
+                            String domEventType = ev.getType();
+                            //System.err.println("EventType: " + domEventType);
+                            if (domEventType.equals("click")) {
+                                String href = ((Element)ev.getCurrentTarget()).getAttribute("href");
+                                ////////////////////// 
+                                // here do what you want with that clicked event 
+                                // and the content of href 
+                                //////////////////////                       
+                                System.out.println("Clicking on " + href);
+                                
+                                Integer articleId = new Integer(href.substring(1));
+                                
+                                openDetails(articleId);
+                            } 
+                        }
+                    };
+ 
+                    Document doc = newsWebArea.getEngine().getDocument();
+                    NodeList nodeList = doc.getElementsByTagName("a");
+                    for (int i = 0; i < nodeList.getLength(); i++) {
+                        ((EventTarget) nodeList.item(i)).addEventListener("click", listener, false);
+                        //((EventTarget) nodeList.item(i)).addEventListener(EVENT_TYPE_MOUSEOVER, listener, false);
+                        //((EventTarget) nodeList.item(i)).addEventListener(EVENT_TYPE_MOUSEOVER, listener, false);
+                    }
+                }
+            }
+        });
 	}
 
 	private void getData() {
 		// The method newsReaderModel.retrieveData() can be used to retrieve data
-//		CompletableFuture.runAsync(() -> {
+		CompletableFuture.runAsync(() -> {
 			this.newsReaderModel.retrieveData();
 			System.out.println("Loaded data");
 
-			this.updateNewsContent();
-//		});
+			Platform.runLater(() -> this.updateNewsContent());
+		});
 	}
 	
 	private void updateNewsContent() {
@@ -192,7 +203,7 @@ public class NewsReaderController {
 				}
 			}
 
-			html += String.format("<div><a href=\"#news-details/%d\">%s<br><h2>%s</h2><h4>%s</h4><p>%s</p></a></div>", article.getIdArticle(),
+			html += String.format("<div><a href=\"#%d\">%s<br><h2>%s</h2><h4>%s</h4><p>%s</p></a></div>", article.getIdArticle(),
 					imageHtml, article.getTitle(), article.getSubtitle(), article.getAbstractText());
 		}
 		
@@ -241,6 +252,34 @@ public class NewsReaderController {
 		SceneManager.getInstance().setSceneReader(stage.getScene());
 
 		root = FXMLLoader.load(getClass().getResource(AppScenes.EDITOR.getFxmlFile()));
+		Scene scene = new Scene(root);
+		stage.setScene(scene);
+		stage.show();
+	}
+	
+	public void openDetails(Integer id) {
+		Article article = this.newsReaderModel.getArticles()
+				.filtered((Article articleX) -> articleX.getIdArticle() == id).get(0);
+		
+		Stage stage;
+		Parent root = null;
+
+		stage = (Stage) btnAdd.getScene().getWindow();
+
+		SceneManager.getInstance().setSceneReader(stage.getScene());
+
+		FXMLLoader loader = new FXMLLoader(getClass().getResource(AppScenes.NEWS_DETAILS.getFxmlFile()));
+		
+		try {
+			root = loader.load();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		NewsDetailsController controller = loader.<NewsDetailsController>getController();
+		controller.setArticle(article);
+		
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
 		stage.show();
