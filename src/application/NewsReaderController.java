@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Locale.Category;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
 import javax.imageio.ImageIO;
@@ -33,6 +35,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Worker.State;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -90,9 +93,8 @@ public class NewsReaderController {
 
 	@FXML
 	void initialize() {
-
-		// ObservableList category new ObservableList<Categories>()
 		this.categoriesList.setItems(this.categoryList);
+		this.categoriesList.getSelectionModel().selectFirst();
 
 		WebEngine webEngine = this.newsWebArea.getEngine();
 		webEngine.loadContent("<h1>Loading...</h1>");
@@ -100,6 +102,47 @@ public class NewsReaderController {
 		SimpleDateFormat headFormat = new SimpleDateFormat("EEE, dd. MMMMM YYYY");
 
 		this.headline.setText("These are the news for today, " + headFormat.format(new Date()));
+		
+
+		this.categoriesList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Categories>() {
+			@Override
+			public void changed(ObservableValue<? extends Categories> observable, Categories oldValue, Categories newValue) {
+				if (newValue != null) {
+					updateNewsContent();
+				} else { // Nothing selected
+					categoriesList.getSelectionModel().selectFirst();
+				}
+			}
+		});
+//		this.newsWebArea.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
+//            @Override
+//            public void changed(ObservableValue ov, State oldState, State newState) {
+//                if (newState == Worker.State.SUCCEEDED) {
+//                    EventListener listener = new EventListener() {
+//                        @Override
+//                        public void handleEvent(Event ev) {
+//                            String domEventType = ev.getType();
+//                            //System.err.println("EventType: " + domEventType);
+//                            if (domEventType.equals(EVENT_TYPE_CLICK)) {
+//                                String href = ((Element)ev.getTarget()).getAttribute("href");
+//                                ////////////////////// 
+//                                // here do what you want with that clicked event 
+//                                // and the content of href 
+//                                //////////////////////                               
+//                            } 
+//                        }
+//                    };
+// 
+//                    Document doc = webView.getEngine().getDocument();
+//                    NodeList nodeList = doc.getElementsByTagName("a");
+//                    for (int i = 0; i < nodeList.getLength(); i++) {
+//                        ((EventTarget) nodeList.item(i)).addEventListener(EVENT_TYPE_CLICK, listener, false);
+//                        //((EventTarget) nodeList.item(i)).addEventListener(EVENT_TYPE_MOUSEOVER, listener, false);
+//                        //((EventTarget) nodeList.item(i)).addEventListener(EVENT_TYPE_MOUSEOVER, listener, false);
+//                    }
+//                }
+//            }
+//        });
 	}
 
 	public NewsReaderController() {
@@ -112,42 +155,64 @@ public class NewsReaderController {
 	}
 
 	private void getData() {
-		// TODO retrieve data and update UI
 		// The method newsReaderModel.retrieveData() can be used to retrieve data
-		this.newsReaderModel.retrieveData();
+//		CompletableFuture.runAsync(() -> {
+			this.newsReaderModel.retrieveData();
+			System.out.println("Loaded data");
 
+			this.updateNewsContent();
+//		});
+	}
+	
+	private void updateNewsContent() {
+		Categories category = this.categoriesList.getSelectionModel().getSelectedItem();
+		
 		String html = "";
 		for (Article article : this.newsReaderModel.getArticles()) {
-			BufferedImage bImage = SwingFXUtils.fromFXImage(article.getImageData(), null);
-			ByteArrayOutputStream s = new ByteArrayOutputStream();
-			String base64Image = "";
-			try {
-				ImageIO.write(bImage, "png", s);
-				byte[] res = s.toByteArray();
-				s.close(); // especially if you are using a different output stream.
-				base64Image = Base64.getEncoder().encodeToString(res);
-				base64Image = "data:image/png;base64," + base64Image;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			System.out.println("generating for article...");
+			if (category != null && !category.equals(Categories.ALL) && !article.getCategory().equals(category.toString())) {
+				continue;
+			}
+			
+			String imageHtml = "";
+			if (article.getImageData() != null) {
+				BufferedImage bImage = SwingFXUtils.fromFXImage(article.getImageData(), null);
+				ByteArrayOutputStream s = new ByteArrayOutputStream();
+				try {
+					String base64Image = "";
+					ImageIO.write(bImage, "png", s);
+					byte[] res = s.toByteArray();
+					s.close(); // especially if you are using a different output stream.
+					base64Image = Base64.getEncoder().encodeToString(res);
+					base64Image = "data:image/png;base64," + base64Image;
+					imageHtml = String.format("<img style=\"width:400px;\" src=\"%s\">", base64Image);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
-			html += String.format("<div><img style=\"width:400px;\" src=\"%s\"><br><h2>%s</h2><h4>%s</h4><p>%s</p></div>", base64Image,
-					article.getTitle(), article.getSubtitle(), article.getAbstractText());
+			html += String.format("<div><a href=\"#news-details/%d\">%s<br><h2>%s</h2><h4>%s</h4><p>%s</p></a></div>", article.getIdArticle(),
+					imageHtml, article.getTitle(), article.getSubtitle(), article.getAbstractText());
 		}
-		WebEngine webEngine = this.newsWebArea.getEngine();
 		
 		html = String.format("<div style=\"font-family:'Segoe UI', sans-serif;padding:20px;\">%s</div>", html);
+
+		System.out.println("generated html");
+		WebEngine webEngine = this.newsWebArea.getEngine();
+
+		System.out.println("got engine, setting content");
 		webEngine.loadContent(html);
+		System.out.println("Updated news items");
 	}
 	
 	@FXML
 	public void openLogin(ActionEvent event) {
 		Pane root = null;
-    		Scene parentScene = ((Node) event.getSource()).getScene();
-    		//Load, open and pass information to SecondWindow.fxml 
+		Scene parentScene = ((Node) event.getSource()).getScene(); 
 
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(AppScenes.LOGIN.getFxmlFile()));
+		
 		try {
 			root = loader.load();
 		} catch (IOException e) {
@@ -158,11 +223,11 @@ public class NewsReaderController {
 		Scene scene = new Scene(root);
 		Stage stage = new Stage();
 		stage.setScene(scene);
-		//user response is required before continuing with the program
 		stage.initModality(Modality.WINDOW_MODAL);
+
+		stage.initOwner(parentScene.getWindow());
+//		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
-		//Show scene (form) and wait
-		//When SecondWindow is closed, retrieve the data and update de contact
 	}
 
 	@FXML
@@ -191,6 +256,7 @@ public class NewsReaderController {
 	void setConnectionManager(ConnectionManager connection) {
 		this.newsReaderModel.setDummyData(false); // System is connected so dummy data are not needed
 		this.newsReaderModel.setConnectionManager(connection);
+		
 		this.getData();
 	}
 
