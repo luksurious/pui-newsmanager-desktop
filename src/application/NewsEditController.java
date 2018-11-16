@@ -18,6 +18,7 @@ import application.news.Categories;
 import application.news.User;
 import application.utils.JsonArticle;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,6 +33,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -48,10 +50,66 @@ public class NewsEditController {
 	private ConnectionManager connection;
 	private NewsEditModel editingArticle;
 	private User usr;
+	private boolean htmlMode;
+	private boolean bodyMode;
+	private String bodyText = "";
+	private String abstractText = "";
 	// TODO add attributes and methods as needed
 
-	@FXML
-	Button btnHome;
+
+    @FXML
+    private ImageView imgPreview;
+
+    @FXML
+    private TextField title;
+
+    @FXML
+    private TextField subtitle;
+
+    @FXML
+    private ChoiceBox<Categories> category;
+
+    @FXML
+    private ObservableList<Categories> categoriesList;
+
+    @FXML
+    Button btnHome;
+
+    @FXML
+    Button sendAndBack;
+
+    @FXML
+    Button switchAttribute;
+
+    @FXML
+    Button switchFormat;
+
+    @FXML
+    HTMLEditor editorHtml;
+
+    @FXML
+    TextArea editorText;
+
+    @FXML
+    Label abstractLabel;
+
+    @FXML
+    Label bodyLabel;
+
+    @FXML
+    void initialize(){
+        this.category.setItems(this.categoriesList);
+        editorText.setManaged(false);
+    }
+
+	public NewsEditController(){
+        this.categoriesList = FXCollections.observableArrayList();
+        this.categoriesList.addAll(Categories.values());
+
+        this.editingArticle = new NewsEditModel(null);
+        this.htmlMode = true;
+        this.bodyMode = false;
+	}
 
 	@FXML
 	void onImageClicked(MouseEvent event) {
@@ -75,7 +133,7 @@ public class NewsEditController {
 				Image image = controller.getImage();
 				if (image != null) {
 					editingArticle.setImage(image);
-					// TODO Update image on UI
+                    imgPreview.setImage(image);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -164,7 +222,6 @@ public class NewsEditController {
 
 	@FXML
 	public void openHome(ActionEvent event) throws IOException {
-
 		Stage stage;
 
 		stage = (Stage) btnHome.getScene().getWindow();
@@ -173,4 +230,39 @@ public class NewsEditController {
 		stage.setScene(scene);
 		stage.show();
 	}
+
+	@FXML
+	public void switchMode(){
+        this.synchroniseFormat();
+
+        editorHtml.setManaged(!this.htmlMode);
+        editorHtml.setVisible(!this.htmlMode);
+        editorText.setManaged(this.htmlMode);
+        editorText.setVisible(this.htmlMode);
+
+        this.htmlMode = !this.htmlMode;
+    }
+
+    private void synchroniseFormat(){
+        if(this.htmlMode)
+            editorText.setText(editorHtml.getHtmlText());
+        else
+            editorHtml.setHtmlText(editorText.getText());
+    }
+
+    @FXML
+    public void switchAttribute(){
+        this.synchroniseFormat();
+	    if(this.bodyMode){
+	        this.bodyText = this.editorHtml.getHtmlText();
+	        this.editorHtml.setHtmlText(this.abstractText);
+            this.editorText.setText(this.abstractText);
+        } else {
+	        this.abstractText = this.editorHtml.getHtmlText();
+            this.editorHtml.setHtmlText(this.bodyText);
+            this.editorText.setText(this.bodyText);
+        }
+
+        this.bodyMode = !this.bodyMode;
+    }
 }
