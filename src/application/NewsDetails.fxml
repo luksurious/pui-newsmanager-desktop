@@ -3,6 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -30,22 +33,35 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <HBox alignment="CENTER_RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+			<HBox alignment="CENTER_RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="btnAdd" mnemonicParsing="false" prefHeight="38.0" prefWidth="80.0" style="-fx-background-color: #7a92ff#7a92ff #7a92ff#7a92ff;" text="Add" textFill="WHITE">
-                     <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin>
+                  <SplitMenuButton fx:id="btnAdd" mnemonicParsing="false" onAction="#openEditor" style="-fx-background-color: #7a92ff; -fx-mark-color: #ffffff;" text="New" textFill="WHITE">
+                    <items>
+                      <MenuItem fx:id="btnLoadNewsFile" mnemonicParsing="false" onAction="#loadNewsFile" text="Load from file" />
+                    </items>
                      <font>
                         <Font size="16.0" />
-                     </font></Button>
+                     </font>
+                  </SplitMenuButton>
+                  <MenuButton fx:id="btnUser" mnemonicParsing="false" style="-fx-background-color: #7a92ff; -fx-mark-color: #ffffff;" text="Username" textFill="WHITE" visible="false">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#logout" text="Logout" />
+                    </items>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </HBox.margin>
+                  </MenuButton>
                   <Button fx:id="btnLogin" mnemonicParsing="false" onAction="#openLogin" prefHeight="38.0" prefWidth="80.0" style="-fx-background-color: #7a92ff#7a92ff #7a92ff#7a92ff;" text="Login" textFill="WHITE">
                      <font>
                         <Font size="16.0" />
                      </font>
                      <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin></Button>
+                        <Insets left="20.0" right="20.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
             </HBox>
          </children>
@@ -111,8 +127,24 @@
                      <font>
                         <Font size="14.0" />
                      </font>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
                   </Button>
-                  <HBox alignment="TOP_RIGHT" minWidth="-Infinity" prefHeight="100.0" prefWidth="800.0">
+                  <Button fx:id="btnEdit" mnemonicParsing="false" onAction="#editNews" prefHeight="29.0" prefWidth="66.0" style="-fx-background-color: #44c460#44c460;" text="Edit" textFill="WHITE" visible="false">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#deleteNews" prefHeight="29.0" prefWidth="66.0" style="-fx-background-color: #ed4747#ed4747;" text="Delete" textFill="WHITE" visible="false">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <HBox alignment="TOP_RIGHT" minWidth="-Infinity" prefHeight="100.0" prefWidth="650.0">
                      <children>
                         <Button fx:id="btnAbstract" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#changeAbstractBody" prefHeight="29.0" prefWidth="120.0" style="-fx-background-color: #7a92ff#7a92ff #7a92ff#7a92ff;" text="Show Abstract" textFill="WHITE">
                            <font>

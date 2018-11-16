@@ -313,6 +313,8 @@ public class NewsReaderController {
 
 		NewsDetailsController controller = loader.<NewsDetailsController>getController();
 		controller.setArticle(article);
+		controller.setUsr(usr);
+		controller.setConnectionManager(this.newsReaderModel.getConnectionManager());
 		
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
