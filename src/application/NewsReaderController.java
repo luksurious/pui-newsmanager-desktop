@@ -111,6 +111,7 @@ public class NewsReaderController {
 	// TODO add attributes and methods as needed
 	ObservableList<Categories> categoryList;
 	@FXML HBox loadingNotification;
+	@FXML HBox noItemsNote;
 
 	public NewsReaderController() {
 		// Uncomment next sentence to use data from server instead dummy data
@@ -135,6 +136,9 @@ public class NewsReaderController {
 
 		this.newsList.setManaged(false);
 		this.newsList.setVisible(false);
+		
+		this.noItemsNote.setManaged(false);
+		this.noItemsNote.setVisible(false);
 		
 		SimpleDateFormat headFormat = new SimpleDateFormat("EEE, dd. MMMMM YYYY");
 		this.headline.setText("These are the news for today, " + headFormat.format(new Date()));
@@ -164,11 +168,13 @@ public class NewsReaderController {
 	}
 	
 	private void updateNewsContent() {
+		this.noItemsNote.setManaged(false);
+		this.noItemsNote.setVisible(false);
+		
 		this.newsList.getPanes().clear();
 		Categories category = this.categoriesList.getSelectionModel().getSelectedItem();
 		
 		for (Article article : this.newsReaderModel.getArticles()) {
-			System.out.println("generating article...");
 			if (category != null && !category.equals(Categories.ALL) && !article.getCategory().equals(category.toString())) {
 				continue;
 			}
@@ -178,48 +184,24 @@ public class NewsReaderController {
 			if (this.usr instanceof User) {
 				item.updateForLoggedIn();
 			}
-//			item.btnShow.setOnAction((event) -> openDetails(article.getIdArticle()));
 			item.btnEdit.setOnAction((event) -> openEditorForExistingArticle(article));
 			
 			this.newsList.getPanes().add(item);
-			
-//			
-//			String imageHtml = "";
-//			if (article.getImageData() != null) {
-//				BufferedImage bImage = SwingFXUtils.fromFXImage(article.getImageData(), null);
-//				ByteArrayOutputStream s = new ByteArrayOutputStream();
-//				try {
-//					String base64Image = "";
-//					ImageIO.write(bImage, "png", s);
-//					byte[] res = s.toByteArray();
-//					s.close(); // especially if you are using a different output stream.
-//					base64Image = Base64.getEncoder().encodeToString(res);
-//					base64Image = "data:image/png;base64," + base64Image;
-//					imageHtml = String.format("<img style=\"width:400px;\" src=\"%s\">", base64Image);
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//
-//			html += String.format("<div><a href=\"#%d\">%s<br><h2>%s</h2><h4>%s</h4><p>%s</p></a></div>", article.getIdArticle(),
-//					imageHtml, article.getTitle(), article.getSubtitle(), article.getAbstractText());
 		}
-		
-//		html = String.format("<div style=\"font-family:'Segoe UI', sans-serif;padding:20px;\">%s</div>", html);
-//
-//		System.out.println("generated html");
-//		WebEngine webEngine = this.newsWebArea.getEngine();
-//
-//		System.out.println("got engine, setting content");
-//		webEngine.loadContent(html);
-//		System.out.println("Updated news items");
 		
 		this.loadingNotification.setVisible(false);
 		this.loadingNotification.setManaged(false);
 		
-		this.newsList.setVisible(true);
-		this.newsList.setManaged(true);
+		if (this.newsList.getPanes().size() == 0) {
+			this.newsList.setManaged(false);
+			this.newsList.setVisible(false);
+			
+			this.noItemsNote.setManaged(true);
+			this.noItemsNote.setVisible(true);
+		} else {
+			this.newsList.setVisible(true);
+			this.newsList.setManaged(true);
+		}
 	}
 	
 	@FXML

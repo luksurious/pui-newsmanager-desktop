@@ -110,6 +110,15 @@
                   </Label>
                </children>
             </HBox>
+            <HBox fx:id="noItemsNote" alignment="CENTER" prefHeight="598.0" prefWidth="730.0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <Label contentDisplay="TOP" minHeight="40.0" text="There are no news items available for this category" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
          </children>
       </VBox>
    </center>

@@ -70,6 +70,7 @@ public class Main extends Application {
 			// TODO: why was this set??
 //			primaryStage.initStyle(StageStyle.UNDECORATED);
 			primaryStage.setScene(scene);
+		    primaryStage.setResizable(false);
 			primaryStage.show();
 		} catch (AuthenticationError e) {
 			Logger.getGlobal().log(Level.SEVERE, "Error in loging process");
