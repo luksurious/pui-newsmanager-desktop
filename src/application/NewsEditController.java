@@ -138,8 +138,7 @@ public class NewsEditController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-		}
+        }
 	}
 
 	/**
@@ -190,6 +189,18 @@ public class NewsEditController {
 		}
 		return result;
 	}
+
+
+    Article getPreparedArticle() {
+	    this.synchroniseText();
+	    this.editingArticle.setTitle(title.getText());
+	    this.editingArticle.setSubtitle(subtitle.getText());
+	    this.editingArticle.setImage(imgPreview.getImage());
+	    this.editingArticle.setBody(bodyText);
+        this.editingArticle.setAbstract(abstractText);
+        this.editingArticle.setCategory(category.getValue());
+        return this.editingArticle.getArticleOriginal();
+    }
 
 	/**
 	 * PRE: User must be set
@@ -250,18 +261,27 @@ public class NewsEditController {
             editorHtml.setHtmlText(editorText.getText());
     }
 
-    @FXML
-    public void switchAttribute(){
-        this.synchroniseFormat();
-	    if(this.bodyMode){
-	        this.bodyText = this.editorHtml.getHtmlText();
-	        this.editorHtml.setHtmlText(this.abstractText);
+    private void synchroniseText(){
+        if(this.bodyMode){
+            this.bodyText = this.editorHtml.getHtmlText();
+            this.editorHtml.setHtmlText(this.abstractText);
             this.editorText.setText(this.abstractText);
         } else {
-	        this.abstractText = this.editorHtml.getHtmlText();
+            this.abstractText = this.editorHtml.getHtmlText();
             this.editorHtml.setHtmlText(this.bodyText);
             this.editorText.setText(this.bodyText);
         }
+    }
+
+    @FXML
+    public void switchAttribute(){
+        this.synchroniseFormat();
+	    this.synchroniseText();
+
+        bodyLabel.setManaged(!this.bodyMode);
+        bodyLabel.setVisible(!this.bodyMode);
+        abstractLabel.setManaged(this.bodyMode);
+        abstractLabel.setVisible(this.bodyMode);
 
         this.bodyMode = !this.bodyMode;
     }
