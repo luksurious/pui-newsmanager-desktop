@@ -41,7 +41,11 @@ public class NewsDetailsController {
 	@FXML
 	Button btnAdd;
 	@FXML
+	Button btnBack;
+	@FXML
 	Button btnLogin;
+	@FXML
+	Button btnAbstract;
 	@FXML
 	ImageView headImage;
 	@FXML
@@ -52,8 +56,6 @@ public class NewsDetailsController {
 	Text category_id;
 	@FXML
 	Text subtitle_id;
-	@FXML
-	Text abstract_id;
 	@FXML
 	Text updated_id;
 	@FXML
@@ -85,7 +87,7 @@ public class NewsDetailsController {
 		this.title_id.setText(article.getTitle());
 		this.subtitle_id.setText(article.getSubtitle());
 		this.category_id.setText(article.getCategory());
-		this.abstract_id.setText(article.getAbstractText());
+		//this.abstract_id.setText(article.getAbstractText());
 		this.newsImage_id.setImage(article.getImageData());
 		WebEngine webEngine = this.body_id.getEngine();
 		webEngine.loadContent(article.getBodyText());
@@ -122,6 +124,31 @@ public class NewsDetailsController {
 		stage.show();
 		//Show scene (form) and wait
 		//When SecondWindow is closed, retrieve the data and update de contact
+	}
+	
+	@FXML
+	public void changeAbstractBody(ActionEvent event) throws IOException {
+		WebEngine webEngine = this.body_id.getEngine();
+		if(btnAbstract.getText().equals("Show Abstract")) {
+			webEngine.loadContent(article.getAbstractText());
+			btnAbstract.setText("Show Body");
+		}
+		else if(btnAbstract.getText().equals("Show Body")) {
+			webEngine.loadContent(article.getBodyText());
+			btnAbstract.setText("Show Abstract");
+		}
+	}
+	
+	@FXML
+	public void getBack(ActionEvent event) throws IOException {
+
+		Stage stage;
+
+		stage = (Stage) btnBack.getScene().getWindow();
+
+		Scene scene = SceneManager.getInstance().getSceneReader();
+		stage.setScene(scene);
+		stage.show();
 	}
 	
 	
