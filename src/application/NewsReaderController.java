@@ -167,8 +167,8 @@ public class NewsReaderController {
                     else if(category.name().equals("TECHNOLOGY"))
                         imageView.setImage(listOfImages[5]);
                     setText(category.toString());
-                    imageView.setFitHeight(32);
-                    imageView.setFitWidth(32);
+                    imageView.setFitHeight(40);
+                    imageView.setFitWidth(40);
                     setGraphic(imageView);
                 }
             }
