@@ -58,6 +58,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -87,6 +88,16 @@ public class NewsReaderController {
 
 	private NewsReaderModel newsReaderModel = new NewsReaderModel();
 	private User usr;
+		
+	
+	private final Image IMAGE_ALL  = new Image(getClass().getClassLoader().getResource("all.png").toString());
+	private final Image IMAGE_ECONOMY  = new Image(getClass().getClassLoader().getResource("economy.png").toString());
+	private final Image IMAGE_INTERNATIONAL  = new Image(getClass().getClassLoader().getResource("international.png").toString());
+    private final Image IMAGE_NATIONAL  = new Image(getClass().getClassLoader().getResource("national.png").toString());
+    private final Image IMAGE_SPORTS = new Image(getClass().getClassLoader().getResource("sports.png").toString());
+    private final Image IMAGE_TECHNOLOGY = new Image(getClass().getClassLoader().getResource("technology.png").toString());
+
+    private Image[] listOfImages = {IMAGE_ALL, IMAGE_ECONOMY, IMAGE_INTERNATIONAL, IMAGE_NATIONAL, IMAGE_SPORTS, IMAGE_TECHNOLOGY};
 
 	@FXML
 	ListView<Article> newsList;
@@ -127,6 +138,37 @@ public class NewsReaderController {
         assert newsWebArea != null : "fx:id=\"newsWebArea\" was not injected: check your FXML file 'NewsReader.fxml'.";
 
 		this.categoriesList.setItems(this.categoryList);
+		
+		categoriesList.setCellFactory(param -> new ListCell<Categories>() {
+            private ImageView imageView = new ImageView();
+            
+            @Override
+            public void updateItem(Categories category, boolean empty) {
+                super.updateItem(category, empty);
+                if (category == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    if(category.name().equals("ALL"))
+                        imageView.setImage(listOfImages[0]);
+                    else if(category.name().equals("ECONOMY"))
+                        imageView.setImage(listOfImages[1]);
+                    else if(category.name().equals("INTERNATIONAL"))
+                        imageView.setImage(listOfImages[2]);
+                    else if(category.name().equals("NATIONAL"))
+                        imageView.setImage(listOfImages[3]);
+                    else if(category.name().equals("SPORTS"))
+                        imageView.setImage(listOfImages[4]);
+                    else if(category.name().equals("TECHNOLOGY"))
+                        imageView.setImage(listOfImages[5]);
+                    setText(category.toString());
+                    imageView.setFitHeight(32);
+                    imageView.setFitWidth(32);
+                    setGraphic(imageView);
+                }
+            }
+        });
+		
 		this.categoriesList.getSelectionModel().selectFirst();
 
 		WebEngine webEngine = this.newsWebArea.getEngine();
