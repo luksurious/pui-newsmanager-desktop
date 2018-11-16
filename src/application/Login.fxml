@@ -7,27 +7,28 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane fx:id="loginWindow" prefHeight="316.0" prefWidth="357.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
+<AnchorPane prefHeight="316.0" prefWidth="357.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
    <children>
       <Label layoutX="63.0" layoutY="59.0" text="Username">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
+      <TextField fx:id="usernameField" layoutX="65.0" layoutY="91.0" onAction="#submitIfEnter" prefHeight="38.0" prefWidth="222.0" />
       <Label layoutX="63.0" layoutY="142.0" text="Password">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <PasswordField layoutX="65.0" layoutY="171.0" prefHeight="38.0" prefWidth="222.0" />
-      <TextField layoutX="65.0" layoutY="91.0" prefHeight="38.0" prefWidth="222.0" />
-      <Button layoutX="133.0" layoutY="239.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="87.0" style="-fx-background-color: #7a92ff#7a92ff;" text="Login" textFill="WHITE">
+      <PasswordField fx:id="passwordField" layoutX="65.0" layoutY="171.0" onAction="#submitIfEnter" prefHeight="38.0" prefWidth="222.0" />
+      <Label fx:id="formErrorNote" layoutX="65.0" layoutY="217.0" text="Please fill in all fields!" textFill="#dd1515" visible="false" />
+      <Label fx:id="loginErrorNote" layoutX="65.0" layoutY="217.0" text="The login failed! Please check your credentials." textFill="#dd1515" visible="false" />
+      <Button layoutX="133.0" layoutY="252.0" mnemonicParsing="false" onAction="#submitLogin" prefHeight="38.0" prefWidth="87.0" style="-fx-background-color: #7a92ff#7a92ff;" text="Login" textFill="WHITE">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="313.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: #7a92ff#7a92ff #7a92ff#7a92ff;" text="X" textFill="WHITE">
+      <Button layoutX="313.0" layoutY="14.0" mnemonicParsing="false" onAction="#closeModal" style="-fx-background-color: #7a92ff#7a92ff #7a92ff#7a92ff;" text="X" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

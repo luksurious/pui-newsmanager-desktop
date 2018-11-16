@@ -76,6 +76,8 @@ import serverConection.ConnectionManager;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitMenuButton;
+import javafx.scene.control.MenuButton;
 
 /**
  * @author AngelLucas
@@ -91,7 +93,7 @@ public class NewsReaderController {
 	@FXML
 	Label headline;
 	@FXML
-	Button btnAdd;
+	SplitMenuButton btnAdd;
 	@FXML
 	Button btnLogin;
 	@FXML
@@ -100,10 +102,11 @@ public class NewsReaderController {
 	WebView newsWebArea;
 	@FXML
 	ImageView headImage;
+	@FXML MenuItem btnLoadNewsFile;
+	@FXML MenuButton btnUser;
 
 	// TODO add attributes and methods as needed
 	ObservableList<Categories> categoryList;
-	@FXML MenuItem btnLoadNewsFile;
 
 	public NewsReaderController() {
 		// Uncomment next sentence to use data from server instead dummy data
@@ -115,6 +118,14 @@ public class NewsReaderController {
 
 	@FXML
 	void initialize() {
+        assert headImage != null : "fx:id=\"headImage\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert headline != null : "fx:id=\"headline\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert btnAdd != null : "fx:id=\"btnAdd\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert btnLoadNewsFile != null : "fx:id=\"btnLoadNewsFile\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert btnLogin != null : "fx:id=\"btnLogin\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert categoriesList != null : "fx:id=\"categoriesList\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert newsWebArea != null : "fx:id=\"newsWebArea\" was not injected: check your FXML file 'NewsReader.fxml'.";
+
 		this.categoriesList.setItems(this.categoryList);
 		this.categoriesList.getSelectionModel().selectFirst();
 
@@ -124,6 +135,8 @@ public class NewsReaderController {
 		SimpleDateFormat headFormat = new SimpleDateFormat("EEE, dd. MMMMM YYYY");
 
 		this.headline.setText("These are the news for today, " + headFormat.format(new Date()));
+		
+		this.btnUser.setManaged(false);
 		
 
 		this.categoriesList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Categories>() {
@@ -236,7 +249,11 @@ public class NewsReaderController {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return;
 		}
+
+		LoginController controller = loader.<LoginController>getController();
+		controller.setConnectionManager(this.newsReaderModel.getConnectionManager());
 
 		Scene scene = new Scene(root);
 		Stage stage = new Stage();
@@ -245,7 +262,17 @@ public class NewsReaderController {
 
 		stage.initOwner(parentScene.getWindow());
 //		stage.initStyle(StageStyle.UNDECORATED);
-		stage.show();
+		stage.showAndWait();
+		
+		if (controller.getLoggedUsr() != null) {
+			setUsr(controller.getLoggedUsr());
+		}
+	}
+	
+	@FXML
+	void logout() {
+		this.newsReaderModel.getConnectionManager().logout();
+		setUsr(null);
 	}
 
 	@FXML
@@ -310,9 +337,29 @@ public class NewsReaderController {
 	 * @param usr the usr to set
 	 */
 	void setUsr(User usr) {
-
 		this.usr = usr;
+		
+		if (this.usr == null) {
+			// logged out
+			this.btnLogin.setVisible(true);
+			this.btnLogin.setManaged(true);
+			
+			this.btnUser.setText("logged out");
+			this.btnUser.setVisible(false);
+			this.btnUser.setManaged(false);
+		} else {
+			// logged in
+			this.btnLogin.setVisible(false);
+			this.btnLogin.setManaged(false);
+			
+			this.btnUser.setText(this.usr.getLogin());
+			this.btnUser.setManaged(true);
+			this.btnUser.setVisible(true);	
+		}
+		
 		// Reload articles
+		WebEngine webEngine = this.newsWebArea.getEngine();
+		webEngine.loadContent("<h1>Loading...</h1>");
 		this.getData();
 		// TODO Update UI
 	}

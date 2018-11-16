@@ -57,6 +57,20 @@ class LoginModel {
 		this.connectionManager = connection;
 		this.setDummyData(false);
 	}
+	
+	User login(String username, String password) {
+		try {
+			this.connectionManager.login(username, password);
+		} catch (AuthenticationError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		User loggedInUser = new User(username, new Integer(this.connectionManager.getIdUser()));
+		loggedInUser.setAdmin(this.connectionManager.isAdministrator());
+		return loggedInUser;
+	}
 
 	/**
 	 * Method for user validation. Override is not allowed

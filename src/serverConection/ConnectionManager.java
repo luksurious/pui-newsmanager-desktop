@@ -38,6 +38,7 @@ public class ConnectionManager {
 	private String idUser;
 	private String authType;
 	private String apikey;
+	private String anonymousApikey;
 	private boolean loggedOK = false;
 
 	private boolean isAdministrator = false;
@@ -150,7 +151,14 @@ public class ConnectionManager {
 			// e.printStackTrace();
 			throw new AuthenticationError(e.getMessage());
 		}
-
+	}
+	
+	public void logout() {
+		idUser = null;
+		authType = null;
+		apikey = anonymousApikey;
+		isAdministrator = false;
+		setLoggedOK(false);
 	}
 
 	/****************************/
@@ -196,6 +204,8 @@ public class ConnectionManager {
 	 * @param key
 	 */
 	public void setAnonymousAPIKey(String key) {
+		this.anonymousApikey = key;
+		
 		if (this.apikey == null) {
 			this.apikey = key;
 		}
