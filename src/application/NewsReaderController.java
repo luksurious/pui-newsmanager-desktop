@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale.Category;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -37,9 +38,12 @@ import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXListView;
 
+import application.components.NewsAccordionItem;
+import application.components.NewsHead;
 import application.news.Article;
 import application.news.Categories;
 import application.news.User;
+import application.services.SceneManager;
 import application.utils.JsonArticle;
 import application.utils.exceptions.ErrorMalFormedNews;
 import javafx.application.Platform;
@@ -80,71 +84,54 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.MenuButton;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.BorderPane;
 
 /**
  * @author AngelLucas
- *
  */
-public class NewsReaderController {
+public class NewsReaderController extends NewsCommonController {
 
 	private NewsReaderModel newsReaderModel = new NewsReaderModel();
-	private User usr;
-		
-	
-	private final Image IMAGE_ALL  = new Image(getClass().getClassLoader().getResource("all.png").toString());
-	private final Image IMAGE_ECONOMY  = new Image(getClass().getClassLoader().getResource("economy.png").toString());
-	private final Image IMAGE_INTERNATIONAL  = new Image(getClass().getClassLoader().getResource("international.png").toString());
-    private final Image IMAGE_NATIONAL  = new Image(getClass().getClassLoader().getResource("national.png").toString());
-    private final Image IMAGE_SPORTS = new Image(getClass().getClassLoader().getResource("sports.png").toString());
-    private final Image IMAGE_TECHNOLOGY = new Image(getClass().getClassLoader().getResource("technology.png").toString());
 
-    private Image[] listOfImages = {IMAGE_ALL, IMAGE_ECONOMY, IMAGE_INTERNATIONAL, IMAGE_NATIONAL, IMAGE_SPORTS, IMAGE_TECHNOLOGY};
+	private ObservableList<Categories> categoryDataList;
+	
+	private boolean loaded = false;
 
 	@FXML
 	Accordion newsList;
 	@FXML
-	Label headline;
+	ListView<Categories> categoryListView;
 	@FXML
-	SplitMenuButton btnAdd;
+	HBox loadingNotification;
 	@FXML
-	Button btnLogin;
-	@FXML
-	ListView<Categories> categoriesList;
-	@FXML
-	WebView newsWebArea;
-	@FXML
-	ImageView headImage;
-	@FXML MenuItem btnLoadNewsFile;
-	@FXML MenuButton btnUser;
-
-	// TODO add attributes and methods as needed
-	ObservableList<Categories> categoryList;
-	@FXML HBox loadingNotification;
-	@FXML HBox noItemsNote;
+	HBox noItemsNote;
 
 	public NewsReaderController() {
-		// Uncomment next sentence to use data from server instead dummy data
-		// newsReaderModel.setDummyDate(false);
-		// Get text Label
-
-		this.categoryList = this.newsReaderModel.getCategories();
+		this.categoryDataList = this.newsReaderModel.getCategories();
 	}
 
 	@FXML
 	void initialize() {
-        assert headImage != null : "fx:id=\"headImage\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        assert headline != null : "fx:id=\"headline\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        assert btnAdd != null : "fx:id=\"btnAdd\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        assert btnLoadNewsFile != null : "fx:id=\"btnLoadNewsFile\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        assert btnLogin != null : "fx:id=\"btnLogin\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        assert categoriesList != null : "fx:id=\"categoriesList\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        assert newsWebArea != null : "fx:id=\"newsWebArea\" was not injected: check your FXML file 'NewsReader.fxml'.";
-
-		this.categoriesList.setItems(this.categoryList);
+		super.initialize();
 		
-		categoriesList.setCellFactory(param -> new ListCell<Categories>() {
+		assert categoryListView != null : "fx:id=\"categoriesList\" was not injected: check your FXML file 'NewsReader.fxml'.";
+
+		initCategoriesList();
+
+		newsList.setManaged(false);
+		newsList.setVisible(false);
+		
+		noItemsNote.setManaged(false);
+		noItemsNote.setVisible(false);
+	}
+
+	private void initCategoriesList() {
+		categoryListView.setItems(categoryDataList);
+		
+		categoryListView.setCellFactory(param -> new ListCell<Categories>() {
             private ImageView imageView = new ImageView();
             
             @Override
@@ -154,319 +141,157 @@ public class NewsReaderController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    if(category.name().equals("ALL"))
-                        imageView.setImage(listOfImages[0]);
-                    else if(category.name().equals("ECONOMY"))
-                        imageView.setImage(listOfImages[1]);
-                    else if(category.name().equals("INTERNATIONAL"))
-                        imageView.setImage(listOfImages[2]);
-                    else if(category.name().equals("NATIONAL"))
-                        imageView.setImage(listOfImages[3]);
-                    else if(category.name().equals("SPORTS"))
-                        imageView.setImage(listOfImages[4]);
-                    else if(category.name().equals("TECHNOLOGY"))
-                        imageView.setImage(listOfImages[5]);
+                	if (!category.getImagePath().equals("")) {
+                		imageView.setImage(new Image(getClass().getClassLoader().getResource(category.getImagePath()).toString()));
+                        imageView.setFitHeight(40);
+                        imageView.setFitWidth(40);
+                        setGraphic(imageView);
+                	} else {
+                        setGraphic(null);
+                	}
+                	
                     setText(category.toString());
-                    imageView.setFitHeight(40);
-                    imageView.setFitWidth(40);
-                    setGraphic(imageView);
                 }
             }
         });
 		
-		this.categoriesList.getSelectionModel().selectFirst();
-
-		this.newsList.setManaged(false);
-		this.newsList.setVisible(false);
+		categoryListView.getSelectionModel().selectFirst();
 		
-		this.noItemsNote.setManaged(false);
-		this.noItemsNote.setVisible(false);
-		
-		SimpleDateFormat headFormat = new SimpleDateFormat("EEE, dd. MMMMM YYYY");
-		this.headline.setText("These are the news for today, " + headFormat.format(new Date()));
-		
-		this.btnUser.setManaged(false);
-		
-		this.categoriesList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Categories>() {
+		categoryListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Categories>() {
 			@Override
 			public void changed(ObservableValue<? extends Categories> observable, Categories oldValue, Categories newValue) {
 				if (newValue != null) {
 					updateNewsContent();
 				} else { // Nothing selected
-					categoriesList.getSelectionModel().selectFirst();
+					categoryListView.getSelectionModel().selectFirst();
 				}
 			}
 		});
 	}
 
-	private void getData() {
-		// The method newsReaderModel.retrieveData() can be used to retrieve data
-		CompletableFuture.runAsync(() -> {
-			this.newsReaderModel.retrieveData();
-			System.out.println("Loaded data");
+	@Override
+	public void onShow() {
+		super.onShow();
+		
+		if (!loaded) {
+			getData();
+		}
+	}
 
-			Platform.runLater(() -> this.updateNewsContent());
+	@Override
+	void setUser(User user) {
+		super.setUser(user);
+		
+		// Reload articles
+		// TODO discuss if needed
+//		getData();
+	}
+	
+
+	@Override
+	protected void updateUiAfterLogin() {
+		super.updateUiAfterLogin();
+		
+		newsList.getPanes().forEach((TitledPane titledPane) -> {
+			((NewsAccordionItem) titledPane).updateForLoggedIn();
+		});
+	}
+
+	@Override
+	protected void updateUiAfterLogout() {
+		super.updateUiAfterLogout();
+
+		newsList.getPanes().forEach((TitledPane titledPane) -> {
+			((NewsAccordionItem) titledPane).updateForLoggedOut();
+		});
+	}
+
+	void getData() {
+		noItemsNote.setManaged(false);
+		noItemsNote.setVisible(false);
+		newsList.setVisible(false);
+		newsList.setManaged(false);
+		loadingNotification.setVisible(true);
+		loadingNotification.setManaged(true);
+		
+		CompletableFuture.runAsync(() -> {
+			newsReaderModel.retrieveData();
+
+			Platform.runLater(() -> updateNewsContent());
+
+			loaded = true;
 		});
 	}
 	
 	private void updateNewsContent() {
-		this.noItemsNote.setManaged(false);
-		this.noItemsNote.setVisible(false);
+		newsList.getPanes().clear();
+		Categories category = categoryListView.getSelectionModel().getSelectedItem();
 		
-		this.newsList.getPanes().clear();
-		Categories category = this.categoriesList.getSelectionModel().getSelectedItem();
-		
-		for (Article article : this.newsReaderModel.getArticles()) {
-			if (category != null && !category.equals(Categories.ALL) && !article.getCategory().equals(category.toString())) {
+		for (Article article : newsReaderModel.getArticles()) {
+			if (category != null && !category.equals(Categories.ALL)
+				&& !article.getCategory().equals(category.toString())
+			) {
 				continue;
 			}
 			
-			NewsAccordionItem item = new NewsAccordionItem(article, () -> openDetails(article.getIdArticle()));
-					
-			if (this.usr instanceof User) {
+			NewsAccordionItem item = new NewsAccordionItem(
+				article,
+				() -> openDetailsbyId(article.getIdArticle()),
+				() -> openEditorForExistingArticle(article)
+			);
+
+			if (user instanceof User) {
 				item.updateForLoggedIn();
 			}
-			item.btnEdit.setOnAction((event) -> openEditorForExistingArticle(article));
 			
-			this.newsList.getPanes().add(item);
+			newsList.getPanes().add(item);
 		}
 		
-		this.loadingNotification.setVisible(false);
-		this.loadingNotification.setManaged(false);
+		loadingNotification.setVisible(false);
+		loadingNotification.setManaged(false);
 		
-		if (this.newsList.getPanes().size() == 0) {
-			this.newsList.setManaged(false);
-			this.newsList.setVisible(false);
-			
-			this.noItemsNote.setManaged(true);
-			this.noItemsNote.setVisible(true);
+		if (newsList.getPanes().size() == 0) {
+			noItemsNote.setManaged(true);
+			noItemsNote.setVisible(true);
 		} else {
-			this.newsList.setVisible(true);
-			this.newsList.setManaged(true);
+			noItemsNote.setManaged(false);
+			noItemsNote.setVisible(false);
+			newsList.setVisible(true);
+			newsList.setManaged(true);
 		}
 	}
 	
-	@FXML
-	public void openLogin(ActionEvent event) {
-		Pane root = null;
-		Scene parentScene = ((Node) event.getSource()).getScene(); 
-
-		FXMLLoader loader = new FXMLLoader(getClass().getResource(AppScenes.LOGIN.getFxmlFile()));
-		
-		try {
-			root = loader.load();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	void openDetailsbyId(int id) {
+		Article article = this.newsReaderModel.findArticleById(id);
+		if (article == null) {
+			System.out.println("Unable to find article for id " + id);
 			return;
 		}
-
-		LoginController controller = loader.<LoginController>getController();
-		controller.setConnectionManager(this.newsReaderModel.getConnectionManager());
-
-		Scene scene = new Scene(root);
-		Stage stage = new Stage();
-		stage.setScene(scene);
-		stage.initModality(Modality.WINDOW_MODAL);
-
-		stage.initOwner(parentScene.getWindow());
-		stage.initStyle(StageStyle.UTILITY);
-		stage.showAndWait();
 		
-		if (controller.getLoggedUsr() != null) {
-			setUsr(controller.getLoggedUsr());
-		}
-	}
-	
-	@FXML
-	void logout() {
-		this.newsReaderModel.getConnectionManager().logout();
-		setUsr(null);
-	}
-
-	void openEditorForExistingArticle(Article article) {
-		Stage stage;
-		Parent root;
-
-		stage = (Stage) btnAdd.getScene().getWindow();
-
-		SceneManager.getInstance().setSceneReader(stage.getScene());
-
-		FXMLLoader loader = new FXMLLoader(getClass().getResource(AppScenes.EDITOR.getFxmlFile()));
+		SceneManager sceneManager = SceneManager.getInstance();
+		
 		try {
-			root = loader.load();
+			sceneManager.showSceneInPrimaryStage(AppScenes.NEWS_DETAILS);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
 		
-		NewsEditController controller = loader.getController();
+		NewsDetailsController controller = (NewsDetailsController) sceneManager.getController(AppScenes.NEWS_DETAILS);
 		controller.setArticle(article);
-		
-		Scene scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-	}
-	
-	@FXML
-	public void openEditor() {
-		Stage stage;
-		Parent root;
-
-		stage = (Stage) btnAdd.getScene().getWindow();
-
-		SceneManager.getInstance().setSceneReader(stage.getScene());
-
-		FXMLLoader loader = new FXMLLoader(getClass().getResource(AppScenes.EDITOR.getFxmlFile()));
-		try {
-			root = loader.load();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		
-		Scene scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-	}
-	
-	public void openDetails(Integer id) {
-		Article article = this.newsReaderModel.getArticles()
-				.filtered((Article articleX) -> articleX.getIdArticle() == id).get(0);
-		
-		Stage stage;
-		Parent root = null;
-
-		stage = (Stage) btnAdd.getScene().getWindow();
-
-		SceneManager.getInstance().setSceneReader(stage.getScene());
-
-		FXMLLoader loader = new FXMLLoader(getClass().getResource(AppScenes.NEWS_DETAILS.getFxmlFile()));
-		
-		try {
-			root = loader.load();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		NewsDetailsController controller = loader.<NewsDetailsController>getController();
-		controller.setArticle(article);
-		controller.setUsr(usr);
+		controller.setUser(user);
 		controller.setConnectionManager(this.newsReaderModel.getConnectionManager());
-		
-		Scene scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
 	}
 
-	/**
-	 * @return the usr
-	 */
-	User getUsr() {
-		return usr;
-	}
-
-	void setConnectionManager(ConnectionManager connection) {
-		this.newsReaderModel.setDummyData(false); // System is connected so dummy data are not needed
-		this.newsReaderModel.setConnectionManager(connection);
-		
-		this.getData();
-	}
-
-	/**
-	 * @param usr the usr to set
-	 */
-	void setUsr(User usr) {
-		this.usr = usr;
-		
-		if (this.usr == null) {
-			// logged out
-			this.btnLogin.setVisible(true);
-			this.btnLogin.setManaged(true);
-			
-			this.btnUser.setText("logged out");
-			this.btnUser.setVisible(false);
-			this.btnUser.setManaged(false);
-		} else {
-			// logged in
-			this.btnLogin.setVisible(false);
-			this.btnLogin.setManaged(false);
-			
-			this.btnUser.setText(this.usr.getLogin());
-			this.btnUser.setManaged(true);
-			this.btnUser.setVisible(true);
-		}
-		
-		// Reload articles
-		this.newsList.setVisible(false);
-		this.newsList.setManaged(false);
-		this.loadingNotification.setVisible(true);
-		this.loadingNotification.setManaged(true);
-		
-		this.getData();
-		// TODO Update UI
+	@Override
+	protected NewsCommonModel getModel() {
+		return newsReaderModel;
 	}
 
 	// Auxiliary methods
 	private interface InitUIData<T> {
 		void initUIData(T loader);
-	}
-
-	@FXML
-	public void loadNewsFile(ActionEvent event) {
-		
-		Stage stage;
-		Parent root = null;
-
-		stage = (Stage)btnAdd.getScene().getWindow();
-
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Open Resource File");
-		File file = fileChooser.showOpenDialog(stage);
-		if (file == null) {
-			return;
-		}
-		
-		JsonReader jsonReader;
-		try {
-			jsonReader = Json.createReader(new FileInputStream(file));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			return;
-		}
-		JsonObject object = jsonReader.readObject();
-		jsonReader.close();
-
-		Article article;
-		try {
-			article = JsonArticle.jsonToArticle(object);
-		} catch (ErrorMalFormedNews e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			return;
-		}
-
-		SceneManager.getInstance().setSceneReader(stage.getScene());
-
-		FXMLLoader loader = new FXMLLoader(getClass().getResource(AppScenes.EDITOR.getFxmlFile()));
-		
-		try {
-			root = loader.load();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-
-		NewsEditController controller = loader.<NewsEditController>getController();
-		controller.setArticle(article);
-		
-		Scene scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
+		// TODO check if needed
 	}
 }

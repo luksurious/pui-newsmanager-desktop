@@ -1,1 +1,28 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.split-menu-button .label {
+    -fx-background-color: #7a92ff;
+}
+
+.split-menu-button .arrow {
+    -fx-background-color: #ffffff;
+}
+
+.split-menu-button .arrow-button {
+    -fx-background-color: #7a92ff;
+}
+
+.split-menu-button {
+	-fx-background-color: #7a92ff;
+}
+
+.titled-pane > .title {
+	-fx-padding: 0.75em 1em 0.75em 1em;
+}
+.list-view .list-cell {
+	-fx-padding: 0.75em 1em 0.75em 1em;
+	-fx-font-size: 14px;
+}
+.list-view .list-cell .label {
+	-fx-padding: 0 0 0 1em;
+}

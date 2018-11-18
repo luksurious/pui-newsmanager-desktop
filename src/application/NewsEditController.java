@@ -16,6 +16,7 @@ import com.jfoenix.controls.JFXTextField;
 import application.news.Article;
 import application.news.Categories;
 import application.news.User;
+import application.services.SceneManager;
 import application.utils.JsonArticle;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -41,74 +42,91 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import serverConection.ConnectionManager;
 import serverConection.exceptions.ServerCommunicationError;
+import application.components.NewsHead;
 
 /**
  * @author AngelLucas
  *
  */
-public class NewsEditController {
-	private ConnectionManager connection;
+public class NewsEditController extends NewsCommonController {
 	private NewsEditModel editingArticle;
-	private User usr;
 	private boolean htmlMode;
 	private boolean bodyMode;
 	private String bodyText = "";
 	private String abstractText = "";
 	// TODO add attributes and methods as needed
 
+	@FXML
+	private ImageView imgPreview;
 
-    @FXML
-    private ImageView imgPreview;
+	@FXML
+	private TextField title;
 
-    @FXML
-    private TextField title;
+	@FXML
+	private TextField subtitle;
 
-    @FXML
-    private TextField subtitle;
+	@FXML
+	private ChoiceBox<Categories> category;
 
-    @FXML
-    private ChoiceBox<Categories> category;
+	@FXML
+	private ObservableList<Categories> categoriesList;
 
-    @FXML
-    private ObservableList<Categories> categoriesList;
+	@FXML
+	Button btnHome;
 
-    @FXML
-    Button btnHome;
+	@FXML
+	Button sendAndBack;
 
-    @FXML
-    Button sendAndBack;
+	@FXML
+	Button switchAttribute;
 
-    @FXML
-    Button switchAttribute;
+	@FXML
+	Button switchFormat;
 
-    @FXML
-    Button switchFormat;
+	@FXML
+	HTMLEditor editorHtml;
 
-    @FXML
-    HTMLEditor editorHtml;
+	@FXML
+	TextArea editorText;
 
-    @FXML
-    TextArea editorText;
+	@FXML
+	Label abstractLabel;
 
-    @FXML
-    Label abstractLabel;
+	@FXML
+	Label bodyLabel;
 
-    @FXML
-    Label bodyLabel;
+	public NewsEditController() {
+		this.categoriesList = FXCollections.observableArrayList();
+		this.categoriesList.addAll(Categories.values());
 
-    @FXML
-    void initialize(){
-        this.category.setItems(this.categoriesList);
-        editorText.setManaged(false);
-    }
+		this.editingArticle = new NewsEditModel(null);
+		this.htmlMode = true;
+		this.bodyMode = false;
+	}
 
-	public NewsEditController(){
-        this.categoriesList = FXCollections.observableArrayList();
-        this.categoriesList.addAll(Categories.values());
+	@FXML
+	void initialize() {
+		super.initialize();
 
-        this.editingArticle = new NewsEditModel(null);
-        this.htmlMode = true;
-        this.bodyMode = false;
+		this.category.setItems(this.categoriesList);
+		editorText.setManaged(false);
+		editorText.setVisible(false);
+		bodyLabel.setManaged(false);
+		bodyLabel.setVisible(false);
+	}
+
+	@Override
+	protected void updateUiAfterLogin() {
+		super.updateUiAfterLogin();
+
+		editingArticle.setUser(getUser());
+	}
+
+	@Override
+	protected void updateUiAfterLogout() {
+		super.updateUiAfterLogout();
+
+		editingArticle.setUser(getUser());
 	}
 
 	@FXML
@@ -133,12 +151,12 @@ public class NewsEditController {
 				Image image = controller.getImage();
 				if (image != null) {
 					editingArticle.setImage(image);
-                    imgPreview.setImage(image);
+					imgPreview.setImage(image);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-        }
+		}
 	}
 
 	/**
@@ -168,18 +186,8 @@ public class NewsEditController {
 	 * @param connection connection manager
 	 */
 	void setConnectionMannager(ConnectionManager connection) {
-		this.connection = connection;
+		this.editingArticle.setConnectionManager(connection);
 		// TODO enable save and send button
-	}
-
-	/**
-	 * 
-	 * @param usr the usr to set
-	 */
-	void setUsr(User usr) {
-		this.usr = usr;
-		// TODO Update UI and controls
-
 	}
 
 	Article getArticle() {
@@ -190,17 +198,16 @@ public class NewsEditController {
 		return result;
 	}
 
-
-    Article getPreparedArticle() {
-	    this.synchroniseText();
-	    this.editingArticle.setTitle(title.getText());
-	    this.editingArticle.setSubtitle(subtitle.getText());
-	    this.editingArticle.setImage(imgPreview.getImage());
-	    this.editingArticle.setBody(bodyText);
-        this.editingArticle.setAbstract(abstractText);
-        this.editingArticle.setCategory(category.getValue());
-        return this.editingArticle.getArticleOriginal();
-    }
+	Article getPreparedArticle() {
+		this.synchroniseText();
+		this.editingArticle.setTitle(title.getText());
+		this.editingArticle.setSubtitle(subtitle.getText());
+		this.editingArticle.setImage(imgPreview.getImage());
+		this.editingArticle.setBody(bodyText);
+		this.editingArticle.setAbstract(abstractText);
+		this.editingArticle.setCategory(category.getValue());
+		return this.editingArticle.getArticleOriginal();
+	}
 
 	/**
 	 * PRE: User must be set
@@ -208,7 +215,7 @@ public class NewsEditController {
 	 * @param article the article to set
 	 */
 	void setArticle(Article article) {
-		this.editingArticle = (article != null) ? new NewsEditModel(usr, article) : new NewsEditModel(usr);
+		this.editingArticle = (article != null) ? new NewsEditModel(user, article) : new NewsEditModel(user);
 		// TODO update UI
 	}
 
@@ -217,6 +224,7 @@ public class NewsEditController {
 	 */
 	private void write() {
 		// TODO Consolidate all changes
+		getPreparedArticle();
 		this.editingArticle.commit();
 		// Removes special characters not allowed for filenames
 		String name = this.getArticle().getTitle().replaceAll("\\||/|\\\\|:|\\?", "");
@@ -230,59 +238,58 @@ public class NewsEditController {
 		}
 	}
 
-
 	@FXML
-	public void openHome(ActionEvent event) throws IOException {
-		Stage stage;
+	public void switchMode() {
+		this.synchroniseFormat();
 
-		stage = (Stage) btnHome.getScene().getWindow();
+		editorHtml.setManaged(!this.htmlMode);
+		editorHtml.setVisible(!this.htmlMode);
+		editorText.setManaged(this.htmlMode);
+		editorText.setVisible(this.htmlMode);
 
-		Scene scene = SceneManager.getInstance().getSceneReader();
-		stage.setScene(scene);
-		stage.show();
+		this.htmlMode = !this.htmlMode;
+	}
+
+	private void synchroniseFormat() {
+		if (this.htmlMode) {
+			editorText.setText(editorHtml.getHtmlText());
+		} else {
+			editorHtml.setHtmlText(editorText.getText());
+		}
+	}
+
+	private void synchroniseText() {
+		if (this.bodyMode) {
+			this.bodyText = this.editorHtml.getHtmlText();
+			this.editorHtml.setHtmlText(this.abstractText);
+			this.editorText.setText(this.abstractText);
+		} else {
+			this.abstractText = this.editorHtml.getHtmlText();
+			this.editorHtml.setHtmlText(this.bodyText);
+			this.editorText.setText(this.bodyText);
+		}
 	}
 
 	@FXML
-	public void switchMode(){
-        this.synchroniseFormat();
+	public void switchAttribute() {
+		this.synchroniseFormat();
+		this.synchroniseText();
 
-        editorHtml.setManaged(!this.htmlMode);
-        editorHtml.setVisible(!this.htmlMode);
-        editorText.setManaged(this.htmlMode);
-        editorText.setVisible(this.htmlMode);
+		bodyLabel.setManaged(!this.bodyMode);
+		bodyLabel.setVisible(!this.bodyMode);
+		abstractLabel.setManaged(this.bodyMode);
+		abstractLabel.setVisible(this.bodyMode);
 
-        this.htmlMode = !this.htmlMode;
-    }
+		this.bodyMode = !this.bodyMode;
+	}
 
-    private void synchroniseFormat(){
-        if(this.htmlMode)
-            editorText.setText(editorHtml.getHtmlText());
-        else
-            editorHtml.setHtmlText(editorText.getText());
-    }
+	@Override
+	protected NewsCommonModel getModel() {
+		return editingArticle;
+	}
 
-    private void synchroniseText(){
-        if(this.bodyMode){
-            this.bodyText = this.editorHtml.getHtmlText();
-            this.editorHtml.setHtmlText(this.abstractText);
-            this.editorText.setText(this.abstractText);
-        } else {
-            this.abstractText = this.editorHtml.getHtmlText();
-            this.editorHtml.setHtmlText(this.bodyText);
-            this.editorText.setText(this.bodyText);
-        }
-    }
-
-    @FXML
-    public void switchAttribute(){
-        this.synchroniseFormat();
-	    this.synchroniseText();
-
-        bodyLabel.setManaged(!this.bodyMode);
-        bodyLabel.setVisible(!this.bodyMode);
-        abstractLabel.setManaged(this.bodyMode);
-        abstractLabel.setVisible(this.bodyMode);
-
-        this.bodyMode = !this.bodyMode;
-    }
+	@FXML
+	public void saveToFile() {
+		write();
+	}
 }

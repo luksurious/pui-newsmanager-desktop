@@ -1,7 +1,9 @@
 package application;
 
 import application.news.User;
-
+import application.services.SceneManager;
+import application.services.ServiceRegistry;
+import application.services.ServiceRegistryAware;
 import serverConection.ConnectionManager;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -11,8 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 
-public class LoginController {
-//TODO Add all attribute and methods as needed 
+public class LoginController implements ServiceRegistryAware, ControllerEvents {
 	private LoginModel loginModel = new LoginModel();
 
 	private User loggedUsr = null;
@@ -28,9 +29,9 @@ public class LoginController {
 
 	@FXML Label loginErrorNote;
 
-	public LoginController() {
-	}
+	private ServiceRegistry serviceRegistry;
 
+	public LoginController() {}
 
     @FXML
     void initialize() {
@@ -48,9 +49,13 @@ public class LoginController {
 		});
     }
 
+	@Override
+	public void onShow() {
+		loginModel.setConnectionManager((ConnectionManager) serviceRegistry.get("connection"));
+	}
+
 	User getLoggedUsr() {
 		return loggedUsr;
-
 	}
 
 	void setConnectionManager(ConnectionManager connection) {
@@ -70,6 +75,8 @@ public class LoginController {
 		
 		loggedUsr = this.loginModel.login(username, password);
 		if (loggedUsr != null) {
+			serviceRegistry.set("user", loggedUsr);
+			
 			closeModal();
 		} else {
 			loginErrorNote.setVisible(true);
@@ -78,9 +85,8 @@ public class LoginController {
 
 	@FXML
 	public void closeModal() {
-		usernameField.getScene().getWindow().hide();
+		SceneManager.getInstance().closeModal(AppScenes.LOGIN);
 	}
-
 
 	private void validateForm() {
 		loginErrorNote.setVisible(false);
@@ -95,9 +101,13 @@ public class LoginController {
 		formErrorNote.setVisible(false);
 	}
 
-
 	@FXML
 	public void submitIfEnter() {
 		submitLogin();
+	}
+
+	@Override
+	public void setServiceRegistry(ServiceRegistry serviceRegistry) {
+		this.serviceRegistry = serviceRegistry;
 	}
 }

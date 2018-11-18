@@ -17,7 +17,7 @@ import javafx.scene.image.Image;
  * @author AngelLucas
  *
  */
-class NewsEditModel {
+class NewsEditModel extends NewsCommonModel {
 	// Reference to original article. Useful for undo changes
 	private Article original;
 	// Reference to modified article
@@ -50,6 +50,14 @@ class NewsEditModel {
 
 	// Getters and setters
 
+	public void setUser(User user) {
+		this.user = user;
+		
+		if (user != null) {
+			edited.setIdUser(user.getIdUser());
+		}
+	}
+	
 	/**
 	 * 
 	 * @return a copy of edited article body

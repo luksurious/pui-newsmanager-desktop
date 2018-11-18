@@ -10,7 +10,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -98,6 +102,8 @@ public class JsonArticle {
 		String bodyText = articleData.getString(keys.get("Body"), "");
 		String category = articleData.getString(keys.get("Category"), "");
 		String deleted = articleData.getString(keys.get("Deleted"), "0");
+		String publicationDateString = articleData.getString(keys.get("PublicationDate"), "0");
+		
 		Boolean isDeleted = deleted.equals("1");
 		// Boolean isPublish = articleData.getBoolean(keys.get("Publish"));
 		if (title.equals("") || category.equals("")) {
@@ -110,7 +116,19 @@ public class JsonArticle {
 			idUser = Integer.parseInt(idUserAux);
 		}
 
-		result = new Article(abstractText, bodyText, title, null, idUser, null, category);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		Date publicationDate = null;
+		if (!publicationDateString.equals("0") && !publicationDateString.isEmpty()) {			
+			try {
+				publicationDate = dateFormat.parse(publicationDateString);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		result = new Article(abstractText, bodyText, title, publicationDate, idUser, null, category);
 		result.setSubtitle(subtitle);
 		result.setDeleted(isDeleted);
 		// Be careful. If key dosen't exists a null pointer exception will be raised
@@ -224,9 +242,9 @@ public class JsonArticle {
 			return; // Init not needed
 		keys = new HashMap<>();
 		String[] keyList = { "Title", "Subtitle", "Category", "Body", "Abstract", "thumbnail", "Image", "Publish",
-				"idArticle", "idUser", "Deleted" };
+				"idArticle", "idUser", "Deleted", "PublicationDate" };
 		String[] valueList = { "title", "subtitle", "category", "body", "abstract", "thumbnail_image", "image_data",
-				"publish", "id", "id_user", "is_deleted" };
+				"publish", "id", "id_user", "is_deleted", "update_date" };
 		for (int i = 0; i < keyList.length; i++) {
 			keys.put(keyList[i], valueList[i]);
 		}

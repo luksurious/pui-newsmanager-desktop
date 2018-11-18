@@ -67,7 +67,7 @@ class LoginModel {
 			return null;
 		}
 		
-		User loggedInUser = new User(username, new Integer(this.connectionManager.getIdUser()));
+		User loggedInUser = new User(username, Integer.parseInt(this.connectionManager.getIdUser()));
 		loggedInUser.setAdmin(this.connectionManager.isAdministrator());
 		return loggedInUser;
 	}

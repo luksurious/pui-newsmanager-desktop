@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 
 import application.news.Article;
 import application.news.Categories;
+import application.services.SceneManager;
+import application.services.ServiceRegistry;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,50 +37,37 @@ public class Main extends Application {
 			 * in the FXML file. Pane is the father of all container (BorderPane, FlowPane,
 			 * AnchorPane ...
 			 */
-			/*
-			 * Pane root = FXMLLoader.load(getClass().getResource(
-			 * AppScenes.LOGIN.getFxmlFile()));
-			 */
-			/*
-			 * Pane root = FXMLLoader.load(getClass().getResource(
-			 * AppScenes.IMAGE_PICKER.getFxmlFile()));
-			 */
 			// Code for reader main window
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(AppScenes.READER.getFxmlFile()));
-			Pane root = loader.load();
-			NewsReaderController controller = loader.<NewsReaderController>getController();
-
-			// Create properties for server connection
-			Properties prop = buildServerProperties();
-			ConnectionManager connection = new ConnectionManager(prop);
-
-			Properties config = loadConfiguration();
-			// Connecting as public (anonymous) for your group
-			connection.setAnonymousAPIKey(config.getProperty("apiKey")/* Put your group API Key here */);
-			// Login whitout login form:
-			// connection.login("Reader2", "reader2"); //User: Reader2 and password
-			// "reader2"
-			// User user = new User ("Reader2",
-			// Integer.parseInt(connection.getIdUser()));
-			// controller.setUsr(user);
-			controller.setConnectionManager(connection);
-
-			// end code for main window reader
-
-			Scene scene = new Scene(root);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			// TODO: why was this set??
-//			primaryStage.initStyle(StageStyle.UNDECORATED);
-			primaryStage.setScene(scene);
+			ServiceRegistry services = new ServiceRegistry();
+			services.set("connection", createConnectionManager());
+			
+			SceneManager sceneManager = SceneManager.getInstance();
+			sceneManager.setPrimaryStage(primaryStage);
+			sceneManager.setMainStylessheet("application.css");
+			sceneManager.setServiceRegistry(services);
+			
 		    primaryStage.setResizable(false);
-			primaryStage.show();
+			
+			sceneManager.showSceneInPrimaryStage(AppScenes.READER, false);
+			// end code for main window reader
 		} catch (AuthenticationError e) {
-			Logger.getGlobal().log(Level.SEVERE, "Error in loging process");
+			Logger.getGlobal().log(Level.SEVERE, "Error in login process");
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private ConnectionManager createConnectionManager() throws AuthenticationError {
+		// Create properties for server connection
+		Properties prop = buildServerProperties();
+		ConnectionManager connection = new ConnectionManager(prop);
+
+		Properties config = loadConfiguration();
+		// Connecting as public (anonymous) for your group
+		connection.setAnonymousAPIKey(config.getProperty("apiKey"));
+		return connection;
 	}
 
 	public static void main(String[] args) {
