@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.jfoenix.controls.JFXButton;
+
 import application.NewsCommonController;
 import application.news.Article;
 import application.news.User;
@@ -30,7 +32,7 @@ public class NewsHead extends HBox {
 	@FXML
 	SplitMenuButton btnAdd;
 	@FXML
-	Button btnLogin;
+	JFXButton btnLogin;
 	@FXML
 	ImageView headImage;
 	@FXML

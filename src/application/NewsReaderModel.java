@@ -53,16 +53,6 @@ class NewsReaderModel extends NewsCommonModel {
 	ObservableList<Article> getArticles() {
 		return articles;
 	}
-	
-	Article findArticleById(int id) {
-		ObservableList<Article> candidates = getArticles().filtered((Article articleX) -> articleX.getIdArticle() == id);
-		
-		if (candidates.size() == 1) {
-			return candidates.get(0);
-		}
-		
-		return null;
-	}
 
 	/**
 	 * 

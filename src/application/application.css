@@ -23,6 +23,7 @@
 	-fx-padding: 0.75em 1em 0.75em 1em;
 	-fx-font-size: 14px;
 }
-.list-view .list-cell .label {
-	-fx-padding: 0 0 0 1em;
+.jfx-button {
+     -fx-background-color: #7a92ff;
+     -fx-text-fill: white;
 }

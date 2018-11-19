@@ -10,6 +10,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.text.Font?>
+<?import com.jfoenix.controls.JFXButton?>
 
 <fx:root xmlns:fx="http://javafx.com/fxml/1" type="HBox" prefWidth="900.0"
 	prefHeight="100.0">
@@ -58,9 +59,8 @@
 						<Insets left="20.0" right="20.0" />
 					</HBox.margin>
 				</MenuButton>
-				<Button fx:id="btnLogin" mnemonicParsing="false"
+				<JFXButton fx:id="btnLogin" mnemonicParsing="false"
 					onAction="#openLogin" prefHeight="38.0" prefWidth="80.0"
-					style="-fx-background-color: #7a92ff;"
 					text="Login" textFill="WHITE">
 					<font>
 						<Font size="16.0" />
@@ -68,7 +68,7 @@
 					<HBox.margin>
 						<Insets left="20.0" right="20.0" />
 					</HBox.margin>
-				</Button>
+				</JFXButton>
 			</children>
 		</HBox>
 	</children>
