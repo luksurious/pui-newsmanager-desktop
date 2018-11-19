@@ -15,6 +15,9 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.web.HTMLEditor?>
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextArea?>
 
 <BorderPane fx:id="rootPane" prefHeight="600.0"
 	prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1"
@@ -31,20 +34,20 @@
 						<VBox prefHeight="166.0" prefWidth="424.0">
 							<children>
 								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title" />
-								<TextField fx:id="title">
+								<JFXTextField fx:id="title">
 									<VBox.margin>
 										<Insets bottom="10.0" />
 									</VBox.margin>
-								</TextField>
+								</JFXTextField>
 								<Text strokeType="OUTSIDE" strokeWidth="0.0"
 									text="Subtitle" />
-								<TextField fx:id="subtitle">
+								<JFXTextField fx:id="subtitle">
 									<VBox.margin>
 										<Insets bottom="10.0" />
 									</VBox.margin>
-								</TextField>
+								</JFXTextField>
 								<Label text="Category" />
-								<ChoiceBox fx:id="category" prefHeight="27.0"
+								<JFXComboBox fx:id="category" prefHeight="27.0"
 									prefWidth="363.0" />
 							</children>
 							<HBox.margin>
@@ -83,7 +86,7 @@
 				</Label>
 				<HTMLEditor fx:id="editorHtml"
 					minHeight="200.0" prefHeight="200.0" prefWidth="560.0" />
-				<TextArea fx:id="editorText" minHeight="200.0"
+				<JFXTextArea fx:id="editorText" minHeight="200.0"
 					prefHeight="200.0" prefWidth="560.0" />
 				<HBox prefHeight="100.0" prefWidth="200.0">
 					<children>
@@ -117,7 +120,7 @@
 		</VBox>
 	</center>
 	<bottom>
-		<HBox prefHeight="100.0" prefWidth="200.0"
+		<HBox prefHeight="70.0" prefWidth="200.0"
 			BorderPane.alignment="CENTER">
 			<children>
 				<JFXButton mnemonicParsing="false" onAction="#openMainView"

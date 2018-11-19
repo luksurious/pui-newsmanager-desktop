@@ -66,7 +66,7 @@ public class NewsEditController extends NewsCommonController {
 	private TextField subtitle;
 
 	@FXML
-	private ChoiceBox<Categories> category;
+	private ComboBox<Categories> category;
 
 	@FXML
 	private ObservableList<Categories> categoriesList;
