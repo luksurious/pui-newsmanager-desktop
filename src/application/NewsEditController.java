@@ -139,14 +139,17 @@ public class NewsEditController extends NewsCommonController {
 		super.updateUiAfterLogin();
 
 		editingArticle.setUser(getUser());
+		sendAndBack.setDisable(false);
 	}
 
 	@Override
 	protected void updateUiAfterLogout() {
 		super.updateUiAfterLogout();
-
+		
 		editingArticle.setUser(getUser());
+		sendAndBack.setDisable(true);
 	}
+	
 
 	@FXML
 	void onImageClicked(MouseEvent event) {
@@ -169,18 +172,25 @@ public class NewsEditController extends NewsCommonController {
 	 * must be different to ALL
 	 * 
 	 * @return true if the article has been saved
+	 * @throws ServerCommunicationError 
+	 * @throws IOException 
 	 */
-	private boolean send() {
-		String titleText = null; // TODO Get article title
-		Categories category = null; // TODO Get article cateory
-		if (titleText == null || category == null || titleText.equals("") || category == Categories.ALL) {
-			Alert alert = new Alert(AlertType.ERROR, "Imposible send the article!! Title and categoy are mandatory",
+	private boolean send() throws ServerCommunicationError, IOException {
+		String titleText = this.getArticle().getTitle();
+		String category = this.getArticle().getCategory();
+
+		if (titleText == null || category == null || titleText.equals("")) {
+			Alert alert = new Alert(AlertType.ERROR, "Imposible send the article!! Title and category are mandatory!",
 					ButtonType.OK);
 			alert.showAndWait();
 			return false;
 		}
-//TODO prepare and send using connection.saveArticle( ...)
+		//this command will send the article to the server
+		editingArticle.getConnectionManager().saveArticle(this.getArticle());
+		SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, true);
 
+		//super.openMainView();
+		//super.initialize();
 		return true;
 	}
 
@@ -342,5 +352,32 @@ public class NewsEditController extends NewsCommonController {
 	        alert.initModality(Modality.NONE);
 	        alert.showAndWait();
 		}
+	}
+	
+	@FXML
+	public void saveToServer() throws ServerCommunicationError, IOException {
+
+		editingArticle.commit();
+		
+		if (send()) {
+			JFXDialogLayout layout = new JFXDialogLayout();
+			VBox body = new VBox();
+			Label label = new Label("The article was successfully sent to the server");
+			body.getChildren().add(label);
+	        layout.setBody(body);
+	        JFXButton okayButton = new JFXButton("OK");
+	        layout.getActions().add(okayButton);
+	        
+	        JFXAlert<Void> alert = new JFXAlert<Void>((Stage) rootPane.getScene().getWindow());
+	        
+	        okayButton.setOnAction((event) -> alert.hide());
+	        
+	        alert.setOverlayClose(true);
+	        alert.setAnimation(JFXAlertAnimation.CENTER_ANIMATION);
+	        alert.setContent(layout);
+	        alert.initModality(Modality.NONE);
+	        alert.showAndWait();
+		}
+		
 	}
 }
