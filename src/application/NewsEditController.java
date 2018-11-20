@@ -122,6 +122,12 @@ public class NewsEditController extends NewsCommonController {
 		bodyLabel.setVisible(false);
 		
 		newsHead.setCustomTitle("Create a new article");
+		
+		sendAndBack.setDisable(true);
+		
+		editorText.textProperty().addListener((observable, oldValue, newValue) -> {
+			editorHtml.setHtmlText(newValue);
+		});
 	}
 
 	@Override
@@ -196,7 +202,8 @@ public class NewsEditController extends NewsCommonController {
 	 */
 	void setConnectionMannager(ConnectionManager connection) {
 		this.editingArticle.setConnectionManager(connection);
-		// TODO enable save and send button
+		
+		sendAndBack.setDisable(false);
 	}
 
 	Article getArticle() {
@@ -208,12 +215,13 @@ public class NewsEditController extends NewsCommonController {
 	}
 
 	Article getPreparedArticle() {
-		this.synchroniseText();
-		this.editingArticle.setTitle(title.getText());
-		this.editingArticle.setSubtitle(subtitle.getText());
-		this.editingArticle.setImage(imgPreview.getImage());
-		this.editingArticle.setBody(bodyText);
-		this.editingArticle.setAbstract(abstractText);
+		// TODO fix
+//		this.synchroniseText();
+//		this.editingArticle.setTitle(title.getText());
+//		this.editingArticle.setSubtitle(subtitle.getText());
+//		this.editingArticle.setImage(imgPreview.getImage());
+//		this.editingArticle.setBody(bodyText);
+//		this.editingArticle.setAbstract(abstractText);
 		this.editingArticle.setCategory(category.getValue());
 		return this.editingArticle.getArticleOriginal();
 	}
@@ -227,6 +235,12 @@ public class NewsEditController extends NewsCommonController {
 		newsHead.setCustomTitle("Edit an article");
 		this.editingArticle = (article != null) ? new NewsEditModel(user, article) : new NewsEditModel(user);
 		// TODO update UI
+
+		title.textProperty().bindBidirectional(editingArticle.titleProperty());
+		subtitle.textProperty().bindBidirectional(editingArticle.subtitleProperty());
+		bindTextEditors();
+		
+		category.getSelectionModel().select(Categories.valueOf(article.getCategory().toUpperCase()));
 	}
 
 	/**
@@ -276,29 +290,55 @@ public class NewsEditController extends NewsCommonController {
 	}
 
 	private void synchroniseFormat() {
-		if (this.htmlMode) {
-			editorText.setText(editorHtml.getHtmlText());
+//		if (this.htmlMode) {
+//			editorText.setText(editorHtml.getHtmlText());
+//		} else {
+//			editorHtml.setHtmlText(editorText.getText());
+//		}
+	}
+	
+	private void bindTextEditors() {
+		if (this.bodyMode) {
+			this.abstractText = this.editorHtml.getHtmlText();
+			editorText.setText(abstractText);
+
+			editorText.textProperty().unbindBidirectional(editingArticle.abstractTextProperty());
+			editorText.textProperty().bindBidirectional(editingArticle.bodyTextProperty());
 		} else {
-			editorHtml.setHtmlText(editorText.getText());
+			bodyText = this.editorHtml.getHtmlText();
+			editorText.setText(bodyText);
+
+			editorText.textProperty().unbindBidirectional(editingArticle.bodyTextProperty());
+			editorText.textProperty().bindBidirectional(editingArticle.abstractTextProperty());
 		}
 	}
 
 	private void synchroniseText() {
+		// note this will be the old mode
 		if (this.bodyMode) {
-			this.bodyText = this.editorHtml.getHtmlText();
-			this.editorHtml.setHtmlText(this.abstractText);
-			this.editorText.setText(this.abstractText);
+			bodyText = this.editorHtml.getHtmlText();
+			editorText.setText(bodyText);
+			
+//			this.editorHtml.setHtmlText(this.abstractText);
+//			this.editorText.setText(this.abstractText);
+
+			editorText.textProperty().unbindBidirectional(editingArticle.bodyTextProperty());
+			editorText.textProperty().bindBidirectional(editingArticle.abstractTextProperty());
 		} else {
 			this.abstractText = this.editorHtml.getHtmlText();
-			this.editorHtml.setHtmlText(this.bodyText);
-			this.editorText.setText(this.bodyText);
+			editorText.setText(abstractText);
+//			this.editorHtml.setHtmlText(this.bodyText);
+//			this.editorText.setText(this.bodyText);
+
+			editorText.textProperty().unbindBidirectional(editingArticle.abstractTextProperty());
+			editorText.textProperty().bindBidirectional(editingArticle.bodyTextProperty());
 		}
 	}
 
 	@FXML
 	public void switchAttribute() {
 		this.synchroniseFormat();
-		this.synchroniseText();
+//		this.synchroniseText();
 
 		bodyLabel.setManaged(!this.bodyMode);
 		bodyLabel.setVisible(!this.bodyMode);
@@ -306,6 +346,8 @@ public class NewsEditController extends NewsCommonController {
 		abstractLabel.setVisible(this.bodyMode);
 
 		this.bodyMode = !this.bodyMode;
+		
+		bindTextEditors();
 	}
 
 	@Override
