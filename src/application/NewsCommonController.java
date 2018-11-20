@@ -2,8 +2,6 @@ package application;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import application.components.NewsHead;
 import application.news.Article;
@@ -11,23 +9,10 @@ import application.news.User;
 import application.services.SceneManager;
 import application.services.ServiceRegistry;
 import application.services.ServiceRegistryAware;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitMenuButton;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import serverConection.ConnectionManager;
 
 public abstract class NewsCommonController implements ServiceRegistryAware, ControllerEvents {
@@ -57,7 +42,7 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		
 		if (serviceRegistry.has("user")) {
 			setUser((User) serviceRegistry.get("user"));
-		} else {			
+		} else {
 			setUser(null);
 		}
 	}

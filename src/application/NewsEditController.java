@@ -12,44 +12,33 @@ import javax.json.JsonObject;
 import com.jfoenix.animation.alert.JFXAlertAnimation;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
-//import com.jfoenix.controls.JFXSnackbar;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
 
 import application.news.Article;
 import application.news.Categories;
-import application.news.User;
 import application.services.SceneManager;
 import application.utils.JsonArticle;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
 import serverConection.ConnectionManager;
 import serverConection.exceptions.ServerCommunicationError;
-import application.components.NewsHead;
-import javafx.scene.layout.StackPane;
 
 /**
  * @author AngelLucas
@@ -59,9 +48,6 @@ public class NewsEditController extends NewsCommonController {
 	private NewsEditModel editingArticle;
 	private boolean htmlMode;
 	private boolean bodyMode;
-	private String bodyText = "";
-	private String abstractText = "";
-	// TODO add attributes and methods as needed
 
 	@FXML
 	private ImageView imgPreview;
@@ -186,24 +172,13 @@ public class NewsEditController extends NewsCommonController {
 			return false;
 		}
 		//this command will send the article to the server
-		editingArticle.getConnectionManager().saveArticle(this.getArticle());
+		ConnectionManager connectionManager = (ConnectionManager) serviceRegistry.get("connection");
+		connectionManager.saveArticle(this.getArticle());
 		SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, true);
 
 		//super.openMainView();
 		//super.initialize();
 		return true;
-	}
-
-	/**
-	 * This method is used to set the connection manager which is needed to save a
-	 * news
-	 * 
-	 * @param connection connection manager
-	 */
-	void setConnectionMannager(ConnectionManager connection) {
-		this.editingArticle.setConnectionManager(connection);
-		
-		sendAndBack.setDisable(false);
 	}
 
 	Article getArticle() {
@@ -222,7 +197,8 @@ public class NewsEditController extends NewsCommonController {
 	void setArticle(Article article) {
 		newsHead.setCustomTitle("Edit an article");
 		this.editingArticle = (article != null) ? new NewsEditModel(user, article) : new NewsEditModel(user);
-		// TODO update UI
+		// call onShow to handle model injections
+		onShow();
 
 		setupFieldBindings();
 		
