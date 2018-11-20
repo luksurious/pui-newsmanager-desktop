@@ -33,7 +33,7 @@ import serverConection.ConnectionManager;
 public abstract class NewsCommonController implements ServiceRegistryAware, ControllerEvents {
 	protected User user;
 	
-	private ServiceRegistry serviceRegistry;
+	protected ServiceRegistry serviceRegistry;
 
 	@FXML
 	BorderPane rootPane;

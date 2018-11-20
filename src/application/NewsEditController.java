@@ -105,6 +105,8 @@ public class NewsEditController extends NewsCommonController {
 	public NewsEditController() {
 		this.categoriesList = FXCollections.observableArrayList();
 		this.categoriesList.addAll(Categories.values());
+		// remove option for category "ALL"
+		this.categoriesList.remove(0);
 
 		this.editingArticle = new NewsEditModel(null);
 		this.htmlMode = true;
@@ -128,6 +130,8 @@ public class NewsEditController extends NewsCommonController {
 		editorText.textProperty().addListener((observable, oldValue, newValue) -> {
 			editorHtml.setHtmlText(newValue);
 		});
+		
+		setupFieldBindings();
 	}
 
 	@Override
@@ -147,25 +151,12 @@ public class NewsEditController extends NewsCommonController {
 	@FXML
 	void onImageClicked(MouseEvent event) {
 		if (event.getClickCount() >= 2) {
-			Scene parentScene = ((Node) event.getSource()).getScene();
-			FXMLLoader loader = null;
 			try {
-				loader = new FXMLLoader(getClass().getResource(AppScenes.IMAGE_PICKER.getFxmlFile()));
-				Pane root = loader.load();
-				// Scene scene = new Scene(root, 570, 420);
-				Scene scene = new Scene(root);
-				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-				Window parentStage = parentScene.getWindow();
-				Stage stage = new Stage();
-				stage.initOwner(parentStage);
-				stage.setScene(scene);
-				stage.initStyle(StageStyle.UTILITY);
-				stage.initModality(Modality.WINDOW_MODAL);
-				stage.showAndWait();
-				ImagePickerController controller = loader.<ImagePickerController>getController();
+				SceneManager.getInstance().showSceneInModal(AppScenes.IMAGE_PICKER);
+				ImagePickerController controller = (ImagePickerController) SceneManager.getInstance().getController(AppScenes.IMAGE_PICKER);
 				Image image = controller.getImage();
 				if (image != null) {
-					editingArticle.setImage(image);
+//					editingArticle.setImage(image);
 					imgPreview.setImage(image);
 				}
 			} catch (Exception e) {
@@ -214,18 +205,6 @@ public class NewsEditController extends NewsCommonController {
 		return result;
 	}
 
-	Article getPreparedArticle() {
-		// TODO fix
-//		this.synchroniseText();
-//		this.editingArticle.setTitle(title.getText());
-//		this.editingArticle.setSubtitle(subtitle.getText());
-//		this.editingArticle.setImage(imgPreview.getImage());
-//		this.editingArticle.setBody(bodyText);
-//		this.editingArticle.setAbstract(abstractText);
-		this.editingArticle.setCategory(category.getValue());
-		return this.editingArticle.getArticleOriginal();
-	}
-
 	/**
 	 * PRE: User must be set
 	 * 
@@ -236,11 +215,27 @@ public class NewsEditController extends NewsCommonController {
 		this.editingArticle = (article != null) ? new NewsEditModel(user, article) : new NewsEditModel(user);
 		// TODO update UI
 
-		title.textProperty().bindBidirectional(editingArticle.titleProperty());
-		subtitle.textProperty().bindBidirectional(editingArticle.subtitleProperty());
-		bindTextEditors();
+		setupFieldBindings();
 		
 		category.getSelectionModel().select(Categories.valueOf(article.getCategory().toUpperCase()));
+		
+		if (article.getImageData() != null) {			
+			imgPreview.setImage(article.getImageData());
+		}
+	}
+
+	private void setupFieldBindings() {
+		// TODO unbind listeners
+		title.textProperty().bindBidirectional(editingArticle.titleProperty());
+		subtitle.textProperty().bindBidirectional(editingArticle.subtitleProperty());
+		category.getSelectionModel().selectedItemProperty().addListener((observer, oldValue, newValue) -> {
+			System.out.println(newValue);
+			editingArticle.setCategory(newValue);
+		});
+		imgPreview.imageProperty().addListener((observer, oldValue, newValue) -> {
+			editingArticle.setImage(newValue);
+		});
+		bindTextEditors();
 	}
 
 	/**
@@ -248,7 +243,6 @@ public class NewsEditController extends NewsCommonController {
 	 */
 	private String write() {
 		// TODO Consolidate all changes
-		getPreparedArticle();
 		this.editingArticle.commit();
 		// Removes special characters not allowed for filenames
 		String name = this.getArticle().getTitle().replaceAll("\\||/|\\\\|:|\\?", "");
@@ -279,73 +273,40 @@ public class NewsEditController extends NewsCommonController {
 
 	@FXML
 	public void switchMode() {
-		this.synchroniseFormat();
-
-		editorHtml.setManaged(!this.htmlMode);
-		editorHtml.setVisible(!this.htmlMode);
-		editorText.setManaged(this.htmlMode);
-		editorText.setVisible(this.htmlMode);
-
+		if (htmlMode) {
+			editorText.setText(editorHtml.getHtmlText());
+		}
+		
 		this.htmlMode = !this.htmlMode;
-	}
-
-	private void synchroniseFormat() {
-//		if (this.htmlMode) {
-//			editorText.setText(editorHtml.getHtmlText());
-//		} else {
-//			editorHtml.setHtmlText(editorText.getText());
-//		}
+		
+		editorHtml.setManaged(this.htmlMode);
+		editorHtml.setVisible(this.htmlMode);
+		editorText.setManaged(!this.htmlMode);
+		editorText.setVisible(!this.htmlMode);
 	}
 	
 	private void bindTextEditors() {
 		if (this.bodyMode) {
-			this.abstractText = this.editorHtml.getHtmlText();
-			editorText.setText(abstractText);
+			editorText.setText(this.editorHtml.getHtmlText());
 
 			editorText.textProperty().unbindBidirectional(editingArticle.abstractTextProperty());
 			editorText.textProperty().bindBidirectional(editingArticle.bodyTextProperty());
 		} else {
-			bodyText = this.editorHtml.getHtmlText();
-			editorText.setText(bodyText);
+			editorText.setText(this.editorHtml.getHtmlText());
 
 			editorText.textProperty().unbindBidirectional(editingArticle.bodyTextProperty());
 			editorText.textProperty().bindBidirectional(editingArticle.abstractTextProperty());
 		}
 	}
-
-	private void synchroniseText() {
-		// note this will be the old mode
-		if (this.bodyMode) {
-			bodyText = this.editorHtml.getHtmlText();
-			editorText.setText(bodyText);
-			
-//			this.editorHtml.setHtmlText(this.abstractText);
-//			this.editorText.setText(this.abstractText);
-
-			editorText.textProperty().unbindBidirectional(editingArticle.bodyTextProperty());
-			editorText.textProperty().bindBidirectional(editingArticle.abstractTextProperty());
-		} else {
-			this.abstractText = this.editorHtml.getHtmlText();
-			editorText.setText(abstractText);
-//			this.editorHtml.setHtmlText(this.bodyText);
-//			this.editorText.setText(this.bodyText);
-
-			editorText.textProperty().unbindBidirectional(editingArticle.abstractTextProperty());
-			editorText.textProperty().bindBidirectional(editingArticle.bodyTextProperty());
-		}
-	}
-
+	
 	@FXML
 	public void switchAttribute() {
-		this.synchroniseFormat();
-//		this.synchroniseText();
-
-		bodyLabel.setManaged(!this.bodyMode);
-		bodyLabel.setVisible(!this.bodyMode);
-		abstractLabel.setManaged(this.bodyMode);
-		abstractLabel.setVisible(this.bodyMode);
-
 		this.bodyMode = !this.bodyMode;
+		
+		bodyLabel.setManaged(this.bodyMode);
+		bodyLabel.setVisible(this.bodyMode);
+		abstractLabel.setManaged(!this.bodyMode);
+		abstractLabel.setVisible(!this.bodyMode);
 		
 		bindTextEditors();
 	}
