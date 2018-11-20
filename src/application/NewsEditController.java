@@ -174,23 +174,24 @@ public class NewsEditController extends NewsCommonController {
 	 * 
 	 * @return true if the article has been saved
 	 * @throws ServerCommunicationError 
+	 * @throws IOException 
 	 */
-	private boolean send() throws ServerCommunicationError {
+	private boolean send() throws ServerCommunicationError, IOException {
 		String titleText = this.getArticle().getTitle();
-		String subtitleText = this.getArticle().getSubtitle();
 		String category = this.getArticle().getCategory();
-		String bodyText = this.getArticle().getBodyText();
-		String abstractText = this.getArticle().getAbstractText();
 
-		if (titleText == null || subtitleText == null || category == null || bodyText == null || abstractText == null || titleText.equals("") || subtitleText.equals("") || bodyText.equals("") || abstractText.equals("")) {
-			Alert alert = new Alert(AlertType.ERROR, "Imposible send the article!! Title, subtitle, category, body and abstract are mandatory!",
+		if (titleText == null || category == null || titleText.equals("")) {
+			Alert alert = new Alert(AlertType.ERROR, "Imposible send the article!! Title and category are mandatory!",
 					ButtonType.OK);
 			alert.showAndWait();
 			return false;
 		}
 		//this command will send the article to the server
 		editingArticle.getConnectionManager().saveArticle(this.getArticle());
-	
+		SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, true);
+
+		//super.openMainView();
+		//super.initialize();
 		return true;
 	}
 
@@ -355,7 +356,7 @@ public class NewsEditController extends NewsCommonController {
 	}
 	
 	@FXML
-	public void saveToServer() throws ServerCommunicationError {
+	public void saveToServer() throws ServerCommunicationError, IOException {
 
 		editingArticle.commit();
 		
