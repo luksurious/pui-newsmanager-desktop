@@ -5,12 +5,10 @@ import java.util.HashMap;
 
 import com.jfoenix.animation.alert.JFXAlertAnimation;
 import com.jfoenix.controls.JFXAlert;
-import com.jfoenix.controls.JFXDialogLayout;
 
 import application.AppScenes;
 import application.ControllerEvents;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;

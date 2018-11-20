@@ -156,7 +156,6 @@ public class NewsEditController extends NewsCommonController {
 				ImagePickerController controller = (ImagePickerController) SceneManager.getInstance().getController(AppScenes.IMAGE_PICKER);
 				Image image = controller.getImage();
 				if (image != null) {
-//					editingArticle.setImage(image);
 					imgPreview.setImage(image);
 				}
 			} catch (Exception e) {

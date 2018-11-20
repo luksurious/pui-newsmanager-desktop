@@ -3,6 +3,7 @@ package application;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -59,7 +60,7 @@ public class Main extends Application {
 		}
 	}
 
-	private ConnectionManager createConnectionManager() throws AuthenticationError {
+	private ConnectionManager createConnectionManager() throws AuthenticationError, IOException {
 		// Create properties for server connection
 		Properties prop = buildServerProperties();
 		ConnectionManager connection = new ConnectionManager(prop);
@@ -92,19 +93,13 @@ public class Main extends Application {
 		return prop;
 	}
 
-	private Properties loadConfiguration() {
-		String appConfigPath = getClass().getClassLoader().getResource("config.properties").getPath();
+	private Properties loadConfiguration() throws IOException {
+		// TODO: test with space in path
+		InputStream appConfigFile = getClass().getClassLoader().getResourceAsStream("config.properties");
 
 		Properties appProps = new Properties();
-		try {
-			appProps.load(new FileInputStream(appConfigPath));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		appProps.load(appConfigFile);
+		appConfigFile.close();
 
 		return appProps;
 	}

@@ -119,22 +119,6 @@ class NewsEditModel extends NewsCommonModel {
 		this.bModified = true;
 	}
 
-	public void setTitle(String title) {
-		this.edited.setTitle(title);
-	}
-
-	public void setSubtitle(String title) {
-		this.edited.setSubtitle(title);
-	}
-
-	public void setBody(String text) {
-		this.edited.setBodyText(text);
-	}
-
-	public void setAbstract(String text) {
-		this.edited.setAbstractText(text);
-	}
-
 	/**
 	 *
 	 * @return a copy the edited article title
