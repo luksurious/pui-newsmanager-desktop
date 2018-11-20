@@ -3,6 +3,10 @@ package application.services;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.jfoenix.animation.alert.JFXAlertAnimation;
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXDialogLayout;
+
 import application.AppScenes;
 import application.ControllerEvents;
 import javafx.fxml.FXMLLoader;
@@ -79,29 +83,31 @@ public class SceneManager {
 	public void showSceneInModal(AppScenes sceneConfig, StageStyle style, boolean blocking) throws IOException {
 		Scene scene = loadScene(sceneConfig, true);
 
-		Stage stage = new Stage();
-		stage.setScene(scene);
-		stage.initModality(Modality.WINDOW_MODAL);
-
-		stage.initOwner(currentStage);
-		stage.initStyle(style);
+        JFXAlert<Void> alert = new JFXAlert<Void>(currentStage);
+        scene.setUserData(alert);
+                
+        alert.setOverlayClose(true);
+        alert.setAnimation(JFXAlertAnimation.CENTER_ANIMATION);
+        alert.setContent(scene.getRoot());
+        alert.initModality(Modality.NONE);
 
 		fireOnShowEvent(sceneConfig);
 		
 		if (blocking) {
-			stage.showAndWait();
+	        alert.showAndWait();
 		} else {
-			stage.show();
+	        alert.show();
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void closeModal(AppScenes sceneConfig) {
 		if (!loadedScenes.containsKey(sceneConfig)) {
 			return;
 		}
 		
 		Scene scene = loadedScenes.get(sceneConfig);
-		scene.getWindow().hide();
+		((JFXAlert<Void>) scene.getUserData()).hide();
 	}
 
 	private void fireOnShowEvent(AppScenes sceneConfig) {

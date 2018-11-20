@@ -3,14 +3,20 @@
  */
 package application;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.json.JsonObject;
 
+import com.jfoenix.animation.alert.JFXAlertAnimation;
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 //import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 
 import application.news.Article;
@@ -43,6 +49,7 @@ import javafx.stage.Window;
 import serverConection.ConnectionManager;
 import serverConection.exceptions.ServerCommunicationError;
 import application.components.NewsHead;
+import javafx.scene.layout.StackPane;
 
 /**
  * @author AngelLucas
@@ -225,7 +232,7 @@ public class NewsEditController extends NewsCommonController {
 	/**
 	 * Save an article to a file in a json format Article must have a title
 	 */
-	private void write() {
+	private String write() {
 		// TODO Consolidate all changes
 		getPreparedArticle();
 		this.editingArticle.commit();
@@ -233,12 +240,27 @@ public class NewsEditController extends NewsCommonController {
 		String name = this.getArticle().getTitle().replaceAll("\\||/|\\\\|:|\\?", "");
 		String fileName = "saveNews//" + name + ".news";
 		JsonObject data = JsonArticle.articleToJson(this.getArticle());
-		try (FileWriter file = new FileWriter(fileName)) {
-			file.write(data.toString());
-			file.flush();
+		FileWriter writer = null;
+		try {
+			File file = new File(fileName);
+            file.setWritable(true);
+            file.setReadable(true);
+			writer = new FileWriter(file);
+			writer.write(data.toString());
+			writer.flush();
+			writer.close();
+			
+			return file.getAbsolutePath();
 		} catch (IOException e) {
 			e.printStackTrace();
+			if (writer != null) {				
+				try {
+					writer.close();
+				} catch (IOException e1) {
+				}
+			}
 		}
+		return null;
 	}
 
 	@FXML
@@ -293,6 +315,30 @@ public class NewsEditController extends NewsCommonController {
 
 	@FXML
 	public void saveToFile() {
-		write();
+		String fileName = write();
+		
+		if (fileName != null) {
+			JFXDialogLayout layout = new JFXDialogLayout();
+			VBox body = new VBox();
+			Label label = new Label("The article was successfully saved to");
+			JFXTextArea filenameField = new JFXTextArea(fileName);
+			filenameField.setEditable(false);
+			filenameField.setPrefHeight(50);
+			body.getChildren().add(label);
+			body.getChildren().add(filenameField);
+	        layout.setBody(body);
+	        JFXButton okayButton = new JFXButton("OK");
+	        layout.getActions().add(okayButton);
+	        
+	        JFXAlert<Void> alert = new JFXAlert<Void>((Stage) rootPane.getScene().getWindow());
+	        
+	        okayButton.setOnAction((event) -> alert.hide());
+	        
+	        alert.setOverlayClose(true);
+	        alert.setAnimation(JFXAlertAnimation.CENTER_ANIMATION);
+	        alert.setContent(layout);
+	        alert.initModality(Modality.NONE);
+	        alert.showAndWait();
+		}
 	}
 }
