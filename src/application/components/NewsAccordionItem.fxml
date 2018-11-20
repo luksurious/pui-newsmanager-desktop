@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
+<?import com.jfoenix.controls.JFXButton?>
 
 <fx:root maxWidth="730.0" minWidth="730.0" prefHeight="239.0" prefWidth="730.0" type="TitledPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
 	<content>
@@ -20,9 +21,9 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></WebView>
-				<Button fx:id="btnEdit" layoutX="14.0" layoutY="158.0" mnemonicParsing="false" text="Edit" />
-				<Button fx:id="btnDelete" layoutX="60.0" layoutY="158.0" mnemonicParsing="false" text="Delete" />
-				<Button fx:id="btnShow" layoutX="640.0" layoutY="158.0" mnemonicParsing="false" text="Show more" />
+				<JFXButton fx:id="btnEdit" layoutX="14.0" layoutY="158.0" mnemonicParsing="false" text="Edit" styleClass="info" />
+				<JFXButton fx:id="btnDelete" layoutX="60.0" layoutY="158.0" mnemonicParsing="false" text="Delete" styleClass="danger" />
+				<JFXButton fx:id="btnShow" layoutX="640.0" layoutY="158.0" mnemonicParsing="false" text="Show more" styleClass="primary" />
 			</children>
 		</AnchorPane>
 	</content>

@@ -14,6 +14,10 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.web.HTMLEditor?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextArea?>
 
 <BorderPane fx:id="rootPane" prefHeight="600.0"
 	prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1"
@@ -30,20 +34,20 @@
 						<VBox prefHeight="166.0" prefWidth="424.0">
 							<children>
 								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title" />
-								<TextField fx:id="title">
+								<JFXTextField fx:id="title">
 									<VBox.margin>
 										<Insets bottom="10.0" />
 									</VBox.margin>
-								</TextField>
+								</JFXTextField>
 								<Text strokeType="OUTSIDE" strokeWidth="0.0"
 									text="Subtitle" />
-								<TextField fx:id="subtitle">
+								<JFXTextField fx:id="subtitle">
 									<VBox.margin>
 										<Insets bottom="10.0" />
 									</VBox.margin>
-								</TextField>
+								</JFXTextField>
 								<Label text="Category" />
-								<ChoiceBox fx:id="category" prefHeight="27.0"
+								<JFXComboBox fx:id="category" prefHeight="27.0"
 									prefWidth="363.0" />
 							</children>
 							<HBox.margin>
@@ -82,12 +86,12 @@
 				</Label>
 				<HTMLEditor fx:id="editorHtml"
 					minHeight="200.0" prefHeight="200.0" prefWidth="560.0" />
-				<TextArea fx:id="editorText" minHeight="200.0"
+				<JFXTextArea fx:id="editorText" minHeight="200.0"
 					prefHeight="200.0" prefWidth="560.0" />
 				<HBox prefHeight="100.0" prefWidth="200.0">
 					<children>
-						<Button fx:id="switchFormat" mnemonicParsing="false"
-							onAction="#switchMode" style="-fx-background-color: #7a92ff;"
+						<JFXButton fx:id="switchFormat" mnemonicParsing="false"
+							onAction="#switchMode"
 							text="Text / HTML" textFill="WHITE">
 							<HBox.margin>
 								<Insets right="20.0" />
@@ -95,15 +99,14 @@
 							<font>
 								<Font size="14.0" />
 							</font>
-						</Button>
-						<Button fx:id="switchAttribute" mnemonicParsing="false"
-							onAction="#switchAttribute"
-							style="-fx-background-color: #7a92ff;" text="Abstract / Body"
+						</JFXButton>
+						<JFXButton fx:id="switchAttribute" mnemonicParsing="false"
+							onAction="#switchAttribute" text="Abstract / Body"
 							textFill="WHITE">
 							<font>
 								<Font size="14.0" />
 							</font>
-						</Button>
+						</JFXButton>
 					</children>
 					<VBox.margin>
 						<Insets top="10.0" />
@@ -116,21 +119,21 @@
 		</VBox>
 	</center>
 	<bottom>
-		<HBox prefHeight="100.0" prefWidth="200.0"
+		<HBox prefHeight="70.0" prefWidth="200.0"
 			BorderPane.alignment="CENTER">
 			<children>
-				<Button mnemonicParsing="false" onAction="#openMainView"
-					style="-fx-background-color: #7a92ff;" text="&lt; back"
+				<JFXButton mnemonicParsing="false" onAction="#openMainView"
+					text="&lt; back"
 					textFill="WHITE">
 					<font>
 						<Font size="14.0" />
 					</font>
-				</Button>
+				</JFXButton>
 				<HBox alignment="TOP_RIGHT" prefHeight="100.0"
 					prefWidth="200.0" HBox.hgrow="ALWAYS">
 					<children>
-						<Button mnemonicParsing="false"
-							style="-fx-background-color: #7a92ff;" text="Save as file"
+						<JFXButton mnemonicParsing="false"
+							 text="Save as file"  styleClass="info" buttonType="RAISED"
 							onAction="#saveToFile"
 							textFill="WHITE">
 							<HBox.margin>
@@ -139,9 +142,9 @@
 							<font>
 								<Font size="16.0" />
 							</font>
-						</Button>
-						<Button fx:id="sendAndBack" mnemonicParsing="false"
-							style="-fx-background-color: #7a92ff;" text="Save to server"
+						</JFXButton>
+						<JFXButton fx:id="sendAndBack" mnemonicParsing="false"
+							text="Save to server" styleClass="primary" buttonType="RAISED"
 							textFill="WHITE">
 							<HBox.margin>
 								<Insets />
@@ -149,7 +152,7 @@
 							<font>
 								<Font size="16.0" />
 							</font>
-						</Button>
+						</JFXButton>
 					</children>
 				</HBox>
 			</children>

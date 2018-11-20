@@ -103,7 +103,7 @@ public class NewsReaderController extends NewsCommonController {
 	@FXML
 	Accordion newsList;
 	@FXML
-	ListView<Categories> categoryListView;
+	JFXListView<Label> categoryListView;
 	@FXML
 	HBox loadingNotification;
 	@FXML
@@ -129,37 +129,22 @@ public class NewsReaderController extends NewsCommonController {
 	}
 
 	private void initCategoriesList() {
-		categoryListView.setItems(categoryDataList);
-		
-		categoryListView.setCellFactory(param -> new ListCell<Categories>() {
-            private ImageView imageView = new ImageView();
-            
-            @Override
-            public void updateItem(Categories category, boolean empty) {
-                super.updateItem(category, empty);
-                if (category == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                	if (!category.getImagePath().equals("")) {
-                		imageView.setImage(new Image(getClass().getClassLoader().getResource(category.getImagePath()).toString()));
-                        imageView.setFitHeight(40);
-                        imageView.setFitWidth(40);
-                        setGraphic(imageView);
-                	} else {
-                        setGraphic(null);
-                	}
-                	
-                    setText(category.toString());
-                }
-            }
-        });
+		for (Categories category : categoryDataList) {
+			Label categoryLabel = new Label(category.getName());
+			
+			ImageView categoryImage = new ImageView(new Image(getClass().getClassLoader().getResource(category.getImagePath()).toString()));
+			categoryImage.setFitHeight(44);
+			categoryImage.setFitWidth(44);
+			categoryLabel.setGraphic(categoryImage);
+			
+			categoryListView.getItems().add(categoryLabel);
+		}
 		
 		categoryListView.getSelectionModel().selectFirst();
 		
-		categoryListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Categories>() {
+		categoryListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Label>() {
 			@Override
-			public void changed(ObservableValue<? extends Categories> observable, Categories oldValue, Categories newValue) {
+			public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
 				if (newValue != null) {
 					updateNewsContent();
 				} else { // Nothing selected
@@ -225,18 +210,18 @@ public class NewsReaderController extends NewsCommonController {
 	
 	private void updateNewsContent() {
 		newsList.getPanes().clear();
-		Categories category = categoryListView.getSelectionModel().getSelectedItem();
+		Label category = categoryListView.getSelectionModel().getSelectedItem();
 		
 		for (Article article : newsReaderModel.getArticles()) {
-			if (category != null && !category.equals(Categories.ALL)
-				&& !article.getCategory().equals(category.toString())
+			if (category != null && !category.getText().equals(Categories.ALL.toString())
+				&& !article.getCategory().equals(category.getText())
 			) {
 				continue;
 			}
 			
 			NewsAccordionItem item = new NewsAccordionItem(
 				article,
-				() -> openDetailsbyId(article.getIdArticle()),
+				() -> openDetailsbyId(article),
 				() -> openEditorForExistingArticle(article)
 			);
 
@@ -261,13 +246,7 @@ public class NewsReaderController extends NewsCommonController {
 		}
 	}
 	
-	void openDetailsbyId(int id) {
-		Article article = this.newsReaderModel.findArticleById(id);
-		if (article == null) {
-			System.out.println("Unable to find article for id " + id);
-			return;
-		}
-		
+	void openDetailsbyId(Article article) {
 		SceneManager sceneManager = SceneManager.getInstance();
 		
 		try {

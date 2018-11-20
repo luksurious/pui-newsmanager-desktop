@@ -66,7 +66,7 @@ public class NewsEditController extends NewsCommonController {
 	private TextField subtitle;
 
 	@FXML
-	private ChoiceBox<Categories> category;
+	private ComboBox<Categories> category;
 
 	@FXML
 	private ObservableList<Categories> categoriesList;
@@ -113,6 +113,8 @@ public class NewsEditController extends NewsCommonController {
 		editorText.setVisible(false);
 		bodyLabel.setManaged(false);
 		bodyLabel.setVisible(false);
+		
+		newsHead.setCustomTitle("Create a new article");
 	}
 
 	@Override
@@ -144,7 +146,7 @@ public class NewsEditController extends NewsCommonController {
 				Stage stage = new Stage();
 				stage.initOwner(parentStage);
 				stage.setScene(scene);
-				stage.initStyle(StageStyle.UNDECORATED);
+				stage.initStyle(StageStyle.UTILITY);
 				stage.initModality(Modality.WINDOW_MODAL);
 				stage.showAndWait();
 				ImagePickerController controller = loader.<ImagePickerController>getController();
@@ -215,6 +217,7 @@ public class NewsEditController extends NewsCommonController {
 	 * @param article the article to set
 	 */
 	void setArticle(Article article) {
+		newsHead.setCustomTitle("Edit an article");
 		this.editingArticle = (article != null) ? new NewsEditModel(user, article) : new NewsEditModel(user);
 		// TODO update UI
 	}

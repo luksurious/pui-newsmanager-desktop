@@ -1,36 +1,31 @@
 package application.components;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.jfoenix.controls.JFXButton;
+
 import application.NewsCommonController;
-import application.news.Article;
 import application.news.User;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.web.WebView;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
-import javafx.scene.control.TitledPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 
 public class NewsHead extends HBox {
 	@FXML
 	Label headline;
 	@FXML
+	Label headlinePre;
+	@FXML
 	SplitMenuButton btnAdd;
 	@FXML
-	Button btnLogin;
+	JFXButton btnLogin;
 	@FXML
 	ImageView headImage;
 	@FXML
@@ -62,7 +57,7 @@ public class NewsHead extends HBox {
         assertControls();
 		
 		SimpleDateFormat headFormat = new SimpleDateFormat("EEE, dd. MMMMM YYYY");
-		headline.setText("These are the news for today, " + headFormat.format(new Date()));
+		headline.setText(headFormat.format(new Date()));
 		
 		btnUser.setManaged(false);
 	}
@@ -93,6 +88,12 @@ public class NewsHead extends HBox {
 		btnUser.setText("logged out");
 		btnUser.setVisible(false);
 		btnUser.setManaged(false);
+	}
+	
+	public void setCustomTitle(String title) {
+		headline.setText(title);
+		headlinePre.setVisible(false);
+		headlinePre.setManaged(false);
 	}
 
 	@FXML
