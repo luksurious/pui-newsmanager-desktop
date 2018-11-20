@@ -1,29 +1,66 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
-.split-menu-button .label {
-    -fx-background-color: #7a92ff;
+.split-menu-button > .label, .split-menu-button .arrow-button {
+    -fx-background-color: #888888;
 }
-
+.split-menu-button > .label:hover, .split-menu-button .arrow-button:hover {
+	-fx-background-color: #bbbbbb;
+	-fx-cursor: hand;
+}
 .split-menu-button .arrow {
     -fx-background-color: #ffffff;
 }
-
-.split-menu-button .arrow-button {
-    -fx-background-color: #7a92ff;
-}
-
 .split-menu-button {
-	-fx-background-color: #eeeeee;
+    -fx-background-color: #888888;
+}
+.menu-button {
+	-fx-background-color: #888888;
+	-fx-mark-color: #ffffff;
+}
+.menu-button:hover {
+	-fx-background-color: #bbbbbb;
+	-fx-cursor: hand;
 }
 
 .titled-pane > .title {
 	-fx-padding: 0.75em 1em 0.75em 1em;
+    -fx-background-color: #dddddd, #ffffff;
+    -fx-background-insets: 0, 1;
+}
+.titled-pane > .title:hover {
+    -fx-background-color: #dddddd, #dddddd;
 }
 .list-view .list-cell {
 	-fx-padding: 0.75em 1em 0.75em 1em;
 	-fx-font-size: 14px;
 }
 .jfx-button {
-     -fx-background-color: #7a92ff;
+     -fx-background-color: #888888;
      -fx-text-fill: white;
+}
+.jfx-button:hover, .button:hover {
+	-fx-background-color: #bbbbbb;
+	-fx-cursor: hand;
+}
+
+.jfx-button.primary {
+	-fx-background-color: #7a92ff;
+}
+.jfx-button.primary:hover {
+	-fx-background-color: #87BCFF;
+	-fx-cursor: hand;
+}
+.jfx-button.info {
+	-fx-background-color: #44c460;
+}
+.jfx-button.info:hover {
+	-fx-background-color: #57DB98;
+	-fx-cursor: hand;
+}
+.jfx-button.danger {
+	-fx-background-color: #ed4747;
+}
+.jfx-button.danger:hover {
+	-fx-background-color: #FF7159;
+	-fx-cursor: hand;
 }

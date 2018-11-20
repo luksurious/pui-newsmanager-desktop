@@ -91,7 +91,7 @@
 				<HBox prefHeight="100.0" prefWidth="200.0">
 					<children>
 						<JFXButton fx:id="switchFormat" mnemonicParsing="false"
-							onAction="#switchMode" style="-fx-background-color: #7a92ff;"
+							onAction="#switchMode"
 							text="Text / HTML" textFill="WHITE">
 							<HBox.margin>
 								<Insets right="20.0" />
@@ -101,8 +101,7 @@
 							</font>
 						</JFXButton>
 						<JFXButton fx:id="switchAttribute" mnemonicParsing="false"
-							onAction="#switchAttribute"
-							style="-fx-background-color: #7a92ff;" text="Abstract / Body"
+							onAction="#switchAttribute" text="Abstract / Body"
 							textFill="WHITE">
 							<font>
 								<Font size="14.0" />
@@ -124,7 +123,7 @@
 			BorderPane.alignment="CENTER">
 			<children>
 				<JFXButton mnemonicParsing="false" onAction="#openMainView"
-					style="-fx-background-color: #7a92ff;" text="&lt; back"
+					text="&lt; back"
 					textFill="WHITE">
 					<font>
 						<Font size="14.0" />
@@ -134,7 +133,7 @@
 					prefWidth="200.0" HBox.hgrow="ALWAYS">
 					<children>
 						<JFXButton mnemonicParsing="false"
-							style="-fx-background-color: #7a92ff;" text="Save as file"
+							 text="Save as file"  styleClass="info" buttonType="RAISED"
 							onAction="#saveToFile"
 							textFill="WHITE">
 							<HBox.margin>
@@ -145,7 +144,7 @@
 							</font>
 						</JFXButton>
 						<JFXButton fx:id="sendAndBack" mnemonicParsing="false"
-							style="-fx-background-color: #7a92ff;" text="Save to server"
+							text="Save to server" styleClass="primary" buttonType="RAISED"
 							textFill="WHITE">
 							<HBox.margin>
 								<Insets />

@@ -21,9 +21,9 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></WebView>
-				<JFXButton fx:id="btnEdit" style="-fx-background-color: #44c460;" layoutX="14.0" layoutY="158.0" mnemonicParsing="false" text="Edit" />
-				<JFXButton fx:id="btnDelete" style="-fx-background-color: #ed4747;" layoutX="60.0" layoutY="158.0" mnemonicParsing="false" text="Delete" />
-				<JFXButton fx:id="btnShow" layoutX="640.0" layoutY="158.0" mnemonicParsing="false" text="Show more" />
+				<JFXButton fx:id="btnEdit" layoutX="14.0" layoutY="158.0" mnemonicParsing="false" text="Edit" styleClass="info" />
+				<JFXButton fx:id="btnDelete" layoutX="60.0" layoutY="158.0" mnemonicParsing="false" text="Delete" styleClass="danger" />
+				<JFXButton fx:id="btnShow" layoutX="640.0" layoutY="158.0" mnemonicParsing="false" text="Show more" styleClass="primary" />
 			</children>
 		</AnchorPane>
 	</content>

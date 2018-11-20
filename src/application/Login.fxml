@@ -25,12 +25,12 @@
       <JFXPasswordField fx:id="passwordField" layoutX="67.0" layoutY="155.0" onAction="#submitIfEnter" prefHeight="38.0" prefWidth="222.0" />
       <Label fx:id="formErrorNote" layoutX="67.0" layoutY="201.0" text="Please fill in all fields!" textFill="#dd1515" visible="false" />
       <Label fx:id="loginErrorNote" layoutX="67.0" layoutY="201.0" text="The login failed! Please check your credentials." textFill="#dd1515" visible="false" />
-      <JFXButton buttonType="RAISED" layoutX="202.0" layoutY="236.0" mnemonicParsing="false" onAction="#submitLogin" prefHeight="38.0" prefWidth="87.0" style="-fx-background-color: #7a92ff;" text="Login" textFill="WHITE">
+      <JFXButton buttonType="RAISED" layoutX="202.0" layoutY="236.0" mnemonicParsing="false" onAction="#submitLogin" prefHeight="38.0" prefWidth="87.0" text="Login" textFill="WHITE" styleClass="primary">
          <font>
             <Font size="16.0" />
          </font>
       </JFXButton>
-      <JFXButton layoutX="67.0" layoutY="236.0" mnemonicParsing="false" onAction="#closeModal" prefHeight="38.0" prefWidth="87.0" style="-fx-background-color: #888;" text="Cancel" textFill="WHITE">
+      <JFXButton layoutX="67.0" layoutY="236.0" mnemonicParsing="false" onAction="#closeModal" prefHeight="38.0" prefWidth="87.0" styleClass="secondary" text="Cancel" textFill="WHITE">
          <font>
             <Font size="16.0" />
          </font>

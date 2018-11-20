@@ -87,7 +87,6 @@
 					<children>
 						<JFXButton fx:id="btnBack" mnemonicParsing="false"
 							onAction="#openMainView" prefHeight="29.0" prefWidth="66.0"
-							style="-fx-background-color: #7a92ff#7a92ff #7a92ff#7a92ff;"
 							text="&lt; back" textFill="WHITE">
 							<font>
 								<Font size="14.0" />
@@ -122,7 +121,6 @@
 									contentDisplay="CENTER" mnemonicParsing="false"
 									onAction="#changeAbstractBody" prefHeight="29.0"
 									prefWidth="120.0"
-									style="-fx-background-color: #7a92ff#7a92ff #7a92ff#7a92ff;"
 									text="Show Abstract" textFill="WHITE">
 									<font>
 										<Font size="14.0" />

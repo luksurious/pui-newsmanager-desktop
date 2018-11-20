@@ -15,8 +15,9 @@ public enum AppScenes {
 	NEWS_DETAILS("NewsDetails.fxml"),
 	EDITOR("NewsEdit.fxml"),
 	ADMIN("AdminNews.fxml"),
-	IMAGE_PICKER("ImagePicker.fxml")
-	/* ,IMAGE_PICKER("ImagePickerMaterailDesign.fxml") */;
+	/*IMAGE_PICKER("ImagePicker.fxml")*/
+	IMAGE_PICKER("ImagePickerMaterailDesign.fxml");
+	
 	private String fxmlFile;
 
 	private AppScenes(String file) {
