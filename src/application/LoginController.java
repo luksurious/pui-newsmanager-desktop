@@ -1,40 +1,42 @@
 package application;
 
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
+
 import application.news.User;
 import application.services.SceneManager;
 import application.services.ServiceRegistry;
 import application.services.ServiceRegistryAware;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import serverConection.ConnectionManager;
 
-public class LoginController implements ServiceRegistryAware, ControllerEvents {
+public class LoginController implements ServiceRegistryAware, ControllerEvents, NewsController {
 	private LoginModel loginModel = new LoginModel();
 
-	private User loggedUsr = null;
-
-	@FXML PasswordField passwordField;
-
-	@FXML TextField usernameField;
-
-	@FXML Label formErrorNote;
+	private ServiceRegistry serviceRegistry;
 
 	private boolean usernameTouched = false;
 	private boolean passwordTouched = false;
 
-	@FXML Label loginErrorNote;
+	@FXML
+	private JFXPasswordField passwordField;
 
-	private ServiceRegistry serviceRegistry;
+	@FXML
+	private JFXTextField usernameField;
 
-	public LoginController() {}
+	@FXML
+	private Label formErrorNote;
 
-    @FXML
-    void initialize() {
-        assert passwordField != null : "fx:id=\"passwordField\" was not injected: check your FXML file 'Login.fxml'.";
+	@FXML
+	private Label loginErrorNote;
+
+	@FXML
+	void initialize() {
         assert usernameField != null : "fx:id=\"usernameField\" was not injected: check your FXML file 'Login.fxml'.";
+        assert passwordField != null : "fx:id=\"passwordField\" was not injected: check your FXML file 'Login.fxml'.";
         assert formErrorNote != null : "fx:id=\"formErrorNote\" was not injected: check your FXML file 'Login.fxml'.";
+        assert loginErrorNote != null : "fx:id=\"loginErrorNote\" was not injected: check your FXML file 'Login.fxml'.";
 
 		this.usernameField.textProperty().addListener((observable, oldValue, newValue) -> {
 			usernameTouched = true;
@@ -44,36 +46,28 @@ public class LoginController implements ServiceRegistryAware, ControllerEvents {
 			passwordTouched = true;
 			validateForm();
 		});
-    }
+	}
 
 	@Override
-	public void onShow() {
-		loginModel.setConnectionManager((ConnectionManager) serviceRegistry.get("connection"));
-	}
-
-	User getLoggedUsr() {
-		return loggedUsr;
-	}
-
-	void setConnectionManager(ConnectionManager connection) {
-		this.loginModel.setConnectionManager(connection);
+	public void onBeforeShow() {
+		loginModel.setConnectionManager(serviceRegistry.get(ConnectionManager.class));
 	}
 
 	@FXML
 	public void submitLogin() {
 		loginErrorNote.setVisible(false);
-		
+
 		String username = usernameField.getText();
 		String password = passwordField.getText();
 		if (username.equals("") || password.equals("")) {
 			formErrorNote.setVisible(true);
 			return;
 		}
-		
-		loggedUsr = this.loginModel.login(username, password);
-		if (loggedUsr != null) {
-			serviceRegistry.set("user", loggedUsr);
-			
+
+		User loggedInUser = this.loginModel.login(username, password);
+		if (loggedInUser != null) {
+			serviceRegistry.set(User.class, loggedInUser);
+
 			closeModal();
 		} else {
 			loginErrorNote.setVisible(true);
@@ -87,20 +81,15 @@ public class LoginController implements ServiceRegistryAware, ControllerEvents {
 
 	private void validateForm() {
 		loginErrorNote.setVisible(false);
-		
+
 		String username = usernameField.getText();
 		String password = passwordField.getText();
 		if ((username.equals("") && usernameTouched) || (password.equals("") && passwordTouched)) {
 			formErrorNote.setVisible(true);
 			return;
 		}
-		
-		formErrorNote.setVisible(false);
-	}
 
-	@FXML
-	public void submitIfEnter() {
-		submitLogin();
+		formErrorNote.setVisible(false);
 	}
 
 	@Override

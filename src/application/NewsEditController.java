@@ -1,6 +1,3 @@
-/**
- * 
- */
 package application;
 
 import java.io.File;
@@ -9,11 +6,10 @@ import java.io.IOException;
 
 import javax.json.JsonObject;
 
-import com.jfoenix.animation.alert.JFXAlertAnimation;
-import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXTextField;
 
 import application.news.Article;
 import application.news.Categories;
@@ -22,72 +18,48 @@ import application.utils.JsonArticle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.HTMLEditor;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import serverConection.ConnectionManager;
 import serverConection.exceptions.ServerCommunicationError;
 
-/**
- * @author AngelLucas
- *
- */
 public class NewsEditController extends NewsCommonController {
 	private NewsEditModel editingArticle;
-	private boolean htmlMode;
-	private boolean bodyMode;
+	private boolean htmlMode = true;
+	private boolean bodyMode = false;
+
+	private ObservableList<Categories> categoriesList;
 
 	@FXML
 	private ImageView imgPreview;
 
 	@FXML
-	private TextField title;
+	private JFXTextField title;
 
 	@FXML
-	private TextField subtitle;
+	private JFXTextField subtitle;
 
 	@FXML
-	private ComboBox<Categories> category;
+	private JFXComboBox<Categories> category;
 
 	@FXML
-	private ObservableList<Categories> categoriesList;
+	private JFXButton sendAndBack;
 
 	@FXML
-	Button btnHome;
+	private HTMLEditor editorHtml;
 
 	@FXML
-	Button sendAndBack;
+	private JFXTextArea editorText;
 
 	@FXML
-	Button switchAttribute;
+	private Label abstractLabel;
 
 	@FXML
-	Button switchFormat;
-
-	@FXML
-	HTMLEditor editorHtml;
-
-	@FXML
-	TextArea editorText;
-
-	@FXML
-	Label abstractLabel;
-
-	@FXML
-	Label bodyLabel;
+	private Label bodyLabel;
 
 	public NewsEditController() {
 		this.categoriesList = FXCollections.observableArrayList();
@@ -96,13 +68,21 @@ public class NewsEditController extends NewsCommonController {
 		this.categoriesList.remove(0);
 
 		this.editingArticle = new NewsEditModel(null);
-		this.htmlMode = true;
-		this.bodyMode = false;
 	}
 
-	@FXML
-	void initialize() {
+	@FXML @Override
+	public void initialize() {
 		super.initialize();
+		
+        assert title != null : "fx:id=\"title\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+        assert subtitle != null : "fx:id=\"subtitle\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+        assert category != null : "fx:id=\"category\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+        assert imgPreview != null : "fx:id=\"imgPreview\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+        assert abstractLabel != null : "fx:id=\"abstractLabel\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+        assert bodyLabel != null : "fx:id=\"bodyLabel\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+        assert editorHtml != null : "fx:id=\"editorHtml\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+        assert editorText != null : "fx:id=\"editorText\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+        assert sendAndBack != null : "fx:id=\"sendAndBack\" was not injected: check your FXML file 'NewsEdit.fxml'.";
 
 		this.category.setItems(this.categoriesList);
 		editorText.setManaged(false);
@@ -125,7 +105,7 @@ public class NewsEditController extends NewsCommonController {
 	protected void updateUiAfterLogin() {
 		super.updateUiAfterLogin();
 
-		editingArticle.setUser(getUser());
+		editingArticle.setUser(user);
 		sendAndBack.setDisable(false);
 	}
 
@@ -133,13 +113,13 @@ public class NewsEditController extends NewsCommonController {
 	protected void updateUiAfterLogout() {
 		super.updateUiAfterLogout();
 		
-		editingArticle.setUser(getUser());
+		editingArticle.setUser(user);
 		sendAndBack.setDisable(true);
 	}
 	
 
 	@FXML
-	void onImageClicked(MouseEvent event) {
+	public void onImageClicked(MouseEvent event) {
 		if (event.getClickCount() >= 2) {
 			try {
 				SceneManager.getInstance().showSceneInModal(AppScenes.IMAGE_PICKER);
@@ -161,18 +141,12 @@ public class NewsEditController extends NewsCommonController {
 	 * @return true if the article has been saved
 	 */
 	private boolean send() {
-		String titleText = this.getArticle().getTitle();
-		String category = this.getArticle().getCategory();
-
-		if (titleText == null || category == null || titleText.equals("")) {
-			Alert alert = new Alert(AlertType.ERROR, "Imposible send the article!! Title and category are mandatory!",
-					ButtonType.OK);
-			alert.showAndWait();
+		if (!validateArticle()) {
 			return false;
 		}
-		//this command will send the article to the server
-		ConnectionManager connectionManager = (ConnectionManager) serviceRegistry.get("connection");
+		ConnectionManager connectionManager = serviceRegistry.get(ConnectionManager.class);
 		try {
+			// this command will send the article to the server
 			connectionManager.saveArticle(this.getArticle());
 		} catch (ServerCommunicationError e) {
 			// TODO Auto-generated catch block
@@ -183,7 +157,25 @@ public class NewsEditController extends NewsCommonController {
 		return true;
 	}
 
-	Article getArticle() {
+	private boolean validateArticle() {
+		Article article = getArticle();
+		if (article == null) {
+			showErrorDialog("You cannot save an empty article.");
+			return false;
+		}
+		
+		String titleText = article.getTitle();
+		String category = article.getCategory();
+
+		if (titleText == null || category == null || titleText.equals("") || category.equals("")) {
+			showErrorDialog("Imposible to save the article! Title and category are mandatory!");
+			return false;
+		}
+		
+		return true;
+	}
+
+	private Article getArticle() {
 		Article result = null;
 		if (this.editingArticle != null) {
 			result = this.editingArticle.getArticleOriginal();
@@ -196,11 +188,11 @@ public class NewsEditController extends NewsCommonController {
 	 * 
 	 * @param article the article to set
 	 */
-	void setArticle(Article article) {
+	public void setArticle(Article article) {
 		newsHead.setCustomTitle("Edit an article");
 		this.editingArticle = (article != null) ? new NewsEditModel(user, article) : new NewsEditModel(user);
 		// call onShow to handle model injections
-		onShow();
+		onBeforeShow();
 
 		setupFieldBindings();
 		
@@ -216,7 +208,6 @@ public class NewsEditController extends NewsCommonController {
 		title.textProperty().bindBidirectional(editingArticle.titleProperty());
 		subtitle.textProperty().bindBidirectional(editingArticle.subtitleProperty());
 		category.getSelectionModel().selectedItemProperty().addListener((observer, oldValue, newValue) -> {
-			System.out.println(newValue);
 			editingArticle.setCategory(newValue);
 		});
 		imgPreview.imageProperty().addListener((observer, oldValue, newValue) -> {
@@ -229,8 +220,6 @@ public class NewsEditController extends NewsCommonController {
 	 * Save an article to a file in a json format Article must have a title
 	 */
 	private String write() {
-		// TODO Consolidate all changes
-		this.editingArticle.commit();
 		// Removes special characters not allowed for filenames
 		String name = this.getArticle().getTitle().replaceAll("\\||/|\\\\|:|\\?", "");
 		String fileName = "saveNews//" + name + ".news";
@@ -304,13 +293,18 @@ public class NewsEditController extends NewsCommonController {
 	}
 
 	@FXML
-	void backAndDiscard() {
+	public void backAndDiscard() throws IOException {
 		editingArticle.discardChanges();
 		openMainView();
 	}
 	
 	@FXML
 	public void saveToFile() {
+		this.editingArticle.commit();
+		if (!validateArticle()) {
+			return;
+		}
+		
 		String fileName = write();
 		
 		if (fileName != null) {
@@ -326,7 +320,7 @@ public class NewsEditController extends NewsCommonController {
 	}
 	
 	@FXML
-	public void saveToServer() throws ServerCommunicationError, IOException {
+	public void saveToServer() throws IOException {
 
 		editingArticle.commit();
 		
@@ -335,30 +329,7 @@ public class NewsEditController extends NewsCommonController {
 	        
 			SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, true);
 		} else {
-			showDialog("There was an error saving the article");
+			showErrorDialog("There was an error saving the article");
 		}
 	}
-
-	private void showDialog(String text) {
-		showDialog(new Label(text));
-	}
-	
-	private void showDialog(Node body) {
-		JFXDialogLayout layout = new JFXDialogLayout();
-		layout.setBody(body);
-		JFXButton okayButton = new JFXButton("OK");
-		layout.getActions().add(okayButton);
-		
-		JFXAlert<Void> alert = new JFXAlert<Void>((Stage) rootPane.getScene().getWindow());
-		
-		okayButton.setOnAction((event) -> alert.hide());
-		
-		alert.setOverlayClose(true);
-		alert.setAnimation(JFXAlertAnimation.CENTER_ANIMATION);
-		alert.setContent(layout);
-		alert.initModality(Modality.NONE);
-		alert.showAndWait();
-	}
-	
-	
 }

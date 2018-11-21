@@ -3,15 +3,12 @@ package application;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import application.services.SceneManager;
 import application.services.ServiceRegistry;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import serverConection.ConnectionManager;
-import serverConection.exceptions.AuthenticationError;
 
 public class Main extends Application {
 	@Override
@@ -26,27 +23,24 @@ public class Main extends Application {
 			 */
 			// Code for reader main window
 			ServiceRegistry services = new ServiceRegistry();
-			services.set("connection", createConnectionManager());
-			
+			services.set(ConnectionManager.class, createConnectionManager());
+
 			SceneManager sceneManager = SceneManager.getInstance();
 			sceneManager.setPrimaryStage(primaryStage);
 			sceneManager.setMainStylessheet("application.css");
 			sceneManager.setServiceRegistry(services);
-			
-		    primaryStage.setResizable(false);
-			
+
+			primaryStage.setResizable(false);
+
 			sceneManager.showSceneInPrimaryStage(AppScenes.READER, false);
 			// end code for main window reader
-		} catch (AuthenticationError e) {
-			Logger.getGlobal().log(Level.SEVERE, "Error in login process");
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	private ConnectionManager createConnectionManager() throws AuthenticationError, IOException {
+	private ConnectionManager createConnectionManager() throws IOException {
 		// Create properties for server connection
 		Properties prop = buildServerProperties();
 		ConnectionManager connection = new ConnectionManager(prop);

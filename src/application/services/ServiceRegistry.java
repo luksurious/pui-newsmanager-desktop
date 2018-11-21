@@ -3,17 +3,22 @@ package application.services;
 import java.util.HashMap;
 
 public class ServiceRegistry {
-	HashMap<String, Object> services = new HashMap<String, Object>();
+	HashMap<Class<?>, Object> services = new HashMap<Class<?>, Object>();
 	
-	public boolean has(String key) {
+	public boolean has(Class<?> key) {
 		return services.containsKey(key);
 	}
 	
-	public Object get(String key) {
-		return services.get(key);
+	@SuppressWarnings("unchecked")
+	public <T> T get(Class<T> key) {
+		Object service = services.get(key);
+		if (key.isInstance(service)) {
+			return (T) service;
+		}
+		return null;
 	}
 	
-	public void set(String key, Object value) {
+	public <T> void set(Class<T> key, T value) {
 		services.put(key, value);
 	}
 }

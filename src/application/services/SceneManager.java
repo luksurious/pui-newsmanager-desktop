@@ -8,6 +8,7 @@ import com.jfoenix.controls.JFXAlert;
 
 import application.AppScenes;
 import application.ControllerEvents;
+import application.NewsController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -15,6 +16,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * The SceneManager class takes care of showing scenes. It is an abstraction so that the controllers
+ * don't need to worry about loading FXML or remembering the state of a scene.
+ * 
+ * It is implemented as a statically available singleton for ease of use.
+ */
 public class SceneManager {
 	private static SceneManager single_instance = null;
 
@@ -23,7 +30,7 @@ public class SceneManager {
 	private Stage primaryStage;
 	private Stage currentStage;
 	private HashMap<AppScenes, Scene> loadedScenes = new HashMap<AppScenes, Scene>();
-	private HashMap<AppScenes, Object> sceneControllers = new HashMap<AppScenes, Object>();
+	private HashMap<AppScenes, NewsController> sceneControllers = new HashMap<>();
 	
 	private String mainStylessheet = "";
 
@@ -81,7 +88,7 @@ public class SceneManager {
 	public void showSceneInModal(AppScenes sceneConfig, StageStyle style, boolean blocking) throws IOException {
 		Scene scene = loadScene(sceneConfig, true);
 
-        JFXAlert<Void> alert = new JFXAlert<Void>(currentStage);
+        JFXAlert<Void> alert = new JFXAlert<>(currentStage);
         scene.setUserData(alert);
                 
         alert.setOverlayClose(true);
@@ -111,7 +118,7 @@ public class SceneManager {
 	private void fireOnShowEvent(AppScenes sceneConfig) {
 		Object controller = getController(sceneConfig);
 		if (controller instanceof ControllerEvents) {
-			((ControllerEvents) controller).onShow();
+			((ControllerEvents) controller).onBeforeShow();
 		}
 	}
 	
@@ -128,7 +135,7 @@ public class SceneManager {
 				scene.getStylesheets().add(getClass().getResource("../" + mainStylessheet).toExternalForm());
 			}
 			
-			Object controller = loader.getController();
+			NewsController controller = loader.getController();
 			if (controller instanceof ServiceRegistryAware) {
 				((ServiceRegistryAware) controller).setServiceRegistry(serviceRegistry);
 			}
@@ -139,7 +146,7 @@ public class SceneManager {
 		return scene;
 	}
 
-	public Object getController(AppScenes sceneConfig) throws RuntimeException {
+	public NewsController getController(AppScenes sceneConfig) throws RuntimeException {
 		if (sceneControllers.containsKey(sceneConfig)) {
 			return sceneControllers.get(sceneConfig);
 		}

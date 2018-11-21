@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-public class ImagePickerController {
+public class ImagePickerController implements NewsController {
 
 	@FXML // fx:id="idImageURL"
 	private TextField idImageURL; // Value injected by FXMLLoader
@@ -54,20 +54,17 @@ public class ImagePickerController {
 		if (selectedFile != null) {
 			Path path = FileSystems.getDefault().getPath(selectedFile.getAbsolutePath());
 			idImageURL.setText(path.toUri().toString());
-		}
-	}
 
-	@FXML
-	void onImagePreview(ActionEvent event) {
-		image = new Image(idImageURL.getText(), false);
-		imgPreview.setImage(image);
+			image = new Image(idImageURL.getText(), false);
+			imgPreview.setImage(image);
+		}
 	}
 
 	@FXML // This method is called by the FXMLLoader when initialization is complete
 	void initialize() {
 		assert idImageURL != null : "fx:id=\"idImageURL\" was not injected: check your FXML file 'ImagePicker.fxml'.";
 		assert imgPreview != null : "fx:id=\"imgPreview\" was not injected: check your FXML file 'ImagePicker.fxml'.";
-		Image image = new Image("images/noImage.jpg", true);
+		Image image = new Image(getClass().getResourceAsStream("/noImage.jpg"));
 		imgPreview.setImage(image);
 
 	}

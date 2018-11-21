@@ -2,45 +2,55 @@ package application;
 
 import java.io.IOException;
 
+import com.jfoenix.controls.JFXButton;
+
 import application.news.Article;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
-/**
- * @author AngelLucas
- *
- */
 public class NewsDetailsController extends NewsCommonController {
 	private NewsCommonModel newsDetailsModel = new NewsCommonModel();
 
 	private Article article;
 
 	@FXML
-	Button btnBack;
+	private JFXButton btnEdit;
 	@FXML
-	Button btnEdit;
+	private JFXButton btnDelete;
 	@FXML
-	Button btnDelete;
+	private JFXButton btnAbstract;
 	@FXML
-	Button btnAbstract;
+	private ImageView newsImage;
 	@FXML
-	ImageView newsImage_id;
+	private Text title;
 	@FXML
-	Text title_id;
+	private Text category;
 	@FXML
-	Text category_id;
+	private Text subtitle;
 	@FXML
-	Text subtitle_id;
+	private Text updated;
 	@FXML
-	Text updated_id;
-	@FXML
-	WebView body_id;
-
+	private WebView body;
+	
+	@FXML @Override
+	public void initialize() {
+		super.initialize();
+		
+        assert newsImage != null : "fx:id=\"newsImage_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+        assert title != null : "fx:id=\"title_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+        assert category != null : "fx:id=\"category_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+        assert subtitle != null : "fx:id=\"subtitle_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+        assert body != null : "fx:id=\"body_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+        assert updated != null : "fx:id=\"updated_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+        assert btnEdit != null : "fx:id=\"btnEdit\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+        assert btnDelete != null : "fx:id=\"btnDelete\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+        assert btnAbstract != null : "fx:id=\"btnAbstract\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+    }
+	
 	@Override
 	protected void updateUiAfterLogin() {
 		super.updateUiAfterLogin();
@@ -65,20 +75,20 @@ public class NewsDetailsController extends NewsCommonController {
 	/**
 	 * @param article the article to set
 	 */
-	void setArticle(Article article) {
+	public void setArticle(Article article) {
 		this.article = article;
 
-		this.title_id.setText(article.getTitle());
-		this.subtitle_id.setText(article.getSubtitle());
-		this.category_id.setText(article.getCategory());
-		this.newsImage_id.setImage(article.getImageData());
-		WebEngine webEngine = this.body_id.getEngine();
+		this.title.setText(article.getTitle());
+		this.subtitle.setText(article.getSubtitle());
+		this.category.setText(article.getCategory());
+		this.newsImage.setImage(article.getImageData());
+		WebEngine webEngine = this.body.getEngine();
 		webEngine.loadContent(article.getBodyText());
 		
 		if (article.getPublicationDate() != null) {
-			this.updated_id.setText("Updated by user " + article.getIdUser() + " on " + article.getPublicationDate());
+			this.updated.setText("Updated by user " + article.getIdUser() + " on " + article.getPublicationDate());
 		} else {
-			this.updated_id.setText("Updated by user " + article.getIdUser());
+			this.updated.setText("Updated by user " + article.getIdUser());
 		}
 
 		if (user != null && user.getIdUser() != article.getIdUser()) {
@@ -89,7 +99,7 @@ public class NewsDetailsController extends NewsCommonController {
 
 	@FXML
 	public void changeAbstractBody(ActionEvent event) throws IOException {
-		WebEngine webEngine = this.body_id.getEngine();
+		WebEngine webEngine = this.body.getEngine();
 		if (btnAbstract.getText().equals("Show Abstract")) {
 			webEngine.loadContent(article.getAbstractText());
 			btnAbstract.setText("Show Body");

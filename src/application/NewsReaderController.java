@@ -1,9 +1,7 @@
-/**
- * 
- */
 package application;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 
 import com.jfoenix.controls.JFXListView;
@@ -14,8 +12,6 @@ import application.news.Categories;
 import application.news.User;
 import application.services.SceneManager;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
@@ -26,9 +22,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.ScrollPane;
 
-/**
- * @author AngelLucas
- */
 public class NewsReaderController extends NewsCommonController {
 
 	private NewsReaderModel newsReaderModel = new NewsReaderModel();
@@ -38,25 +31,29 @@ public class NewsReaderController extends NewsCommonController {
 	private boolean loaded = false;
 
 	@FXML
-	Accordion newsList;
+	private Accordion newsList;
 	@FXML
-	JFXListView<Label> categoryListView;
+	private JFXListView<Label> categoryListView;
 	@FXML
-	HBox loadingNotification;
+	private HBox loadingNotification;
 	@FXML
-	HBox noItemsNote;
-
-	@FXML ScrollPane newsScrollPane;
+	private HBox noItemsNote;
+	@FXML
+	private ScrollPane newsScrollPane;
 
 	public NewsReaderController() {
 		this.categoryDataList = this.newsReaderModel.getCategories();
 	}
 
-	@FXML
-	void initialize() {
+	@FXML @Override
+	public void initialize() {
 		super.initialize();
 		
-		assert categoryListView != null : "fx:id=\"categoriesList\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert categoryListView != null : "fx:id=\"categoryListView\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert newsScrollPane != null : "fx:id=\"newsScrollPane\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert newsList != null : "fx:id=\"newsList\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert loadingNotification != null : "fx:id=\"loadingNotification\" was not injected: check your FXML file 'NewsReader.fxml'.";
+        assert noItemsNote != null : "fx:id=\"noItemsNote\" was not injected: check your FXML file 'NewsReader.fxml'.";
 
 		initCategoriesList();
 		
@@ -69,35 +66,9 @@ public class NewsReaderController extends NewsCommonController {
 		categoryListView.setDisable(true);
 	}
 
-	private void initCategoriesList() {
-		for (Categories category : categoryDataList) {
-			Label categoryLabel = new Label(category.getName());
-			
-			ImageView categoryImage = new ImageView(new Image(getClass().getClassLoader().getResource(category.getImagePath()).toString()));
-			categoryImage.setFitHeight(44);
-			categoryImage.setFitWidth(44);
-			categoryLabel.setGraphic(categoryImage);
-			
-			categoryListView.getItems().add(categoryLabel);
-		}
-		
-		categoryListView.getSelectionModel().selectFirst();
-		
-		categoryListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Label>() {
-			@Override
-			public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
-				if (newValue != null) {
-					updateNewsContent();
-				} else { // Nothing selected
-					categoryListView.getSelectionModel().selectFirst();
-				}
-			}
-		});
-	}
-
 	@Override
-	public void onShow() {
-		super.onShow();
+	public void onBeforeShow() {
+		super.onBeforeShow();
 		
 		if (!loaded) {
 			getData();
@@ -122,7 +93,31 @@ public class NewsReaderController extends NewsCommonController {
 		});
 	}
 
-	void getData() {
+	private void initCategoriesList() {
+		for (Categories category : categoryDataList) {
+			Label categoryLabel = new Label(category.getName());
+			
+			InputStream imageResource = getClass().getClassLoader().getResourceAsStream(category.getImagePath());
+			ImageView categoryImage = new ImageView(new Image(imageResource));
+			categoryImage.setFitHeight(44);
+			categoryImage.setFitWidth(44);
+			categoryLabel.setGraphic(categoryImage);
+			
+			categoryListView.getItems().add(categoryLabel);
+		}
+		
+		categoryListView.getSelectionModel().selectFirst();
+		
+		categoryListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				updateNewsContent();
+			} else { // Nothing selected
+				categoryListView.getSelectionModel().selectFirst();
+			}
+		});
+	}
+
+	private void getData() {
 		noItemsNote.setManaged(false);
 		noItemsNote.setVisible(false);
 		newsScrollPane.setVisible(false);
@@ -130,9 +125,11 @@ public class NewsReaderController extends NewsCommonController {
 		loadingNotification.setVisible(true);
 		loadingNotification.setManaged(true);
 		
+		// load data in a separate thread so that the main UI is not blocked and is shown directly
 		CompletableFuture.runAsync(() -> {
 			newsReaderModel.retrieveData();
 
+			// run code inside the JavaFX thread to update the UI
 			Platform.runLater(() -> {
 				updateNewsContent();
 				categoryListView.setDisable(false);
@@ -180,7 +177,7 @@ public class NewsReaderController extends NewsCommonController {
 		}
 	}
 	
-	void openDetailsbyId(Article article) {
+	private void openDetailsbyId(Article article) {
 		SceneManager sceneManager = SceneManager.getInstance();
 		
 		try {

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
-<?import com.jfoenix.controls.JFXButton?>
 
 <fx:root maxWidth="710.0" minWidth="710.0" prefHeight="239.0"
 	prefWidth="710.0" type="TitledPane"
@@ -15,28 +16,33 @@
 	xmlns:fx="http://javafx.com/fxml/1">
 	<content>
 		<AnchorPane maxWidth="710.0" minWidth="710.0"
-			prefWidth="710.0" style="-fx-background-color: #fff;">
+			prefHeight="200.0" prefWidth="710.0"
+			style="-fx-background-color: #fff;">
 			<children>
-				<ImageView fx:id="thumbnailImage" fitHeight="130.0"
-					fitWidth="200.0" layoutX="15.0" layoutY="14.0" pickOnBounds="true"
-					preserveRatio="true">
+				<HBox layoutX="15.0" layoutY="15.0" HBox.hgrow="ALWAYS" fx:id="articlePreviewContainer">
+					<children>
+						<ImageView fx:id="thumbnailImage" fitHeight="130.0"
+							fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+							<HBox.margin>
+								<Insets right="20.0" />
+							</HBox.margin>
+						</ImageView>
+						<WebView fx:id="abstractHtml" maxHeight="130.0"
+							maxWidth="457.0" minHeight="130.0" minWidth="457.0"
+							prefHeight="130.0" prefWidth="457.0">
+						</WebView>
+					</children>
 					<cursor>
 						<Cursor fx:constant="HAND" />
 					</cursor>
-				</ImageView>
-				<WebView fx:id="abstractHtml" layoutX="226.0" layoutY="14.0"
-					maxHeight="130.0" minHeight="130.0" minWidth="492.0">
-					<cursor>
-						<Cursor fx:constant="HAND" />
-					</cursor>
-				</WebView>
+				</HBox>
 				<JFXButton fx:id="btnEdit" layoutX="14.0" layoutY="158.0"
-					mnemonicParsing="false" text="Edit" styleClass="info" />
+					mnemonicParsing="false" styleClass="info" text="Edit" />
 				<JFXButton fx:id="btnDelete" layoutX="60.0"
-					layoutY="158.0" mnemonicParsing="false" text="Delete"
-					styleClass="danger" />
+					layoutY="158.0" mnemonicParsing="false" styleClass="danger"
+					text="Delete" />
 				<JFXButton fx:id="btnShow" layoutX="620.0" layoutY="158.0"
-					mnemonicParsing="false" text="Show more" styleClass="primary" />
+					mnemonicParsing="false" styleClass="primary" text="Show more" />
 			</children>
 		</AnchorPane>
 	</content>

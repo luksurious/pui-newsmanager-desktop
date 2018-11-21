@@ -61,9 +61,8 @@ public class ConnectionManager {
 	/**
 	 * 
 	 * @param ini Initializes entity manager urls and users
-	 * @throws AuthenticationError
 	 */
-	public ConnectionManager(Properties ini) throws AuthenticationError {
+	public ConnectionManager(Properties ini) {
 		if (!ini.containsKey(ATTR_SERVICE_URL)) {
 			throw new IllegalArgumentException("Required attribute '" + ATTR_SERVICE_URL + "' not found!");
 		}

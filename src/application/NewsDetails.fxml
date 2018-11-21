@@ -25,7 +25,7 @@
 			<children>
 				<HBox prefHeight="45.0" prefWidth="860.0">
 					<children>
-						<ImageView fx:id="newsImage_id" fitHeight="148.0"
+						<ImageView fx:id="newsImage" fitHeight="148.0"
 							fitWidth="280.0" pickOnBounds="true" preserveRatio="true">
 							<HBox.margin>
 								<Insets right="10.0" />
@@ -33,7 +33,7 @@
 						</ImageView>
 						<VBox maxWidth="561.0" prefHeight="148.0" prefWidth="456.0">
 							<children>
-								<Text fx:id="title_id" strokeType="OUTSIDE"
+								<Text fx:id="title" strokeType="OUTSIDE"
 									strokeWidth="0.0" text="This is the heading"
 									wrappingWidth="564.5">
 									<font>
@@ -43,7 +43,7 @@
 										<Insets bottom="10.0" />
 									</VBox.margin>
 								</Text>
-								<Text fx:id="category_id" fill="#7a92ff"
+								<Text fx:id="category" fill="#7a92ff"
 									strokeType="OUTSIDE" strokeWidth="0.0" text="Category"
 									textAlignment="RIGHT">
 									<font>
@@ -53,7 +53,7 @@
 										<Insets bottom="10.0" />
 									</VBox.margin>
 								</Text>
-								<Text fx:id="subtitle_id" strokeType="OUTSIDE"
+								<Text fx:id="subtitle" strokeType="OUTSIDE"
 									strokeWidth="0.0" text="This is the subtitle"
 									wrappingWidth="564.5">
 									<font>
@@ -67,14 +67,14 @@
 						<Insets bottom="10.0" />
 					</VBox.margin>
 				</HBox>
-				<WebView fx:id="body_id" maxWidth="850.0" prefHeight="230.0"
+				<WebView fx:id="body" maxWidth="850.0" prefHeight="230.0"
 					prefWidth="850.0" />
 				<Line endX="859.0" stroke="#868282">
 					<VBox.margin>
 						<Insets bottom="10.0" top="10.0" />
 					</VBox.margin>
 				</Line>
-				<Text fx:id="updated_id" strokeType="OUTSIDE" strokeWidth="0.0"
+				<Text fx:id="updated" strokeType="OUTSIDE" strokeWidth="0.0"
 					text="Updated by">
 					<font>
 						<Font size="14.0" />
@@ -85,7 +85,7 @@
 				</Text>
 				<HBox prefHeight="40.0" prefWidth="200.0">
 					<children>
-						<JFXButton fx:id="btnBack" mnemonicParsing="false"
+						<JFXButton mnemonicParsing="false"
 							onAction="#openMainView" prefHeight="29.0" prefWidth="66.0"
 							text="&lt; back" textFill="WHITE">
 							<font>
@@ -97,7 +97,7 @@
 						</JFXButton>
 						<JFXButton fx:id="btnEdit" mnemonicParsing="false"
 							onAction="#editNews" prefHeight="29.0" prefWidth="66.0" text="Edit"
-							textFill="WHITE" visible="false">
+							textFill="WHITE" visible="false" styleClass="info">
 							<font>
 								<Font size="14.0" />
 							</font>
@@ -107,7 +107,7 @@
 						</JFXButton>
 						<JFXButton fx:id="btnDelete" mnemonicParsing="false"
 							onAction="#deleteNews" prefHeight="29.0" prefWidth="66.0"
-							text="Delete"
+							text="Delete" styleClass="danger"
 							textFill="WHITE" visible="false">
 							<font>
 								<Font size="14.0" />
