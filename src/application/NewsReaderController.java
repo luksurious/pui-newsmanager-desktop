@@ -24,6 +24,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.ScrollPane;
 
 /**
  * @author AngelLucas
@@ -45,6 +46,8 @@ public class NewsReaderController extends NewsCommonController {
 	@FXML
 	HBox noItemsNote;
 
+	@FXML ScrollPane newsScrollPane;
+
 	public NewsReaderController() {
 		this.categoryDataList = this.newsReaderModel.getCategories();
 	}
@@ -56,12 +59,12 @@ public class NewsReaderController extends NewsCommonController {
 		assert categoryListView != null : "fx:id=\"categoriesList\" was not injected: check your FXML file 'NewsReader.fxml'.";
 
 		initCategoriesList();
-
-		newsList.setManaged(false);
-		newsList.setVisible(false);
 		
 		noItemsNote.setManaged(false);
 		noItemsNote.setVisible(false);
+		
+		newsScrollPane.setVisible(false);
+		newsScrollPane.setManaged(false);
 		
 		categoryListView.setDisable(true);
 	}
@@ -122,8 +125,8 @@ public class NewsReaderController extends NewsCommonController {
 	void getData() {
 		noItemsNote.setManaged(false);
 		noItemsNote.setVisible(false);
-		newsList.setVisible(false);
-		newsList.setManaged(false);
+		newsScrollPane.setVisible(false);
+		newsScrollPane.setManaged(false);
 		loadingNotification.setVisible(true);
 		loadingNotification.setManaged(true);
 		
@@ -172,8 +175,8 @@ public class NewsReaderController extends NewsCommonController {
 		} else {
 			noItemsNote.setManaged(false);
 			noItemsNote.setVisible(false);
-			newsList.setVisible(true);
-			newsList.setManaged(true);
+			newsScrollPane.setVisible(true);
+			newsScrollPane.setManaged(true);
 		}
 	}
 	

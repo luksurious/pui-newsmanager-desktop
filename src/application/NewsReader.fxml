@@ -5,18 +5,21 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="rootPane" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.NewsReaderController">
+<BorderPane fx:id="rootPane" prefHeight="600.0"
+	prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.NewsReaderController">
 	<top>
 	</top>
 	<left>
-		<VBox maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="170.0" BorderPane.alignment="CENTER">
+		<VBox maxWidth="1.7976931348623157E308" prefHeight="200.0"
+			prefWidth="170.0" BorderPane.alignment="CENTER">
 			<children>
 				<Label text="Categories">
 					<font>
@@ -26,50 +29,66 @@
 						<Insets left="10.0" right="10.0" />
 					</padding>
 				</Label>
-				<JFXListView fx:id="categoryListView" depth="1" maxHeight="1.7976931348623157E308" prefHeight="400.0" prefWidth="200.0" showTooltip="true" verticalGap="2.0" VBox.vgrow="ALWAYS">
+				<JFXListView fx:id="categoryListView" depth="1"
+					maxHeight="1.7976931348623157E308" prefHeight="400.0"
+					prefWidth="200.0" showTooltip="true" verticalGap="2.0"
+					VBox.vgrow="ALWAYS">
 				</JFXListView>
 			</children>
 		</VBox>
 	</left>
 	<center>
-		<VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+		<VBox prefHeight="200.0" prefWidth="100.0"
+			BorderPane.alignment="CENTER">
 			<children>
 				<Label text="News">
 					<font>
 						<Font name="System Bold" size="16.0" />
 					</font>
 				</Label>
-				<VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #fff;" VBox.vgrow="ALWAYS">
+				<VBox style="-fx-background-color: #ffffff;" VBox.vgrow="ALWAYS">
 					<children>
-						<Accordion fx:id="newsList" style="-fx-background-color: #ffffff;">
-							<panes>
-							</panes>
-						</Accordion>
+						<ScrollPane fx:id="newsScrollPane" VBox.vgrow="ALWAYS">
+							<content>
+								<Accordion fx:id="newsList"
+									style="-fx-background-color: #ffffff;">
+									<panes>
+									</panes>
+								</Accordion>
+							</content>
+						</ScrollPane>
+						<HBox fx:id="loadingNotification" alignment="CENTER"
+							prefHeight="598.0" style="-fx-background-color: #ffffff;"
+							VBox.vgrow="ALWAYS">
+							<children>
+								<JFXSpinner prefHeight="100.0" prefWidth="100.0">
+									<HBox.margin>
+										<Insets right="20.0" />
+									</HBox.margin>
+								</JFXSpinner>
+								<Label contentDisplay="TOP" minHeight="40.0"
+									text="Loading..." HBox.hgrow="ALWAYS">
+									<font>
+										<Font size="20.0" />
+									</font>
+								</Label>
+							</children>
+						</HBox>
+						<HBox fx:id="noItemsNote" alignment="CENTER"
+							prefHeight="598.0" maxWidth="710.0"
+							style="-fx-background-color: #ffffff;">
+							<children>
+								<Label contentDisplay="TOP" minHeight="40.0"
+									text="There are no news items available for this category"
+									HBox.hgrow="ALWAYS">
+									<font>
+										<Font size="20.0" />
+									</font>
+								</Label>
+							</children>
+						</HBox>
 					</children>
 				</VBox>
-				<HBox fx:id="loadingNotification" alignment="CENTER" prefHeight="598.0" prefWidth="730.0" style="-fx-background-color: #ffffff;" VBox.vgrow="ALWAYS">
-					<children>
-						<JFXSpinner prefHeight="100.0" prefWidth="100.0" >
-							<HBox.margin>
-								<Insets right="20.0" />
-							</HBox.margin>
-						</JFXSpinner>
-						<Label contentDisplay="TOP" minHeight="40.0" text="Loading..." HBox.hgrow="ALWAYS">
-							<font>
-								<Font size="20.0" />
-							</font>
-						</Label>
-					</children>
-				</HBox>
-				<HBox fx:id="noItemsNote" alignment="CENTER" prefHeight="598.0" prefWidth="730.0" style="-fx-background-color: #ffffff;">
-					<children>
-						<Label contentDisplay="TOP" minHeight="40.0" text="There are no news items available for this category" HBox.hgrow="ALWAYS">
-							<font>
-								<Font size="20.0" />
-							</font>
-						</Label>
-					</children>
-				</HBox>
 			</children>
 		</VBox>
 	</center>
