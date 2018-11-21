@@ -4,14 +4,11 @@ import application.news.User;
 import application.services.SceneManager;
 import application.services.ServiceRegistry;
 import application.services.ServiceRegistryAware;
-import serverConection.ConnectionManager;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.event.ActionEvent;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
-import javafx.scene.input.KeyEvent;
+import serverConection.ConnectionManager;
 
 public class LoginController implements ServiceRegistryAware, ControllerEvents {
 	private LoginModel loginModel = new LoginModel();

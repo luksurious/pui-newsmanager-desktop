@@ -3,8 +3,10 @@ package application.components;
 import java.io.IOException;
 
 import application.news.Article;
+import application.news.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
@@ -18,12 +20,16 @@ public class NewsAccordionItem extends TitledPane {
 	@FXML Button btnEdit;
 	@FXML Button btnDelete;
 	@FXML Button btnShow;
+	
+	private Article article;
 
 	public NewsAccordionItem(Article article, Runnable openDetailsCallback, Runnable openEditCallback) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("NewsAccordionItem.fxml"));
         loader.setController(this);
         loader.setClassLoader(getClass().getClassLoader());
         loader.setRoot(this);
+        
+        this.article = article;
         
         try {
         	loader.load();
@@ -32,7 +38,11 @@ public class NewsAccordionItem extends TitledPane {
         }
     	
     	this.setText(article.getTitle());
-    	this.thumbnailImage.setImage(article.getImageData());
+    	if (article.getImageData() == null) {
+			this.thumbnailImage.setImage(new Image(getClass().getResourceAsStream("/noImage.jpg")));    		
+    	} else {
+    		this.thumbnailImage.setImage(article.getImageData());    		
+    	}
     	this.abstractHtml.getEngine().loadContent(String.format("<style>.pseudolink{text-decoration:none;color:#444;font-family:sans-serif;}</style><a href=\"#\" class=\"pseudolink\">%s</a>", article.getAbstractText()));
 
     	this.abstractHtml.addEventHandler(MouseEvent.MOUSE_CLICKED, (event) -> openDetailsCallback.run());
@@ -48,9 +58,15 @@ public class NewsAccordionItem extends TitledPane {
 		updateForLoggedOut();
 	}
 	
-	public void updateForLoggedIn() {
+	public void updateForLoggedIn(User user) {
 		this.btnDelete.setVisible(true);
 		this.btnEdit.setVisible(true);
+		
+		if (article.getIdUser() != user.getIdUser()) {
+			this.btnDelete.setDisable(true);
+			this.btnEdit.setDisable(true);
+		}
+		
 	}
 	
 	public void updateForLoggedOut() {

@@ -96,8 +96,7 @@
 							</HBox.margin>
 						</JFXButton>
 						<JFXButton fx:id="btnEdit" mnemonicParsing="false"
-							onAction="#editNews" prefHeight="29.0" prefWidth="66.0"
-							style="-fx-background-color: #44c460;" text="Edit"
+							onAction="#editNews" prefHeight="29.0" prefWidth="66.0" text="Edit"
 							textFill="WHITE" visible="false">
 							<font>
 								<Font size="14.0" />
@@ -108,7 +107,7 @@
 						</JFXButton>
 						<JFXButton fx:id="btnDelete" mnemonicParsing="false"
 							onAction="#deleteNews" prefHeight="29.0" prefWidth="66.0"
-							style="-fx-background-color: #ed4747;" text="Delete"
+							text="Delete"
 							textFill="WHITE" visible="false">
 							<font>
 								<Font size="14.0" />

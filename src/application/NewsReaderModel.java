@@ -9,7 +9,6 @@ import java.util.List;
 
 import application.news.Article;
 import application.news.Categories;
-import application.utils.exceptions.ErrorMalFormedNews;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

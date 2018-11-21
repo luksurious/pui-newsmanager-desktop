@@ -3,91 +3,27 @@
  */
 package application;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale.Category;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
-import javax.imageio.ImageIO;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
-
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDrawer;
-import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXListView;
 
 import application.components.NewsAccordionItem;
-import application.components.NewsHead;
 import application.news.Article;
 import application.news.Categories;
 import application.news.User;
 import application.services.SceneManager;
-import application.utils.JsonArticle;
-import application.utils.exceptions.ErrorMalFormedNews;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.concurrent.Worker.State;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
-import javafx.stage.FileChooser.ExtensionFilter;
-import serverConection.ConnectionManager;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitMenuButton;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.MenuButton;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.BorderPane;
 
 /**
  * @author AngelLucas
@@ -126,6 +62,8 @@ public class NewsReaderController extends NewsCommonController {
 		
 		noItemsNote.setManaged(false);
 		noItemsNote.setVisible(false);
+		
+		categoryListView.setDisable(true);
 	}
 
 	private void initCategoriesList() {
@@ -164,21 +102,11 @@ public class NewsReaderController extends NewsCommonController {
 	}
 
 	@Override
-	void setUser(User user) {
-		super.setUser(user);
-		
-		// Reload articles
-		// TODO discuss if needed
-//		getData();
-	}
-	
-
-	@Override
 	protected void updateUiAfterLogin() {
 		super.updateUiAfterLogin();
 		
 		newsList.getPanes().forEach((TitledPane titledPane) -> {
-			((NewsAccordionItem) titledPane).updateForLoggedIn();
+			((NewsAccordionItem) titledPane).updateForLoggedIn(user);
 		});
 	}
 
@@ -202,7 +130,10 @@ public class NewsReaderController extends NewsCommonController {
 		CompletableFuture.runAsync(() -> {
 			newsReaderModel.retrieveData();
 
-			Platform.runLater(() -> updateNewsContent());
+			Platform.runLater(() -> {
+				updateNewsContent();
+				categoryListView.setDisable(false);
+			});
 
 			loaded = true;
 		});
@@ -226,7 +157,7 @@ public class NewsReaderController extends NewsCommonController {
 			);
 
 			if (user instanceof User) {
-				item.updateForLoggedIn();
+				item.updateForLoggedIn(user);
 			}
 			
 			newsList.getPanes().add(item);
@@ -259,18 +190,10 @@ public class NewsReaderController extends NewsCommonController {
 		
 		NewsDetailsController controller = (NewsDetailsController) sceneManager.getController(AppScenes.NEWS_DETAILS);
 		controller.setArticle(article);
-		controller.setUser(user);
-		controller.setConnectionManager(this.newsReaderModel.getConnectionManager());
 	}
 
 	@Override
 	protected NewsCommonModel getModel() {
 		return newsReaderModel;
-	}
-
-	// Auxiliary methods
-	private interface InitUIData<T> {
-		void initUIData(T loader);
-		// TODO check if needed
 	}
 }

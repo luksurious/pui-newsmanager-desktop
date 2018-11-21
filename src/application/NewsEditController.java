@@ -22,6 +22,7 @@ import application.utils.JsonArticle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -158,10 +159,8 @@ public class NewsEditController extends NewsCommonController {
 	 * must be different to ALL
 	 * 
 	 * @return true if the article has been saved
-	 * @throws ServerCommunicationError 
-	 * @throws IOException 
 	 */
-	private boolean send() throws ServerCommunicationError, IOException {
+	private boolean send() {
 		String titleText = this.getArticle().getTitle();
 		String category = this.getArticle().getCategory();
 
@@ -173,11 +172,14 @@ public class NewsEditController extends NewsCommonController {
 		}
 		//this command will send the article to the server
 		ConnectionManager connectionManager = (ConnectionManager) serviceRegistry.get("connection");
-		connectionManager.saveArticle(this.getArticle());
-		SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, true);
+		try {
+			connectionManager.saveArticle(this.getArticle());
+		} catch (ServerCommunicationError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 
-		//super.openMainView();
-		//super.initialize();
 		return true;
 	}
 
@@ -302,11 +304,16 @@ public class NewsEditController extends NewsCommonController {
 	}
 
 	@FXML
+	void backAndDiscard() {
+		editingArticle.discardChanges();
+		openMainView();
+	}
+	
+	@FXML
 	public void saveToFile() {
 		String fileName = write();
 		
 		if (fileName != null) {
-			JFXDialogLayout layout = new JFXDialogLayout();
 			VBox body = new VBox();
 			Label label = new Label("The article was successfully saved to");
 			JFXTextArea filenameField = new JFXTextArea(fileName);
@@ -314,19 +321,7 @@ public class NewsEditController extends NewsCommonController {
 			filenameField.setPrefHeight(50);
 			body.getChildren().add(label);
 			body.getChildren().add(filenameField);
-	        layout.setBody(body);
-	        JFXButton okayButton = new JFXButton("OK");
-	        layout.getActions().add(okayButton);
-	        
-	        JFXAlert<Void> alert = new JFXAlert<Void>((Stage) rootPane.getScene().getWindow());
-	        
-	        okayButton.setOnAction((event) -> alert.hide());
-	        
-	        alert.setOverlayClose(true);
-	        alert.setAnimation(JFXAlertAnimation.CENTER_ANIMATION);
-	        alert.setContent(layout);
-	        alert.initModality(Modality.NONE);
-	        alert.showAndWait();
+	        showDialog(body);
 		}
 	}
 	
@@ -336,24 +331,34 @@ public class NewsEditController extends NewsCommonController {
 		editingArticle.commit();
 		
 		if (send()) {
-			JFXDialogLayout layout = new JFXDialogLayout();
-			VBox body = new VBox();
-			Label label = new Label("The article was successfully sent to the server");
-			body.getChildren().add(label);
-	        layout.setBody(body);
-	        JFXButton okayButton = new JFXButton("OK");
-	        layout.getActions().add(okayButton);
+			showDialog("The article was successfully sent to the server");
 	        
-	        JFXAlert<Void> alert = new JFXAlert<Void>((Stage) rootPane.getScene().getWindow());
-	        
-	        okayButton.setOnAction((event) -> alert.hide());
-	        
-	        alert.setOverlayClose(true);
-	        alert.setAnimation(JFXAlertAnimation.CENTER_ANIMATION);
-	        alert.setContent(layout);
-	        alert.initModality(Modality.NONE);
-	        alert.showAndWait();
+			SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, true);
+		} else {
+			showDialog("There was an error saving the article");
 		}
-		
 	}
+
+	private void showDialog(String text) {
+		showDialog(new Label(text));
+	}
+	
+	private void showDialog(Node body) {
+		JFXDialogLayout layout = new JFXDialogLayout();
+		layout.setBody(body);
+		JFXButton okayButton = new JFXButton("OK");
+		layout.getActions().add(okayButton);
+		
+		JFXAlert<Void> alert = new JFXAlert<Void>((Stage) rootPane.getScene().getWindow());
+		
+		okayButton.setOnAction((event) -> alert.hide());
+		
+		alert.setOverlayClose(true);
+		alert.setAnimation(JFXAlertAnimation.CENTER_ANIMATION);
+		alert.setContent(layout);
+		alert.initModality(Modality.NONE);
+		alert.showAndWait();
+	}
+	
+	
 }

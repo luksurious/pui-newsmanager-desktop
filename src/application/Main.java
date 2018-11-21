@@ -1,31 +1,17 @@
 package application;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import org.omg.CORBA.portable.InputStream;
-
-import application.news.Article;
-import application.news.Categories;
 import application.services.SceneManager;
 import application.services.ServiceRegistry;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import serverConection.ConnectionManager;
 import serverConection.exceptions.AuthenticationError;
-import serverConection.exceptions.ServerCommunicationError;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.fxml.FXMLLoader;
 
 public class Main extends Application {
 	@Override
