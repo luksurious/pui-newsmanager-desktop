@@ -59,6 +59,7 @@ public class NewsReaderController extends NewsCommonController {
 		
 		noItemsNote.setManaged(false);
 		noItemsNote.setVisible(false);
+
 		
 		newsScrollPane.setVisible(false);
 		newsScrollPane.setManaged(false);
@@ -153,7 +154,8 @@ public class NewsReaderController extends NewsCommonController {
 			NewsAccordionItem item = new NewsAccordionItem(
 				article,
 				() -> openDetailsbyId(article),
-				() -> openEditorForExistingArticle(article)
+				() -> openEditorForExistingArticle(article),
+				() -> openDeleteDialog(article)
 			);
 
 			if (user instanceof User) {

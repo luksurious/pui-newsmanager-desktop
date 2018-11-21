@@ -5,7 +5,16 @@ import java.io.IOException;
 import com.jfoenix.controls.JFXButton;
 
 import application.news.Article;
+import application.news.Categories;
+import application.news.User;
+import application.services.SceneManager;
+import application.utils.JsonArticle;
+import application.utils.exceptions.ErrorMalFormedNews;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
@@ -115,7 +124,8 @@ public class NewsDetailsController extends NewsCommonController {
 	}
 
 	@FXML
-	public void deleteNews(ActionEvent event) throws IOException {
+	public void deleteNews() {
+		openDeleteDialog(article);
 
 	}
 

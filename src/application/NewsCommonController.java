@@ -14,11 +14,18 @@ import application.news.User;
 import application.services.SceneManager;
 import application.services.ServiceRegistry;
 import application.services.ServiceRegistryAware;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -84,6 +91,57 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		setUser(null);
 	}
 
+	void openEditorForExistingArticle(Article article) {
+		if (!openEditor()) {
+			return;
+		}
+
+		SceneManager sceneManager = SceneManager.getInstance();
+		NewsEditController controller = (NewsEditController) sceneManager.getController(AppScenes.EDITOR);
+		controller.setArticle(article);
+	}
+
+	void openDeleteDialog(Article article){
+		SceneManager sceneManager = SceneManager.getInstance();
+		try {
+			sceneManager.showSceneInModal(AppScenes.DELETE);
+			NewsEditController controller = (NewsEditController) sceneManager.getController(AppScenes.DELETE);
+			controller.setArticle(article);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+
+		System.out.println("fdf");
+		JFXDialogLayout content = new JFXDialogLayout();
+		content.setHeading(new Text("Are you sure ?"));
+		JFXButton confirm = new JFXButton("Yes");
+		JFXButton cancel = new JFXButton("No");
+		StackPane stackPane = new StackPane();
+		stackPane.autosize();
+		stackPane.setPrefSize(600, 450);
+		JFXDialog popup = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
+
+		confirm.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				System.out.println(article.getIdArticle());
+				popup.close();
+			}
+		});
+		cancel.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				popup.close();
+			}
+		});
+
+		content.setActions(confirm, cancel);
+		popup.show();
+		System.out.println("-----");
+	}
+
 	@FXML
 	public void loadNewsFile() {
 		Stage stage = SceneManager.getInstance().getCurrentStage();
@@ -114,6 +172,7 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 
 		return true;
 	}
+
 
 	@Override
 	public void setServiceRegistry(ServiceRegistry serviceRegistry) {

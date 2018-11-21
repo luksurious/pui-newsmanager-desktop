@@ -40,21 +40,30 @@ public class NewsAccordionItem extends TitledPane {
 	private Runnable openDetailsCallback;
 	private Runnable openEditCallback;
 
-	public NewsAccordionItem(Article article, Runnable openDetailsCallback, Runnable openEditCallback) {
-		this.article = article;
-		this.openDetailsCallback = openDetailsCallback;
-		this.openEditCallback = openEditCallback;
-		
+	public NewsAccordionItem(Article article, Runnable openDetailsCallback, Runnable openEditCallback, Runnable openDeleteCallback) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("NewsAccordionItem.fxml"));
-		loader.setController(this);
-		loader.setClassLoader(getClass().getClassLoader());
-		loader.setRoot(this);
-		
-		try {
-			loader.load();
-		} catch (IOException exc) {
-			throw new RuntimeException(exc);
-		}
+        loader.setController(this);
+        loader.setClassLoader(getClass().getClassLoader());
+        loader.setRoot(this);
+        
+        try {
+        	loader.load();
+        } catch (IOException exc) {
+            throw new RuntimeException(exc);
+        }
+    	
+    	this.setText(article.getTitle());
+    	this.thumbnailImage.setImage(article.getImageData());
+    	this.abstractHtml.getEngine().loadContent(String.format("<style>.pseudolink{text-decoration:none;color:#444;font-family:sans-serif;}</style><a href=\"#\" class=\"pseudolink\">%s</a>", article.getAbstractText()));
+
+    	this.abstractHtml.addEventHandler(MouseEvent.MOUSE_CLICKED, (event) -> openDetailsCallback.run());
+    	this.thumbnailImage.addEventHandler(MouseEvent.MOUSE_CLICKED, (event) -> openDetailsCallback.run());
+
+    	this.btnShow.setOnAction((action) -> openDetailsCallback.run());
+    	
+    	this.btnEdit.setOnAction((action) -> openEditCallback.run());
+
+    	this.btnDelete.setOnAction((action) -> openDeleteCallback.run());
 	}
 
 	@FXML
