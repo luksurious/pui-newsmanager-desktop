@@ -24,6 +24,12 @@ class NewsCommonModel {
 		this.connectionManager = connectionManager;
 	}
 
+	/**
+	 * Create an article instance based on a File
+	 *
+	 * @param file
+	 * @return
+	 */
 	Article createArticleFromFile(File file) {
 		if (file == null) {
 			return null;

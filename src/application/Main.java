@@ -12,6 +12,9 @@ import serverConection.ConnectionManager;
 
 public class Main extends Application {
 	@Override
+	/**
+	 * Initialize main components: Services, SceneManager
+	 */
 	public void start(Stage primaryStage) {
 		try {
 			// This start method allow us to load a Scene (only one).
@@ -46,6 +49,12 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Instanciate the connection manager using the defined APIKEY
+	 *
+	 * @return
+	 * @throws IOException
+	 */
 	private ConnectionManager createConnectionManager() throws IOException {
 		// Create properties for server connection
 		Properties prop = buildServerProperties();
@@ -61,6 +70,11 @@ public class Main extends Application {
 		launch(args);
 	}
 
+	/**
+	 * Define the server information
+	 *
+	 * @return
+	 */
 	final static Properties buildServerProperties() {
 		Properties prop = new Properties();
 		prop.setProperty(ConnectionManager.ATTR_SERVICE_URL, "https://sanger.dia.fi.upm.es/pui-rest-news/");

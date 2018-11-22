@@ -27,29 +27,55 @@ import javafx.scene.web.HTMLEditor;
 import serverConection.ConnectionManager;
 import serverConection.exceptions.ServerCommunicationError;
 
+/**
+ * Manage the editor methods
+ *
+ * @author students & AngelLucas
+ */
 public class NewsEditController extends NewsCommonController {
 	private NewsEditModel editingArticle;
 	private boolean htmlMode = true;
 	private boolean bodyMode = false;
 
+	/**
+	 * Display the picture of the article
+	 */
 	@FXML
 	private ImageView imgPreview;
 
+	/**
+	 * Title input
+	 */
 	@FXML
 	private JFXTextField title;
 
+	/**
+	 * Subtitle input
+	 */
 	@FXML
 	private JFXTextField subtitle;
 
+	/**
+	 * Category select box
+	 */
 	@FXML
 	private JFXComboBox<Categories> category;
 
+	/**
+	 * Send and back button
+	 */
 	@FXML
 	private JFXButton sendAndBack;
 
+	/**
+	 * HTML editor
+	 */
 	@FXML
 	private HTMLEditor editorHtml;
 
+	/**
+	 * Plain text editor
+	 */
 	@FXML
 	private JFXTextArea editorText;
 
@@ -63,6 +89,12 @@ public class NewsEditController extends NewsCommonController {
 		this.editingArticle = new NewsEditModel(null);
 	}
 
+	/**
+	 * Initialize
+	 *
+	 * Define error message
+	 * Initialize the UI
+	 */
 	@FXML
 	@Override
 	public void initialize() {
@@ -100,6 +132,12 @@ public class NewsEditController extends NewsCommonController {
 		setupFieldBindings();
 	}
 
+	/**
+	 * Reload the content of the UI of login
+	 *
+	 * Define the author of the article
+	 * Enable the send feature
+	 */
 	@Override
 	protected void updateUiAfterLogin() {
 		super.updateUiAfterLogin();
@@ -108,6 +146,12 @@ public class NewsEditController extends NewsCommonController {
 		sendAndBack.setDisable(false);
 	}
 
+	/**
+	 * Reload the content of the UI of logout
+	 *
+	 * No more author for the current article edited
+	 * Disable the send feature
+	 */
 	@Override
 	protected void updateUiAfterLogout() {
 		super.updateUiAfterLogout();
@@ -116,6 +160,11 @@ public class NewsEditController extends NewsCommonController {
 		sendAndBack.setDisable(true);
 	}
 
+	/**
+	 * Open the image picker window
+	 *
+	 * @param event
+	 */
 	@FXML
 	public void onImageClicked(MouseEvent event) {
 		if (event.getClickCount() >= 2) {
@@ -156,6 +205,11 @@ public class NewsEditController extends NewsCommonController {
 		return true;
 	}
 
+	/**
+	 * Check if everything is ok about the content of the article
+	 *
+	 * @return
+	 */
 	private boolean validateArticle() {
 		Article article = getArticle();
 		if (article == null) {
@@ -174,6 +228,11 @@ public class NewsEditController extends NewsCommonController {
 		return true;
 	}
 
+	/**
+	 * Return the currently edited article
+	 *
+	 * @return
+	 */
 	private Article getArticle() {
 		Article result = null;
 		if (this.editingArticle != null) {
@@ -203,7 +262,6 @@ public class NewsEditController extends NewsCommonController {
 	}
 
 	private void setupFieldBindings() {
-		// TODO unbind listeners
 		title.textProperty().bindBidirectional(editingArticle.titleProperty());
 		subtitle.textProperty().bindBidirectional(editingArticle.subtitleProperty());
 		category.getSelectionModel().selectedItemProperty().addListener((observer, oldValue, newValue) -> {
@@ -246,6 +304,9 @@ public class NewsEditController extends NewsCommonController {
 		return null;
 	}
 
+	/**
+	 * Change the editor mode HTML / plain text
+	 */
 	@FXML
 	public void switchMode() {
 		if (htmlMode) {
@@ -260,6 +321,9 @@ public class NewsEditController extends NewsCommonController {
 		editorText.setVisible(!this.htmlMode);
 	}
 
+	/**
+	 * Bind the corresponding text for each text input (textarea and html editor)
+	 */
 	private void bindTextEditors() {
 		if (this.bodyMode) {
 			editorText.setText(this.editorHtml.getHtmlText());
@@ -274,6 +338,10 @@ public class NewsEditController extends NewsCommonController {
 		}
 	}
 
+
+	/**
+	 * Switch the edited attribute : body / abstract
+	 */
 	@FXML
 	public void switchAttribute() {
 		this.bodyMode = !this.bodyMode;
@@ -291,6 +359,11 @@ public class NewsEditController extends NewsCommonController {
 		return editingArticle;
 	}
 
+	/**
+	 * Back to the main screen
+	 *
+	 * @throws IOException
+	 */
 	@FXML
 	public void backAndDiscard() throws IOException {
 		editingArticle.discardChanges();

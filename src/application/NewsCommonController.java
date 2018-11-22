@@ -24,6 +24,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import serverConection.ConnectionManager;
 
+/**
+ * The aim of this abstract class is the define some common methods for controllers
+ *
+ * @author students
+ */
 public abstract class NewsCommonController implements ServiceRegistryAware, ControllerEvents, NewsController {
 	protected User user;
 
@@ -50,6 +55,9 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		rootPane.setTop(newsHead);
 	}
 
+    /**
+     * Setup the Connection Manager and the User just before displaying the screen
+     */
 	@Override
 	public void onBeforeShow() {
 		getModel().setConnectionManager(serviceRegistry.get(ConnectionManager.class));
@@ -57,6 +65,11 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		setUser(serviceRegistry.get(User.class));
 	}
 
+    /**
+     * Define the current user if connected and update the interface depending on the login status
+     *
+     * @param user
+     */
 	public void setUser(User user) {
 		this.user = user;
 
@@ -67,6 +80,9 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		}
 	}
 
+    /**
+     * Display the login modal
+     */
 	@FXML
 	public void openLogin() {
 		SceneManager sceneManager = SceneManager.getInstance();
@@ -82,6 +98,9 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		onBeforeShow();
 	}
 
+    /**
+     * Logout the user by redefining the user to null
+     */
 	@FXML
 	public void logout() {
 		getModel().logout();
@@ -89,6 +108,9 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		setUser(null);
 	}
 
+	/**
+     * Open the editor for the current open article
+	 */
 	void openEditorForExistingArticle(Article article) {
 		if (!openEditor()) {
 			return;
@@ -99,6 +121,11 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		controller.setArticle(article);
 	}
 
+    /**
+     * Display the delete article modal
+     *
+     * @param article
+     */
 	void openDeleteDialog(Article article) {
 		SceneManager sceneManager = SceneManager.getInstance();
 		try {
@@ -106,12 +133,17 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 			DeleteController controller = (DeleteController) sceneManager.getController(AppScenes.DELETE);
 			controller.setArticle(article);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
 	}
 
+    /**
+     * Load news data from JSON to the interface
+     *
+     * Open the select file popup
+     * Reload the editor with the article values
+     */
 	@FXML
 	public void loadNewsFile() {
 		Stage stage = SceneManager.getInstance().getPrimaryStage();
@@ -128,6 +160,11 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		openEditorForExistingArticle(article);
 	}
 
+    /**
+     * Display the editor in order to create a new article
+     *
+     * @return
+     */
 	@FXML
 	public boolean openEditor() {
 		SceneManager sceneManager = SceneManager.getInstance();
@@ -148,24 +185,45 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		this.serviceRegistry = serviceRegistry;
 	}
 
+    /**
+     * Come back to the home screen
+     *
+     * @throws IOException
+     */
 	public void openMainView() throws IOException {
 		SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, false);
 	}
 
 	protected abstract NewsCommonModel getModel();
 
+    /**
+     * Redefine the UI after login
+     * Allowing more features
+     */
 	protected void updateUiAfterLogin() {
 		newsHead.updateUiAfterLogin(user);
 	}
 
+    /**
+     * Redefine the UI after logout
+     * Allowing fewer features
+     */
 	protected void updateUiAfterLogout() {
 		newsHead.updateUiAfterLogout();
 	}
 
+    /**
+     * Quick displaying of the dialog box
+     * @param text
+     */
 	protected void showDialog(String text) {
 		showDialog(new Label(text));
 	}
 
+    /**
+     * Display error message
+     * @param text
+     */
 	protected void showErrorDialog(String text) {
 		ImageView errorImage = new ImageView(getClass().getResource("/error.png").toExternalForm());
 		errorImage.setFitWidth(32);
@@ -174,6 +232,10 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		showDialog(new Label(text, errorImage));
 	}
 
+    /**
+     * Display the dialog box
+     * @param body
+     */
 	protected void showDialog(Node body) {
 		JFXDialogLayout layout = new JFXDialogLayout();
 		JFXButton okayButton = new JFXButton("OK");
