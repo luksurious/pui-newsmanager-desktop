@@ -25,9 +25,9 @@ import javafx.stage.Stage;
 import serverConection.ConnectionManager;
 
 /**
- * This class is to gather together all the functions and methods that are common to 
- * several controllers, so that they can be override instead of being implemented
- * multiple times
+ * The aim of this abstract class is the define some common methods for controllers
+ *
+ * @author students
  */
 public abstract class NewsCommonController implements ServiceRegistryAware, ControllerEvents, NewsController {
 	protected User user;
@@ -39,23 +39,23 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 
 	@FXML
 	protected NewsHead newsHead;
-	
+
 	/**
 	 * Adding the news head to the BorderPane at the top, so all the scenes have the same headnews
 	 */
 	@FXML
 	public void initialize() {
 		assert rootPane != null : "fx:id=\"rootPane\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        
+
 		// Adding <NewsHead> into the FXML files didn't work properly with SceneBuilder
 		// although the application started fine, so the head part is added from the code
 		newsHead = new NewsHead(this);
 		rootPane.setTop(newsHead);
 	}
 
-	/**
-	 * Sets the connection manager and the user using serviceRegistry
-	 */
+    /**
+     * Setup the Connection Manager and the User just before displaying the screen
+     */
 	@Override
 	public void onBeforeShow() {
 		getModel().setConnectionManager(serviceRegistry.get(ConnectionManager.class));
@@ -63,9 +63,11 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		setUser(serviceRegistry.get(User.class));
 	}
 
-	/**
-	 * Sets the user depending on if it is logged in or not
-	 */
+    /**
+     * Define the current user if connected and update the interface depending on the login status
+     *
+     * @param user
+     */
 	public void setUser(User user) {
 		this.user = user;
 
@@ -75,10 +77,10 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 			updateUiAfterLogout();
 		}
 	}
-	
-	/**
-	 * Opens the modal window for the user to log in and then calls onBeforeShow()
-	 */
+
+    /**
+     * Display the login modal
+     */
 	@FXML
 	public void openLogin() {
 		SceneManager sceneManager = SceneManager.getInstance();
@@ -94,9 +96,9 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		onBeforeShow();
 	}
 
-	/**
-	 * Opens the model to log out and then sets the user to null
-	 */
+    /**
+     * Logout the user by redefining the user to null
+     */
 	@FXML
 	public void logout() {
 		getModel().logout();
@@ -105,7 +107,7 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 	}
 
 	/**
-	 * Opens the editor for editing news and sets the article to it
+     * Open the editor for the current open article
 	 */
 	void openEditorForExistingArticle(Article article) {
 		if (!openEditor()) {
@@ -117,25 +119,29 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		controller.setArticle(article);
 	}
 
-	/**
-	 * Opens the modal window for the user to log in and then calls onBeforeShow()
-	 */
-	void openDeleteDialog(Article article){
+    /**
+     * Display the delete article modal
+     *
+     * @param article
+     */
+	void openDeleteDialog(Article article) {
 		SceneManager sceneManager = SceneManager.getInstance();
 		try {
             sceneManager.showSceneInModal(AppScenes.DELETE, false);
             DeleteController controller = (DeleteController) sceneManager.getController(AppScenes.DELETE);
             controller.setArticle(article);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
 	}
 
-	/**
-	 * Opens a modal for loading a JSON file and then creates the article based on the JSON file
-	 */
+    /**
+     * Load news data from JSON to the interface
+     *
+     * Open the select file popup
+     * Reload the editor with the article values
+     */
 	@FXML
 	public void loadNewsFile() {
 		Stage stage = SceneManager.getInstance().getPrimaryStage();
@@ -152,9 +158,11 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		openEditorForExistingArticle(article);
 	}
 
-	/**
-	 * Opens the scene for editing an article
-	 */
+    /**
+     * Display the editor in order to create a new article
+     *
+     * @return
+     */
 	@FXML
 	public boolean openEditor() {
 		SceneManager sceneManager = SceneManager.getInstance();
@@ -178,30 +186,45 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		this.serviceRegistry = serviceRegistry;
 	}
 
-	/**
-	 * Opens the reader of news as main scene
-	 */
+    /**
+     * Come back to the home screen
+     *
+     * @throws IOException
+     */
 	public void openMainView() throws IOException {
 		SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, false);
 	}
 
 	protected abstract NewsCommonModel getModel();
 
+    /**
+     * Redefine the UI after login
+     * Allowing more features
+     */
 	protected void updateUiAfterLogin() {
 		newsHead.updateUiAfterLogin(user);
 	}
 
+    /**
+     * Redefine the UI after logout
+     * Allowing fewer features
+     */
 	protected void updateUiAfterLogout() {
 		newsHead.updateUiAfterLogout();
 	}
 
+    /**
+     * Quick displaying of the dialog box
+     * @param text
+     */
 	protected void showDialog(String text) {
 		showDialog(new Label(text));
 	}
 
-	/**
-	 * If there is an error, it will display this image and call the function to show a dialog with the error
-	 */
+    /**
+     * Display error message
+     * @param text
+     */
 	protected void showErrorDialog(String text) {
 		ImageView errorImage = new ImageView(getClass().getResource("/error.png").toExternalForm());
 		errorImage.setFitWidth(32);
@@ -209,9 +232,11 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 
 		showDialog(new Label(text, errorImage));
 	}
-	/**
-	 * It will show an informative dialog (modal window)
-	 */
+
+    /**
+     * Display the dialog box
+     * @param body
+     */
 	protected void showDialog(Node body) {
 		JFXDialogLayout layout = new JFXDialogLayout();
 		JFXButton okayButton = new JFXButton("OK");

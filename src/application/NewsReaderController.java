@@ -22,6 +22,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.ScrollPane;
 
+/**
+ * Manage the main screen displaying articles and categories
+ *
+ * @author AngelLucas & students
+ */
 public class NewsReaderController extends NewsCommonController {
 
 	private NewsReaderModel newsReaderModel = new NewsReaderModel();
@@ -29,14 +34,30 @@ public class NewsReaderController extends NewsCommonController {
 	private boolean loaded = false;
 	private boolean loading = false;
 
+	/**
+	 * The news list displaying
+	 */
 	@FXML
 	private Accordion newsList;
+
+	/**
+	 * The category list
+	 */
 	@FXML
 	private JFXListView<Label> categoryListView;
+
+	/**
+	 * The loader
+	 */
 	@FXML
 	private HBox loadingNotification;
+
+	/**
+	 * No item message
+	 */
 	@FXML
 	private HBox noItemsNote;
+
 	@FXML
 	private ScrollPane newsScrollPane;
 
@@ -71,6 +92,9 @@ public class NewsReaderController extends NewsCommonController {
 		}
 	}
 
+	/**
+	 * Redefine the UI after login by updating each accordion item: enable the edit and delete button
+	 */
 	@Override
 	protected void updateUiAfterLogin() {
 		super.updateUiAfterLogin();
@@ -80,6 +104,9 @@ public class NewsReaderController extends NewsCommonController {
 		});
 	}
 
+	/**
+	 * Redefine the UI after login by updating each accordion item: disable the edit and delete button
+	 */
 	@Override
 	protected void updateUiAfterLogout() {
 		super.updateUiAfterLogout();
@@ -89,8 +116,12 @@ public class NewsReaderController extends NewsCommonController {
 		});
 	}
 
+	/**
+	 * Load the category list with a dedicated icon
+	 */
 	private void initCategoriesList() {
 		ObservableList<Categories> categoryDataList = this.newsReaderModel.getCategories();
+		
 		for (Categories category : categoryDataList) {
 			Label categoryLabel = new Label(category.getName());
 
@@ -114,6 +145,9 @@ public class NewsReaderController extends NewsCommonController {
 		});
 	}
 
+	/**
+	 * Load data from the server
+	 */
 	private void getData() {
 		if (loading) {
 			return;
@@ -142,6 +176,9 @@ public class NewsReaderController extends NewsCommonController {
 		});
 	}
 
+	/**
+	 * Load the UI based on the data
+	 */
 	private void updateNewsContent() {
 		newsList.getPanes().clear();
 		Label category = categoryListView.getSelectionModel().getSelectedItem();
@@ -176,6 +213,11 @@ public class NewsReaderController extends NewsCommonController {
 		}
 	}
 
+	/**
+	 * Open the detail screen
+	 *
+	 * @param article
+	 */
 	private void openDetailsbyId(Article article) {
 		SceneManager sceneManager = SceneManager.getInstance();
 

@@ -47,6 +47,11 @@ class NewsEditModel extends NewsCommonModel {
 
 	// Getters and setters
 
+	/**
+	 * Define the current user
+	 *
+	 * @param user
+	 */
 	public void setUser(User user) {
 		this.user = user;
 

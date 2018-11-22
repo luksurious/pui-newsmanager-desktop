@@ -11,6 +11,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import serverConection.ConnectionManager;
 
+/**
+ * This controller manage the login methods and UI
+ */
 public class LoginController implements ServiceRegistryAware, ControllerEvents, NewsController {
 	private LoginModel loginModel = new LoginModel();
 
@@ -19,9 +22,15 @@ public class LoginController implements ServiceRegistryAware, ControllerEvents, 
 	private boolean usernameTouched = false;
 	private boolean passwordTouched = false;
 
+	/**
+	 * Password input
+	 */
 	@FXML
 	private JFXPasswordField passwordField;
 
+	/**
+	 * Username input
+	 */
 	@FXML
 	private JFXTextField usernameField;
 
@@ -53,6 +62,12 @@ public class LoginController implements ServiceRegistryAware, ControllerEvents, 
 		loginModel.setConnectionManager(serviceRegistry.get(ConnectionManager.class));
 	}
 
+	/**
+	 * Check if credentials are correct and valid
+	 *
+	 * If yes, define the current user
+	 * If no, inform the user
+	 */
 	@FXML
 	public void submitLogin() {
 		loginErrorNote.setVisible(false);
@@ -74,11 +89,17 @@ public class LoginController implements ServiceRegistryAware, ControllerEvents, 
 		}
 	}
 
+	/**
+	 * Close the login modal
+	 */
 	@FXML
 	public void closeModal() {
 		SceneManager.getInstance().closeModal(AppScenes.LOGIN);
 	}
 
+	/**
+	 * Check if the form values are valid
+	 */
 	private void validateForm() {
 		loginErrorNote.setVisible(false);
 

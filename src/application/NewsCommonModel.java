@@ -30,7 +30,10 @@ class NewsCommonModel {
 	}
 
 	/**
-	 * This method will open a JSON file and convert it to an object Article
+	 * Create an article instance based on a File
+	 *
+	 * @param file
+	 * @return
 	 */
 	Article createArticleFromFile(File file) {
 		if (file == null) {
