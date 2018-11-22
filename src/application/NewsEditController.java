@@ -32,8 +32,6 @@ public class NewsEditController extends NewsCommonController {
 	private boolean htmlMode = true;
 	private boolean bodyMode = false;
 
-	private ObservableList<Categories> categoriesList;
-
 	@FXML
 	private ImageView imgPreview;
 
@@ -62,11 +60,6 @@ public class NewsEditController extends NewsCommonController {
 	private Label bodyLabel;
 
 	public NewsEditController() {
-		this.categoriesList = FXCollections.observableArrayList();
-		this.categoriesList.addAll(Categories.values());
-		// remove option for category "ALL"
-		this.categoriesList.remove(0);
-
 		this.editingArticle = new NewsEditModel(null);
 	}
 
@@ -84,7 +77,12 @@ public class NewsEditController extends NewsCommonController {
         assert editorText != null : "fx:id=\"editorText\" was not injected: check your FXML file 'NewsEdit.fxml'.";
         assert sendAndBack != null : "fx:id=\"sendAndBack\" was not injected: check your FXML file 'NewsEdit.fxml'.";
 
-		this.category.setItems(this.categoriesList);
+		ObservableList<Categories> categoriesList = FXCollections.observableArrayList();
+		categoriesList.addAll(Categories.values());
+		// remove option for category "ALL"
+		categoriesList.remove(0);
+
+		category.setItems(categoriesList);
 		editorText.setManaged(false);
 		editorText.setVisible(false);
 		bodyLabel.setManaged(false);

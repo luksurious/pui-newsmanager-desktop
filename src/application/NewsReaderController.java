@@ -25,12 +25,8 @@ import javafx.scene.control.ScrollPane;
 public class NewsReaderController extends NewsCommonController {
 
 	private NewsReaderModel newsReaderModel = new NewsReaderModel();
-
-	private ObservableList<Categories> categoryDataList;
 	
 	private boolean loaded = false;
-
-	private Article openArticle;
 
 	@FXML
 	private Accordion newsList;
@@ -42,10 +38,6 @@ public class NewsReaderController extends NewsCommonController {
 	private HBox noItemsNote;
 	@FXML
 	private ScrollPane newsScrollPane;
-
-	public NewsReaderController() {
-		this.categoryDataList = this.newsReaderModel.getCategories();
-	}
 
 	@FXML @Override
 	public void initialize() {
@@ -97,6 +89,7 @@ public class NewsReaderController extends NewsCommonController {
 	}
 
 	private void initCategoriesList() {
+		ObservableList<Categories> categoryDataList = this.newsReaderModel.getCategories();
 		for (Categories category : categoryDataList) {
 			Label categoryLabel = new Label(category.getName());
 			
@@ -199,13 +192,5 @@ public class NewsReaderController extends NewsCommonController {
 	@Override
 	protected NewsCommonModel getModel() {
 		return newsReaderModel;
-	}
-
-	public void setOpenArticle(Article openArticle) {
-		this.openArticle = openArticle;
-	}
-
-	public Article getOpenArticle() {
-		return openArticle;
 	}
 }

@@ -5,14 +5,14 @@ import application.services.SceneManager;
 import application.services.ServiceRegistry;
 import application.services.ServiceRegistryAware;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import serverConection.ConnectionManager;
 import serverConection.exceptions.ServerCommunicationError;
 
 import java.io.IOException;
 
+import com.jfoenix.controls.JFXButton;
+
 /**
- *
  * The delete controller is in charge of dealing with the dialog popup
  * It delete the current article from the database and the local application
  */
@@ -20,10 +20,10 @@ public class DeleteController implements ServiceRegistryAware, ControllerEvents,
     protected ServiceRegistry serviceRegistry;
 
     @FXML
-    private Button confirm;
+    private JFXButton confirm;
 
     @FXML
-    private Button cancel;
+    private JFXButton cancel;
 
     private Article article;
 
@@ -34,12 +34,6 @@ public class DeleteController implements ServiceRegistryAware, ControllerEvents,
      */
     @FXML
     private void confirmAction() throws IOException {
-        try {
-            System.out.println(this.article);
-        } catch (Exception e){
-            System.out.println(e.getCause());
-        }
-
         ConnectionManager connectionManager = serviceRegistry.get(ConnectionManager.class);
 
         try {

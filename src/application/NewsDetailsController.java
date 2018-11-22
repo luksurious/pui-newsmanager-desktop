@@ -5,17 +5,9 @@ import java.io.IOException;
 import com.jfoenix.controls.JFXButton;
 
 import application.news.Article;
-import application.news.Categories;
-import application.news.User;
-import application.services.SceneManager;
-import application.utils.JsonArticle;
-import application.utils.exceptions.ErrorMalFormedNews;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
@@ -90,7 +82,13 @@ public class NewsDetailsController extends NewsCommonController {
 		this.title.setText(article.getTitle());
 		this.subtitle.setText(article.getSubtitle());
 		this.category.setText(article.getCategory());
-		this.newsImage.setImage(article.getImageData());
+
+		if (article.getImageData() == null) {
+			this.newsImage.setImage(new Image(getClass().getResourceAsStream("/noImage.jpg")));
+		} else {
+			this.newsImage.setImage(article.getImageData());
+		}
+		
 		WebEngine webEngine = this.body.getEngine();
 		webEngine.loadContent(article.getBodyText());
 		
@@ -104,9 +102,6 @@ public class NewsDetailsController extends NewsCommonController {
 			btnEdit.setDisable(true);
 			btnDelete.setDisable(true);
 		}
-	}
-	public Article getArticle() {
-		return this.article;
 	}
 
 	@FXML
@@ -129,7 +124,6 @@ public class NewsDetailsController extends NewsCommonController {
 	@FXML
 	public void deleteNews() {
 		openDeleteDialog(article);
-
 	}
 
 	@Override
