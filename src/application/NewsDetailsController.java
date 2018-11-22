@@ -60,6 +60,11 @@ public class NewsDetailsController extends NewsCommonController {
         assert btnAbstract != null : "fx:id=\"btnAbstract\" was not injected: check your FXML file 'NewsDetails.fxml'.";
     }
 	
+	/**
+	 * When a user logs in it will change the interface by appearing the buttons of Edit and Delete news.
+	 * When the user is not the same as the one that created the news, then the buttons of editing will
+	 * be disabled for him/her, since the user that created the new is the only one able to modify it.
+	 */
 	@Override
 	protected void updateUiAfterLogin() {
 		super.updateUiAfterLogin();
@@ -72,7 +77,10 @@ public class NewsDetailsController extends NewsCommonController {
 			btnDelete.setDisable(true);
 		}
 	}
-
+	
+	/**
+	 * When a user logs out it will change the interface by hiding the buttons of Edit and Delete news.
+	 */
 	@Override
 	protected void updateUiAfterLogout() {
 		super.updateUiAfterLogout();
@@ -83,6 +91,7 @@ public class NewsDetailsController extends NewsCommonController {
 
 	/**
 	 * @param article the article to set
+	 * Sets the article and shows the details of the selected article in the details news page.
 	 */
 	public void setArticle(Article article) {
 		this.article = article;
@@ -105,10 +114,18 @@ public class NewsDetailsController extends NewsCommonController {
 			btnDelete.setDisable(true);
 		}
 	}
+	
+	/**
+	 * Getter for the article
+	 */
 	public Article getArticle() {
 		return this.article;
 	}
 
+	/**
+	 * When clicking the button of abstract/body, it will change the text displayed 
+	 * in the web engine and also the button text either to show the body or the abstract.
+	 */
 	@FXML
 	public void changeAbstractBody(ActionEvent event) throws IOException {
 		WebEngine webEngine = this.body.getEngine();
@@ -121,17 +138,26 @@ public class NewsDetailsController extends NewsCommonController {
 		}
 	}
 	
+	/**
+	 * When clicking the button it will open the news editor.
+	 */
 	@FXML
 	public void editNews() {
 		openEditorForExistingArticle(article);
 	}
 
+	/**
+	 * When clicking the button it will delete the selected news.
+	 */
 	@FXML
 	public void deleteNews() {
 		openDeleteDialog(article);
 
 	}
-
+	
+	/**
+	 * The controller gets the model.
+	 */
 	@Override
 	protected NewsCommonModel getModel() {
 		return newsDetailsModel;
