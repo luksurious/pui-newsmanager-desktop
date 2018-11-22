@@ -14,11 +14,18 @@ import application.news.User;
 import application.services.SceneManager;
 import application.services.ServiceRegistry;
 import application.services.ServiceRegistryAware;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -84,6 +91,29 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		setUser(null);
 	}
 
+	void openEditorForExistingArticle(Article article) {
+		if (!openEditor()) {
+			return;
+		}
+
+		SceneManager sceneManager = SceneManager.getInstance();
+		NewsEditController controller = (NewsEditController) sceneManager.getController(AppScenes.EDITOR);
+		controller.setArticle(article);
+	}
+
+	void openDeleteDialog(Article article){
+		SceneManager sceneManager = SceneManager.getInstance();
+		try {
+            sceneManager.showSceneInModal(AppScenes.DELETE, null, false);
+            DeleteController controller = (DeleteController) sceneManager.getController(AppScenes.DELETE);
+            controller.setArticle(article);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+	}
+
 	@FXML
 	public void loadNewsFile() {
 		Stage stage = SceneManager.getInstance().getCurrentStage();
@@ -115,6 +145,7 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		return true;
 	}
 
+
 	@Override
 	public void setServiceRegistry(ServiceRegistry serviceRegistry) {
 		this.serviceRegistry = serviceRegistry;
@@ -132,16 +163,6 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 
 	protected void updateUiAfterLogout() {
 		newsHead.updateUiAfterLogout();
-	}
-
-	protected void openEditorForExistingArticle(Article article) {
-		if (!openEditor()) {
-			return;
-		}
-
-		SceneManager sceneManager = SceneManager.getInstance();
-		NewsEditController controller = (NewsEditController) sceneManager.getController(AppScenes.EDITOR);
-		controller.setArticle(article);
 	}
 
 	protected void showDialog(String text) {

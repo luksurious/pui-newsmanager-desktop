@@ -41,7 +41,7 @@
 				<JFXButton fx:id="btnDelete" layoutX="60.0"
 					layoutY="158.0" mnemonicParsing="false" styleClass="danger"
 					text="Delete" />
-				<JFXButton fx:id="btnShow" layoutX="620.0" layoutY="158.0"
+				<JFXButton fx:id="btnShow" layoutX="610.0" layoutY="158.0"
 					mnemonicParsing="false" styleClass="primary" text="Show more" />
 			</children>
 		</AnchorPane>
