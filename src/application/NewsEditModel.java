@@ -12,7 +12,6 @@ import javafx.scene.image.Image;
  * needed to develop NewsEditController
  * 
  * @author AngelLucas
- *
  */
 class NewsEditModel extends NewsCommonModel {
 	// Reference to original article. Useful for undo changes

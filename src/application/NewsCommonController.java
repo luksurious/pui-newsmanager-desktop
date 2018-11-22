@@ -30,13 +30,25 @@ import serverConection.ConnectionManager;
  * @author students
  */
 public abstract class NewsCommonController implements ServiceRegistryAware, ControllerEvents, NewsController {
+	/**
+	 * The logged in user, or null
+	 */
 	protected User user;
 
+	/**
+	 * Service registry holding global services
+	 */
 	protected ServiceRegistry serviceRegistry;
 
+	/**
+	 * The root pane for the stage
+	 */
 	@FXML
 	protected BorderPane rootPane;
 
+	/**
+	 * The header of the main views
+	 */
 	@FXML
 	protected NewsHead newsHead;
 
@@ -93,6 +105,7 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 			return;
 		}
 
+		// updated the UI after logging in
 		onBeforeShow();
 	}
 
@@ -195,6 +208,10 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, false);
 	}
 
+	/**
+	 * Subclasses must implement this and retrieve its model which must be an instance of {@link NewsCommonModel}
+	 * @return The model of the controller
+	 */
 	protected abstract NewsCommonModel getModel();
 
     /**

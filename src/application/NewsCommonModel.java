@@ -17,6 +17,8 @@ import serverConection.ConnectionManager;
 /**
  * This class NewsCommonModel is the model of NewsCommonController, it will set and get
  * the connection manager
+ * 
+ * @author students
  */
 class NewsCommonModel {
 	protected ConnectionManager connectionManager;
@@ -32,8 +34,8 @@ class NewsCommonModel {
 	/**
 	 * Create an article instance based on a File
 	 *
-	 * @param file
-	 * @return
+	 * @param file The file to load the article from
+	 * @return The article created from the file, or null if there was a problem.
 	 */
 	Article createArticleFromFile(File file) {
 		if (file == null) {

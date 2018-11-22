@@ -13,27 +13,70 @@ import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+/**
+ * Controller for the details view
+ * 
+ * @author students
+ */
 public class NewsDetailsController extends NewsCommonController {
 	private NewsCommonModel newsDetailsModel = new NewsCommonModel();
 
+	/**
+	 * The article being shown
+	 */
 	private Article article;
 
+	/**
+	 * Button to edit the article
+	 */
 	@FXML
 	private JFXButton btnEdit;
+	
+	/**
+	 * Button to delete the article
+	 */
 	@FXML
 	private JFXButton btnDelete;
+	
+	/**
+	 * Button to switch between abstract and body
+	 */
 	@FXML
 	private JFXButton btnAbstract;
+	
+	/**
+	 * ImageView to show the image of the article
+	 */
 	@FXML
 	private ImageView newsImage;
+	
+	/**
+	 * Control showing the title of the article
+	 */
 	@FXML
 	private Text title;
+
+	/**
+	 * Control showing the category of the article
+	 */
 	@FXML
 	private Text category;
+
+	/**
+	 * Control showing the subtitle of the article
+	 */
 	@FXML
 	private Text subtitle;
+
+	/**
+	 * Control showing information of who and when the article was updated
+	 */
 	@FXML
 	private Text updated;
+	
+	/**
+	 * Webview to show the body or abstract in HTML format
+	 */
 	@FXML
 	private WebView body;
 
@@ -67,6 +110,7 @@ public class NewsDetailsController extends NewsCommonController {
 		this.btnDelete.setVisible(true);
 
 		if (article instanceof Article && user.getIdUser() != article.getIdUser()) {
+			// disable edit and delete if it is not from the same user
 			btnEdit.setDisable(true);
 			btnDelete.setDisable(true);
 		}
@@ -96,6 +140,7 @@ public class NewsDetailsController extends NewsCommonController {
 		this.category.setText(article.getCategory());
 
 		if (article.getImageData() == null) {
+			// show a placeholder image if no image is given
 			this.newsImage.setImage(new Image(getClass().getResourceAsStream("/noImage.jpg")));
 		} else {
 			this.newsImage.setImage(article.getImageData());
@@ -111,6 +156,7 @@ public class NewsDetailsController extends NewsCommonController {
 		}
 
 		if (user != null && user.getIdUser() != article.getIdUser()) {
+			// disable edit and delete if it is not from the same user
 			btnEdit.setDisable(true);
 			btnDelete.setDisable(true);
 		}

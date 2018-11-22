@@ -13,13 +13,22 @@ import serverConection.ConnectionManager;
 
 /**
  * This controller manage the login methods and UI
+ *
+ * @author students
  */
 public class LoginController implements ServiceRegistryAware, ControllerEvents, NewsController {
 	private LoginModel loginModel = new LoginModel();
 
 	private ServiceRegistry serviceRegistry;
 
+	/**
+	 * Whether the username field was touched, i.e. edited
+	 */
 	private boolean usernameTouched = false;
+
+	/**
+	 * Whether the password field was touched, i.e. edited
+	 */
 	private boolean passwordTouched = false;
 
 	/**
@@ -34,9 +43,15 @@ public class LoginController implements ServiceRegistryAware, ControllerEvents, 
 	@FXML
 	private JFXTextField usernameField;
 
+	/**
+	 * Note if there is an error in the form
+	 */
 	@FXML
 	private Label formErrorNote;
 
+	/**
+	 * Note if the login failed
+	 */
 	@FXML
 	private Label loginErrorNote;
 
@@ -81,6 +96,7 @@ public class LoginController implements ServiceRegistryAware, ControllerEvents, 
 
 		User loggedInUser = this.loginModel.login(username, password);
 		if (loggedInUser != null) {
+			// push the currently logged in user to the service registry so it can be retrieved from all places
 			serviceRegistry.set(User.class, loggedInUser);
 
 			closeModal();
