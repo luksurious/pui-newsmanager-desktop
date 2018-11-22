@@ -45,6 +45,7 @@ public class NewsAccordionItem extends TitledPane {
         loader.setController(this);
         loader.setClassLoader(getClass().getClassLoader());
         loader.setRoot(this);
+        this.article = article;
         
         try {
         	loader.load();

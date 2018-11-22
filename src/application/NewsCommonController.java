@@ -104,8 +104,9 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 	void openDeleteDialog(Article article){
 		SceneManager sceneManager = SceneManager.getInstance();
 		try {
+			System.out.println(article.getIdArticle());
 			sceneManager.showSceneInModal(AppScenes.DELETE);
-			NewsEditController controller = (NewsEditController) sceneManager.getController(AppScenes.DELETE);
+			DeleteController controller = (DeleteController) sceneManager.getController(AppScenes.DELETE);
 			controller.setArticle(article);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -191,16 +192,6 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 
 	protected void updateUiAfterLogout() {
 		newsHead.updateUiAfterLogout();
-	}
-
-	protected void openEditorForExistingArticle(Article article) {
-		if (!openEditor()) {
-			return;
-		}
-
-		SceneManager sceneManager = SceneManager.getInstance();
-		NewsEditController controller = (NewsEditController) sceneManager.getController(AppScenes.EDITOR);
-		controller.setArticle(article);
 	}
 
 	protected void showDialog(String text) {
