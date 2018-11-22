@@ -28,7 +28,7 @@
 							</HBox.margin>
 						</ImageView>
 						<WebView fx:id="abstractHtml" disable="true"
-							maxHeight="130.0" maxWidth="457.0" minHeight="130.0"
+							maxWidth="457.0" minHeight="130.0"
 							minWidth="457.0" prefHeight="130.0" prefWidth="457.0">
 						</WebView>
 					</children>

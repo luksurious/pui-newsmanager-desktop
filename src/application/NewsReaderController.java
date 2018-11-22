@@ -27,6 +27,7 @@ public class NewsReaderController extends NewsCommonController {
 	private NewsReaderModel newsReaderModel = new NewsReaderModel();
 	
 	private boolean loaded = false;
+	private boolean loading = false;
 
 	@FXML
 	private Accordion newsList;
@@ -114,6 +115,10 @@ public class NewsReaderController extends NewsCommonController {
 	}
 
 	private void getData() {
+		if (loading) {
+			return;
+		}
+		loading = true;
 		noItemsNote.setManaged(false);
 		noItemsNote.setVisible(false);
 		newsScrollPane.setVisible(false);
@@ -132,6 +137,7 @@ public class NewsReaderController extends NewsCommonController {
 			});
 
 			loaded = true;
+			loading = false;
 		});
 	}
 	
