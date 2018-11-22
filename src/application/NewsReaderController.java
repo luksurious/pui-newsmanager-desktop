@@ -25,13 +25,20 @@ import javafx.scene.control.ScrollPane;
 /**
  * Manage the main screen displaying articles and categories
  *
- * @author AngelLucas & students
+ * @author AngelLucas
+ * @author students
  */
 public class NewsReaderController extends NewsCommonController {
 
 	private NewsReaderModel newsReaderModel = new NewsReaderModel();
 
+	/**
+	 * Whether or not data was already loaded
+	 */
 	private boolean loaded = false;
+	/**
+	 * Whether or not loading data from the server is currently in progress
+	 */
 	private boolean loading = false;
 
 	/**
@@ -47,7 +54,7 @@ public class NewsReaderController extends NewsCommonController {
 	private JFXListView<Label> categoryListView;
 
 	/**
-	 * The loader
+	 * The loader while data is fetched from the server
 	 */
 	@FXML
 	private HBox loadingNotification;
@@ -58,6 +65,9 @@ public class NewsReaderController extends NewsCommonController {
 	@FXML
 	private HBox noItemsNote;
 
+	/**
+	 * The container for the accordion to allow scrolling
+	 */
 	@FXML
 	private ScrollPane newsScrollPane;
 
@@ -74,6 +84,7 @@ public class NewsReaderController extends NewsCommonController {
 
 		initCategoriesList();
 
+		// hide elements if data is not yet loaded
 		noItemsNote.setManaged(false);
 		noItemsNote.setVisible(false);
 
@@ -88,6 +99,8 @@ public class NewsReaderController extends NewsCommonController {
 		super.onBeforeShow();
 
 		if (!loaded) {
+			// start to load data if the view is going to be shown next
+			// only if it was not loaded before
 			getData();
 		}
 	}
@@ -122,6 +135,7 @@ public class NewsReaderController extends NewsCommonController {
 	private void initCategoriesList() {
 		ObservableList<Categories> categoryDataList = this.newsReaderModel.getCategories();
 		
+		// Because the JFXListView control does not support icons with custom elements, we need to use a Label with a Graphic set
 		for (Categories category : categoryDataList) {
 			Label categoryLabel = new Label(category.getName());
 
@@ -136,6 +150,7 @@ public class NewsReaderController extends NewsCommonController {
 
 		categoryListView.getSelectionModel().selectFirst();
 
+		// react to changes on the category selection: filter the news elements
 		categoryListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				updateNewsContent();
@@ -153,6 +168,7 @@ public class NewsReaderController extends NewsCommonController {
 			return;
 		}
 		loading = true;
+		
 		noItemsNote.setManaged(false);
 		noItemsNote.setVisible(false);
 		newsScrollPane.setVisible(false);
@@ -180,19 +196,27 @@ public class NewsReaderController extends NewsCommonController {
 	 * Load the UI based on the data
 	 */
 	private void updateNewsContent() {
+		// remove all news elements
 		newsList.getPanes().clear();
+		
 		Label category = categoryListView.getSelectionModel().getSelectedItem();
-
 		for (Article article : newsReaderModel.getArticles()) {
+			// skip articles which do not fit the selected category
 			if (category != null && !category.getText().equals(Categories.ALL.toString())
 					&& !article.getCategory().equals(category.getText())) {
 				continue;
 			}
 
-			NewsAccordionItem item = new NewsAccordionItem(article, () -> openDetailsbyId(article),
-					() -> openEditorForExistingArticle(article), () -> openDeleteDialog(article));
+			// create a new accordion item for each element, passing the callbacks to the methods in this controller
+			NewsAccordionItem item = new NewsAccordionItem(
+				article,
+				() -> openDetailsbyId(article),
+				() -> openEditorForExistingArticle(article),
+				() -> openDeleteDialog(article)
+			);
 
 			if (user instanceof User) {
+				// show buttons to edit/delete
 				item.updateForLoggedIn(user);
 			}
 
@@ -203,9 +227,11 @@ public class NewsReaderController extends NewsCommonController {
 		loadingNotification.setManaged(false);
 
 		if (newsList.getPanes().size() == 0) {
+			// show hint about no news items being available
 			noItemsNote.setManaged(true);
 			noItemsNote.setVisible(true);
 		} else {
+			// show the news list
 			noItemsNote.setManaged(false);
 			noItemsNote.setVisible(false);
 			newsScrollPane.setVisible(true);

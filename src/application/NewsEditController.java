@@ -30,11 +30,18 @@ import serverConection.exceptions.ServerCommunicationError;
 /**
  * Manage the editor methods
  *
- * @author students & AngelLucas
+ * @author AngelLucas
+ * @author students
  */
 public class NewsEditController extends NewsCommonController {
 	private NewsEditModel editingArticle;
+	/**
+	 * Whether the text is edited in HTML (true) or plain text (false)
+	 */
 	private boolean htmlMode = true;
+	/**
+	 * Whether we are editing the body (true) or the abstract (false)
+	 */
 	private boolean bodyMode = false;
 
 	/**
@@ -79,9 +86,15 @@ public class NewsEditController extends NewsCommonController {
 	@FXML
 	private JFXTextArea editorText;
 
+	/**
+	 * Label when editing the abstract
+	 */
 	@FXML
 	private Label abstractLabel;
 
+	/**
+	 * Label when editing the body
+	 */
 	@FXML
 	private Label bodyLabel;
 
@@ -116,15 +129,21 @@ public class NewsEditController extends NewsCommonController {
 		categoriesList.remove(0);
 
 		category.setItems(categoriesList);
+		
+		// hide elements for the current mode
 		editorText.setManaged(false);
 		editorText.setVisible(false);
 		bodyLabel.setManaged(false);
 		bodyLabel.setVisible(false);
 
+		// use a different title in the edit view
 		newsHead.setCustomTitle("Create a new article");
 
+		// right now we don't have a user, so sending to the server is disabled
 		sendAndBack.setDisable(true);
 
+		// synchronize the text from the plaintext editor with the HTML editor
+		// in fact, the HTML editor does not have a way to bind a property, so we need to manually handle it
 		editorText.textProperty().addListener((observable, oldValue, newValue) -> {
 			editorHtml.setHtmlText(newValue);
 		});
@@ -254,6 +273,7 @@ public class NewsEditController extends NewsCommonController {
 
 		setupFieldBindings();
 
+		// select the correct category from the article
 		category.getSelectionModel().select(Categories.valueOf(article.getCategory().toUpperCase()));
 
 		if (article.getImageData() != null) {
@@ -261,9 +281,14 @@ public class NewsEditController extends NewsCommonController {
 		}
 	}
 
+	/**
+	 * Bind the values of the article to the fields in the view so that they are updated automatically when the form is changed
+	 */
 	private void setupFieldBindings() {
 		title.textProperty().bindBidirectional(editingArticle.titleProperty());
 		subtitle.textProperty().bindBidirectional(editingArticle.subtitleProperty());
+		
+		// for category and image we cannot bind the properties directly, instead we listen to changes in the form
 		category.getSelectionModel().selectedItemProperty().addListener((observer, oldValue, newValue) -> {
 			editingArticle.setCategory(newValue);
 		});
@@ -310,6 +335,7 @@ public class NewsEditController extends NewsCommonController {
 	@FXML
 	public void switchMode() {
 		if (htmlMode) {
+			// manually synchronize HTML and plain text field
 			editorText.setText(editorHtml.getHtmlText());
 		}
 
@@ -360,7 +386,7 @@ public class NewsEditController extends NewsCommonController {
 	}
 
 	/**
-	 * Back to the main screen
+	 * Back to the main screen, and discard changes
 	 *
 	 * @throws IOException
 	 */
@@ -370,6 +396,9 @@ public class NewsEditController extends NewsCommonController {
 		openMainView();
 	}
 
+	/**
+	 * Save the article to a JSON and show the path of the saved file
+	 */
 	@FXML
 	public void saveToFile() {
 		this.editingArticle.commit();
@@ -391,9 +420,13 @@ public class NewsEditController extends NewsCommonController {
 		}
 	}
 
+	/**
+	 * Save the article to the server and show a proper feedback to the user.
+	 * If the article was successfully sent, go to the main screen and reload the articles.
+	 * @throws IOException
+	 */
 	@FXML
 	public void saveToServer() throws IOException {
-
 		editingArticle.commit();
 
 		if (send()) {
