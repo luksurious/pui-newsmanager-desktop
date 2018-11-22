@@ -370,6 +370,9 @@ public class NewsEditController extends NewsCommonController {
 		openMainView();
 	}
 
+	/**
+	 * UI modal to save article to JSON file
+	 */
 	@FXML
 	public void saveToFile() {
 		this.editingArticle.commit();
@@ -390,7 +393,9 @@ public class NewsEditController extends NewsCommonController {
 			showDialog(body);
 		}
 	}
-
+	/**
+	 * UI modal to save an article into the server, if not error in dialog
+	 */
 	@FXML
 	public void saveToServer() throws IOException {
 
