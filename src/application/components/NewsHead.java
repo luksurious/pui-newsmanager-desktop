@@ -31,37 +31,39 @@ public class NewsHead extends HBox {
 	 */
 	@FXML
 	private ImageView headImage;
-	
+
 	/**
 	 * The label showing the main headline
 	 */
 	@FXML
 	private Label headline;
-	
+
 	/**
-	 * The label showing a short text above the headline (e.g. "These are the news...")
+	 * The label showing a short text above the headline (e.g. "These are the
+	 * news...")
 	 */
 	@FXML
 	private Label headlinePre;
-	
+
 	/**
-	 * The button group to create a new article, offering a menu item to load from file
+	 * The button group to create a new article, offering a menu item to load from
+	 * file
 	 */
 	@FXML
 	private SplitMenuButton btnAdd;
-	
+
 	/**
 	 * The Menu item inside the creation button group to load a news file
 	 */
 	@FXML
 	private MenuItem btnLoadNewsFile;
-	
+
 	/**
 	 * The button to open the login
 	 */
 	@FXML
 	private JFXButton btnLogin;
-	
+
 	/**
 	 * The button if the user is logged in, showing an item to logout
 	 */
@@ -113,8 +115,8 @@ public class NewsHead extends HBox {
 	}
 
 	/**
-	 * Update the view if a user is logged in.
-	 * Removes the button to login, and shows the button with the current user with the option to logout
+	 * Update the view if a user is logged in. Removes the button to login, and
+	 * shows the button with the current user with the option to logout
 	 * 
 	 * @param user The logged in user
 	 */
@@ -128,8 +130,8 @@ public class NewsHead extends HBox {
 	}
 
 	/**
-	 * Update the view if a user is logged out
-	 * Shows the button to login, and hides the button with the user and logout
+	 * Update the view if a user is logged out Shows the button to login, and hides
+	 * the button with the user and logout
 	 */
 	public void updateUiAfterLogout() {
 		btnLogin.setVisible(true);
@@ -141,7 +143,8 @@ public class NewsHead extends HBox {
 	}
 
 	/**
-	 * Show a different headline than the "These are the news for today". Removes the pre text in that case.
+	 * Show a different headline than the "These are the news for today". Removes
+	 * the pre text in that case.
 	 * 
 	 * @param title The new headline of the head area
 	 */
@@ -185,6 +188,7 @@ public class NewsHead extends HBox {
 
 	/**
 	 * Proxy method to go back to the main view
+	 * 
 	 * @throws IOException
 	 */
 	@FXML

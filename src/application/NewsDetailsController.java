@@ -36,26 +36,28 @@ public class NewsDetailsController extends NewsCommonController {
 	private Text updated;
 	@FXML
 	private WebView body;
-	
-	@FXML @Override
+
+	@FXML
+	@Override
 	public void initialize() {
 		super.initialize();
-		
-        assert newsImage != null : "fx:id=\"newsImage_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
-        assert title != null : "fx:id=\"title_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
-        assert category != null : "fx:id=\"category_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
-        assert subtitle != null : "fx:id=\"subtitle_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
-        assert body != null : "fx:id=\"body_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
-        assert updated != null : "fx:id=\"updated_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
-        assert btnEdit != null : "fx:id=\"btnEdit\" was not injected: check your FXML file 'NewsDetails.fxml'.";
-        assert btnDelete != null : "fx:id=\"btnDelete\" was not injected: check your FXML file 'NewsDetails.fxml'.";
-        assert btnAbstract != null : "fx:id=\"btnAbstract\" was not injected: check your FXML file 'NewsDetails.fxml'.";
-    }
-	
+
+		assert newsImage != null : "fx:id=\"newsImage_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+		assert title != null : "fx:id=\"title_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+		assert category != null : "fx:id=\"category_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+		assert subtitle != null : "fx:id=\"subtitle_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+		assert body != null : "fx:id=\"body_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+		assert updated != null : "fx:id=\"updated_id\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+		assert btnEdit != null : "fx:id=\"btnEdit\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+		assert btnDelete != null : "fx:id=\"btnDelete\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+		assert btnAbstract != null : "fx:id=\"btnAbstract\" was not injected: check your FXML file 'NewsDetails.fxml'.";
+	}
+
 	/**
-	 * When a user logs in it will change the interface by appearing the buttons of Edit and Delete news.
-	 * When the user is not the same as the one that created the news, then the buttons of editing will
-	 * be disabled for him/her, since the user that created the new is the only one able to modify it.
+	 * When a user logs in it will change the interface by appearing the buttons of
+	 * Edit and Delete news. When the user is not the same as the one that created
+	 * the news, then the buttons of editing will be disabled for him/her, since the
+	 * user that created the new is the only one able to modify it.
 	 */
 	@Override
 	protected void updateUiAfterLogin() {
@@ -63,15 +65,16 @@ public class NewsDetailsController extends NewsCommonController {
 
 		this.btnEdit.setVisible(true);
 		this.btnDelete.setVisible(true);
-		
+
 		if (article instanceof Article && user.getIdUser() != article.getIdUser()) {
 			btnEdit.setDisable(true);
 			btnDelete.setDisable(true);
 		}
 	}
-	
+
 	/**
-	 * When a user logs out it will change the interface by hiding the buttons of Edit and Delete news.
+	 * When a user logs out it will change the interface by hiding the buttons of
+	 * Edit and Delete news.
 	 */
 	@Override
 	protected void updateUiAfterLogout() {
@@ -82,8 +85,8 @@ public class NewsDetailsController extends NewsCommonController {
 	}
 
 	/**
-	 * @param article the article to set
-	 * Sets the article and shows the details of the selected article in the details news page.
+	 * @param article the article to set Sets the article and shows the details of
+	 *                the selected article in the details news page.
 	 */
 	public void setArticle(Article article) {
 		this.article = article;
@@ -97,10 +100,10 @@ public class NewsDetailsController extends NewsCommonController {
 		} else {
 			this.newsImage.setImage(article.getImageData());
 		}
-		
+
 		WebEngine webEngine = this.body.getEngine();
 		webEngine.loadContent(article.getBodyText());
-		
+
 		if (article.getPublicationDate() != null) {
 			this.updated.setText("Updated by user " + article.getIdUser() + " on " + article.getPublicationDate());
 		} else {
@@ -114,8 +117,9 @@ public class NewsDetailsController extends NewsCommonController {
 	}
 
 	/**
-	 * When clicking the button of abstract/body, it will change the text displayed 
-	 * in the web engine and also the button text either to show the body or the abstract.
+	 * When clicking the button of abstract/body, it will change the text displayed
+	 * in the web engine and also the button text either to show the body or the
+	 * abstract.
 	 */
 	@FXML
 	public void changeAbstractBody(ActionEvent event) throws IOException {
@@ -128,7 +132,7 @@ public class NewsDetailsController extends NewsCommonController {
 			btnAbstract.setText("Show Abstract");
 		}
 	}
-	
+
 	/**
 	 * When clicking the button it will open the news editor.
 	 */
@@ -144,7 +148,7 @@ public class NewsDetailsController extends NewsCommonController {
 	public void deleteNews() {
 		openDeleteDialog(article);
 	}
-	
+
 	/**
 	 * The controller gets the model.
 	 */

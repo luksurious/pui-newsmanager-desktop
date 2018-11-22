@@ -1,6 +1,5 @@
 package application;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,12 +23,12 @@ class NewsCommonModel {
 	void setConnectionManager(ConnectionManager connectionManager) {
 		this.connectionManager = connectionManager;
 	}
-	
+
 	Article createArticleFromFile(File file) {
 		if (file == null) {
 			return null;
 		}
-		
+
 		JsonReader jsonReader;
 		try {
 			jsonReader = Json.createReader(new FileInputStream(file));
@@ -49,7 +48,7 @@ class NewsCommonModel {
 			e1.printStackTrace();
 			return null;
 		}
-		
+
 		return article;
 	}
 

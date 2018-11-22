@@ -83,7 +83,7 @@ class LoginModel {
 
 		return usr;
 	}
-	
+
 	User login(String username, String password) {
 		try {
 			this.connectionManager.login(username, password);
@@ -92,7 +92,7 @@ class LoginModel {
 			e.printStackTrace();
 			return null;
 		}
-		
+
 		User loggedInUser = new User(username, Integer.parseInt(this.connectionManager.getIdUser()));
 		loggedInUser.setAdmin(this.connectionManager.isAdministrator());
 		return loggedInUser;

@@ -25,7 +25,7 @@ import javafx.scene.control.ScrollPane;
 public class NewsReaderController extends NewsCommonController {
 
 	private NewsReaderModel newsReaderModel = new NewsReaderModel();
-	
+
 	private boolean loaded = false;
 	private boolean loading = false;
 
@@ -40,32 +40,32 @@ public class NewsReaderController extends NewsCommonController {
 	@FXML
 	private ScrollPane newsScrollPane;
 
-	@FXML @Override
+	@FXML
+	@Override
 	public void initialize() {
 		super.initialize();
-		
-        assert categoryListView != null : "fx:id=\"categoryListView\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        assert newsScrollPane != null : "fx:id=\"newsScrollPane\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        assert newsList != null : "fx:id=\"newsList\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        assert loadingNotification != null : "fx:id=\"loadingNotification\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        assert noItemsNote != null : "fx:id=\"noItemsNote\" was not injected: check your FXML file 'NewsReader.fxml'.";
+
+		assert categoryListView != null : "fx:id=\"categoryListView\" was not injected: check your FXML file 'NewsReader.fxml'.";
+		assert newsScrollPane != null : "fx:id=\"newsScrollPane\" was not injected: check your FXML file 'NewsReader.fxml'.";
+		assert newsList != null : "fx:id=\"newsList\" was not injected: check your FXML file 'NewsReader.fxml'.";
+		assert loadingNotification != null : "fx:id=\"loadingNotification\" was not injected: check your FXML file 'NewsReader.fxml'.";
+		assert noItemsNote != null : "fx:id=\"noItemsNote\" was not injected: check your FXML file 'NewsReader.fxml'.";
 
 		initCategoriesList();
-		
+
 		noItemsNote.setManaged(false);
 		noItemsNote.setVisible(false);
 
-		
 		newsScrollPane.setVisible(false);
 		newsScrollPane.setManaged(false);
-		
+
 		categoryListView.setDisable(true);
 	}
 
 	@Override
 	public void onBeforeShow() {
 		super.onBeforeShow();
-		
+
 		if (!loaded) {
 			getData();
 		}
@@ -74,7 +74,7 @@ public class NewsReaderController extends NewsCommonController {
 	@Override
 	protected void updateUiAfterLogin() {
 		super.updateUiAfterLogin();
-		
+
 		newsList.getPanes().forEach((TitledPane titledPane) -> {
 			((NewsAccordionItem) titledPane).updateForLoggedIn(user);
 		});
@@ -93,18 +93,18 @@ public class NewsReaderController extends NewsCommonController {
 		ObservableList<Categories> categoryDataList = this.newsReaderModel.getCategories();
 		for (Categories category : categoryDataList) {
 			Label categoryLabel = new Label(category.getName());
-			
+
 			InputStream imageResource = getClass().getClassLoader().getResourceAsStream(category.getImagePath());
 			ImageView categoryImage = new ImageView(new Image(imageResource));
 			categoryImage.setFitHeight(44);
 			categoryImage.setFitWidth(44);
 			categoryLabel.setGraphic(categoryImage);
-			
+
 			categoryListView.getItems().add(categoryLabel);
 		}
-		
+
 		categoryListView.getSelectionModel().selectFirst();
-		
+
 		categoryListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				updateNewsContent();
@@ -125,8 +125,9 @@ public class NewsReaderController extends NewsCommonController {
 		newsScrollPane.setManaged(false);
 		loadingNotification.setVisible(true);
 		loadingNotification.setManaged(true);
-		
-		// load data in a separate thread so that the main UI is not blocked and is shown directly
+
+		// load data in a separate thread so that the main UI is not blocked and is
+		// shown directly
 		CompletableFuture.runAsync(() -> {
 			newsReaderModel.retrieveData();
 
@@ -140,35 +141,30 @@ public class NewsReaderController extends NewsCommonController {
 			loading = false;
 		});
 	}
-	
+
 	private void updateNewsContent() {
 		newsList.getPanes().clear();
 		Label category = categoryListView.getSelectionModel().getSelectedItem();
-		
+
 		for (Article article : newsReaderModel.getArticles()) {
 			if (category != null && !category.getText().equals(Categories.ALL.toString())
-				&& !article.getCategory().equals(category.getText())
-			) {
+					&& !article.getCategory().equals(category.getText())) {
 				continue;
 			}
-			
-			NewsAccordionItem item = new NewsAccordionItem(
-				article,
-				() -> openDetailsbyId(article),
-				() -> openEditorForExistingArticle(article),
-				() -> openDeleteDialog(article)
-			);
+
+			NewsAccordionItem item = new NewsAccordionItem(article, () -> openDetailsbyId(article),
+					() -> openEditorForExistingArticle(article), () -> openDeleteDialog(article));
 
 			if (user instanceof User) {
 				item.updateForLoggedIn(user);
 			}
-			
+
 			newsList.getPanes().add(item);
 		}
-		
+
 		loadingNotification.setVisible(false);
 		loadingNotification.setManaged(false);
-		
+
 		if (newsList.getPanes().size() == 0) {
 			noItemsNote.setManaged(true);
 			noItemsNote.setVisible(true);
@@ -179,10 +175,10 @@ public class NewsReaderController extends NewsCommonController {
 			newsScrollPane.setManaged(true);
 		}
 	}
-	
+
 	private void openDetailsbyId(Article article) {
 		SceneManager sceneManager = SceneManager.getInstance();
-		
+
 		try {
 			sceneManager.showSceneInPrimaryStage(AppScenes.NEWS_DETAILS);
 		} catch (IOException e) {
@@ -190,7 +186,7 @@ public class NewsReaderController extends NewsCommonController {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		NewsDetailsController controller = (NewsDetailsController) sceneManager.getController(AppScenes.NEWS_DETAILS);
 		controller.setArticle(article);
 	}

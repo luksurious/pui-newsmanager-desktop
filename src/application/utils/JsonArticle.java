@@ -102,7 +102,7 @@ public class JsonArticle {
 		String bodyText = articleData.getString(keys.get("Body"), "");
 		String category = articleData.getString(keys.get("Category"), "");
 		String deleted = articleData.getString(keys.get("Deleted"), "0");
-		
+
 		Boolean isDeleted = deleted.equals("1");
 		// Boolean isPublish = articleData.getBoolean(keys.get("Publish"));
 		if (title.equals("") || category.equals("")) {
@@ -114,7 +114,7 @@ public class JsonArticle {
 			String idUserAux = articleData.getString(keys.get("idUser"));
 			idUser = Integer.parseInt(idUserAux);
 		}
-		
+
 		// Added support for reading the publication date (for articles from the server)
 		Date publicationDate = loadPublicationDate(articleData);
 
@@ -144,6 +144,7 @@ public class JsonArticle {
 
 	/**
 	 * Gets the publication date of a json article
+	 * 
 	 * @param articleData The article data
 	 * @return The publication date if it is given and has a valid format, or null
 	 * @author students
@@ -152,9 +153,9 @@ public class JsonArticle {
 		String publicationDateString = articleData.getString(keys.get("PublicationDate"), "0");
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
+
 		Date publicationDate = null;
-		if (!publicationDateString.equals("0") && !publicationDateString.isEmpty()) {			
+		if (!publicationDateString.equals("0") && !publicationDateString.isEmpty()) {
 			try {
 				publicationDate = dateFormat.parse(publicationDateString);
 			} catch (ParseException e) {

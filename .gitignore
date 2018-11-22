@@ -4,6 +4,7 @@ doc
 target/
 .project
 .classpath
+*.iml
 
 pom.xml.tag
 pom.xml.releaseBackup

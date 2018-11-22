@@ -49,12 +49,12 @@ class NewsEditModel extends NewsCommonModel {
 
 	public void setUser(User user) {
 		this.user = user;
-		
+
 		if (user != null) {
 			edited.setIdUser(user.getIdUser());
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @return a copy of edited article body

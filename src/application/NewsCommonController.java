@@ -34,16 +34,18 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 
 	@FXML
 	protected NewsHead newsHead;
-	
+
 	/**
-	 * Adding the news head to the BorderPane at the top, so all the scenes have the same headnews
+	 * Adding the news head to the BorderPane at the top, so all the scenes have the
+	 * same headnews
 	 */
 	@FXML
 	public void initialize() {
 		assert rootPane != null : "fx:id=\"rootPane\" was not injected: check your FXML file 'NewsReader.fxml'.";
-        
+
 		// Adding <NewsHead> into the FXML files didn't work properly with SceneBuilder
-		// although the application started fine, so the head part is added from the code
+		// although the application started fine, so the head part is added from the
+		// code
 		newsHead = new NewsHead(this);
 		rootPane.setTop(newsHead);
 	}
@@ -97,12 +99,12 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 		controller.setArticle(article);
 	}
 
-	void openDeleteDialog(Article article){
+	void openDeleteDialog(Article article) {
 		SceneManager sceneManager = SceneManager.getInstance();
 		try {
-            sceneManager.showSceneInModal(AppScenes.DELETE, false);
-            DeleteController controller = (DeleteController) sceneManager.getController(AppScenes.DELETE);
-            controller.setArticle(article);
+			sceneManager.showSceneInModal(AppScenes.DELETE, false);
+			DeleteController controller = (DeleteController) sceneManager.getController(AppScenes.DELETE);
+			controller.setArticle(article);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -140,7 +142,6 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 
 		return true;
 	}
-
 
 	@Override
 	public void setServiceRegistry(ServiceRegistry serviceRegistry) {

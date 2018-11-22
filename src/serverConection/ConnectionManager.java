@@ -38,13 +38,15 @@ public class ConnectionManager {
 	private String idUser;
 	private String authType;
 	private String apikey;
-	
+
 	/**
-	 * Save the anonymous apikey as a separate property so we can revert to it if a user is logged out
+	 * Save the anonymous apikey as a separate property so we can revert to it if a
+	 * user is logged out
+	 * 
 	 * @author students
 	 */
 	private String anonymousApikey;
-	
+
 	private boolean loggedOK = false;
 
 	private boolean isAdministrator = false;
@@ -157,7 +159,7 @@ public class ConnectionManager {
 			throw new AuthenticationError(e.getMessage());
 		}
 	}
-	
+
 	public void logout() {
 		idUser = null;
 		authType = null;
@@ -210,7 +212,7 @@ public class ConnectionManager {
 	 */
 	public void setAnonymousAPIKey(String key) {
 		this.anonymousApikey = key;
-		
+
 		if (this.apikey == null) {
 			this.apikey = key;
 		}

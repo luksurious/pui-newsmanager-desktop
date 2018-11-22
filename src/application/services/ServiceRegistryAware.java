@@ -1,8 +1,9 @@
 package application.services;
 
 /**
- * Simple interface for classes to indicate that they would require the service registry.
- * Should be used by central loaders / managers to inject the service registry
+ * Simple interface for classes to indicate that they would require the service
+ * registry. Should be used by central loaders / managers to inject the service
+ * registry
  *
  * @author students
  */

@@ -33,10 +33,10 @@ public class LoginController implements ServiceRegistryAware, ControllerEvents, 
 
 	@FXML
 	void initialize() {
-        assert usernameField != null : "fx:id=\"usernameField\" was not injected: check your FXML file 'Login.fxml'.";
-        assert passwordField != null : "fx:id=\"passwordField\" was not injected: check your FXML file 'Login.fxml'.";
-        assert formErrorNote != null : "fx:id=\"formErrorNote\" was not injected: check your FXML file 'Login.fxml'.";
-        assert loginErrorNote != null : "fx:id=\"loginErrorNote\" was not injected: check your FXML file 'Login.fxml'.";
+		assert usernameField != null : "fx:id=\"usernameField\" was not injected: check your FXML file 'Login.fxml'.";
+		assert passwordField != null : "fx:id=\"passwordField\" was not injected: check your FXML file 'Login.fxml'.";
+		assert formErrorNote != null : "fx:id=\"formErrorNote\" was not injected: check your FXML file 'Login.fxml'.";
+		assert loginErrorNote != null : "fx:id=\"loginErrorNote\" was not injected: check your FXML file 'Login.fxml'.";
 
 		this.usernameField.textProperty().addListener((observable, oldValue, newValue) -> {
 			usernameTouched = true;

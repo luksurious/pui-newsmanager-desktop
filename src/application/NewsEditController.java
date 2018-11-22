@@ -63,19 +63,20 @@ public class NewsEditController extends NewsCommonController {
 		this.editingArticle = new NewsEditModel(null);
 	}
 
-	@FXML @Override
+	@FXML
+	@Override
 	public void initialize() {
 		super.initialize();
-		
-        assert title != null : "fx:id=\"title\" was not injected: check your FXML file 'NewsEdit.fxml'.";
-        assert subtitle != null : "fx:id=\"subtitle\" was not injected: check your FXML file 'NewsEdit.fxml'.";
-        assert category != null : "fx:id=\"category\" was not injected: check your FXML file 'NewsEdit.fxml'.";
-        assert imgPreview != null : "fx:id=\"imgPreview\" was not injected: check your FXML file 'NewsEdit.fxml'.";
-        assert abstractLabel != null : "fx:id=\"abstractLabel\" was not injected: check your FXML file 'NewsEdit.fxml'.";
-        assert bodyLabel != null : "fx:id=\"bodyLabel\" was not injected: check your FXML file 'NewsEdit.fxml'.";
-        assert editorHtml != null : "fx:id=\"editorHtml\" was not injected: check your FXML file 'NewsEdit.fxml'.";
-        assert editorText != null : "fx:id=\"editorText\" was not injected: check your FXML file 'NewsEdit.fxml'.";
-        assert sendAndBack != null : "fx:id=\"sendAndBack\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+
+		assert title != null : "fx:id=\"title\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+		assert subtitle != null : "fx:id=\"subtitle\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+		assert category != null : "fx:id=\"category\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+		assert imgPreview != null : "fx:id=\"imgPreview\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+		assert abstractLabel != null : "fx:id=\"abstractLabel\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+		assert bodyLabel != null : "fx:id=\"bodyLabel\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+		assert editorHtml != null : "fx:id=\"editorHtml\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+		assert editorText != null : "fx:id=\"editorText\" was not injected: check your FXML file 'NewsEdit.fxml'.";
+		assert sendAndBack != null : "fx:id=\"sendAndBack\" was not injected: check your FXML file 'NewsEdit.fxml'.";
 
 		ObservableList<Categories> categoriesList = FXCollections.observableArrayList();
 		categoriesList.addAll(Categories.values());
@@ -87,15 +88,15 @@ public class NewsEditController extends NewsCommonController {
 		editorText.setVisible(false);
 		bodyLabel.setManaged(false);
 		bodyLabel.setVisible(false);
-		
+
 		newsHead.setCustomTitle("Create a new article");
-		
+
 		sendAndBack.setDisable(true);
-		
+
 		editorText.textProperty().addListener((observable, oldValue, newValue) -> {
 			editorHtml.setHtmlText(newValue);
 		});
-		
+
 		setupFieldBindings();
 	}
 
@@ -110,18 +111,18 @@ public class NewsEditController extends NewsCommonController {
 	@Override
 	protected void updateUiAfterLogout() {
 		super.updateUiAfterLogout();
-		
+
 		editingArticle.setUser(user);
 		sendAndBack.setDisable(true);
 	}
-	
 
 	@FXML
 	public void onImageClicked(MouseEvent event) {
 		if (event.getClickCount() >= 2) {
 			try {
 				SceneManager.getInstance().showSceneInModal(AppScenes.IMAGE_PICKER);
-				ImagePickerController controller = (ImagePickerController) SceneManager.getInstance().getController(AppScenes.IMAGE_PICKER);
+				ImagePickerController controller = (ImagePickerController) SceneManager.getInstance()
+						.getController(AppScenes.IMAGE_PICKER);
 				Image image = controller.getImage();
 				if (image != null) {
 					imgPreview.setImage(image);
@@ -161,7 +162,7 @@ public class NewsEditController extends NewsCommonController {
 			showErrorDialog("You cannot save an empty article.");
 			return false;
 		}
-		
+
 		String titleText = article.getTitle();
 		String category = article.getCategory();
 
@@ -169,7 +170,7 @@ public class NewsEditController extends NewsCommonController {
 			showErrorDialog("Imposible to save the article! Title and category are mandatory!");
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -193,10 +194,10 @@ public class NewsEditController extends NewsCommonController {
 		onBeforeShow();
 
 		setupFieldBindings();
-		
+
 		category.getSelectionModel().select(Categories.valueOf(article.getCategory().toUpperCase()));
-		
-		if (article.getImageData() != null) {			
+
+		if (article.getImageData() != null) {
 			imgPreview.setImage(article.getImageData());
 		}
 	}
@@ -225,17 +226,17 @@ public class NewsEditController extends NewsCommonController {
 		FileWriter writer = null;
 		try {
 			File file = new File(fileName);
-            file.setWritable(true);
-            file.setReadable(true);
+			file.setWritable(true);
+			file.setReadable(true);
 			writer = new FileWriter(file);
 			writer.write(data.toString());
 			writer.flush();
 			writer.close();
-			
+
 			return file.getAbsolutePath();
 		} catch (IOException e) {
 			e.printStackTrace();
-			if (writer != null) {				
+			if (writer != null) {
 				try {
 					writer.close();
 				} catch (IOException e1) {
@@ -250,15 +251,15 @@ public class NewsEditController extends NewsCommonController {
 		if (htmlMode) {
 			editorText.setText(editorHtml.getHtmlText());
 		}
-		
+
 		this.htmlMode = !this.htmlMode;
-		
+
 		editorHtml.setManaged(this.htmlMode);
 		editorHtml.setVisible(this.htmlMode);
 		editorText.setManaged(!this.htmlMode);
 		editorText.setVisible(!this.htmlMode);
 	}
-	
+
 	private void bindTextEditors() {
 		if (this.bodyMode) {
 			editorText.setText(this.editorHtml.getHtmlText());
@@ -272,16 +273,16 @@ public class NewsEditController extends NewsCommonController {
 			editorText.textProperty().bindBidirectional(editingArticle.abstractTextProperty());
 		}
 	}
-	
+
 	@FXML
 	public void switchAttribute() {
 		this.bodyMode = !this.bodyMode;
-		
+
 		bodyLabel.setManaged(this.bodyMode);
 		bodyLabel.setVisible(this.bodyMode);
 		abstractLabel.setManaged(!this.bodyMode);
 		abstractLabel.setVisible(!this.bodyMode);
-		
+
 		bindTextEditors();
 	}
 
@@ -295,16 +296,16 @@ public class NewsEditController extends NewsCommonController {
 		editingArticle.discardChanges();
 		openMainView();
 	}
-	
+
 	@FXML
 	public void saveToFile() {
 		this.editingArticle.commit();
 		if (!validateArticle()) {
 			return;
 		}
-		
+
 		String fileName = write();
-		
+
 		if (fileName != null) {
 			VBox body = new VBox();
 			Label label = new Label("The article was successfully saved to");
@@ -313,18 +314,18 @@ public class NewsEditController extends NewsCommonController {
 			filenameField.setPrefHeight(50);
 			body.getChildren().add(label);
 			body.getChildren().add(filenameField);
-	        showDialog(body);
+			showDialog(body);
 		}
 	}
-	
+
 	@FXML
 	public void saveToServer() throws IOException {
 
 		editingArticle.commit();
-		
+
 		if (send()) {
 			showDialog("The article was successfully sent to the server");
-	        
+
 			SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, true);
 		} else {
 			showErrorDialog("There was an error saving the article");
