@@ -104,43 +104,14 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 	void openDeleteDialog(Article article){
 		SceneManager sceneManager = SceneManager.getInstance();
 		try {
-			System.out.println(article.getIdArticle());
-			sceneManager.showSceneInModal(AppScenes.DELETE);
-			DeleteController controller = (DeleteController) sceneManager.getController(AppScenes.DELETE);
-			controller.setArticle(article);
+            sceneManager.showSceneInModal(AppScenes.DELETE, null, false);
+            DeleteController controller = (DeleteController) sceneManager.getController(AppScenes.DELETE);
+            controller.setArticle(article);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
-
-		System.out.println("fdf");
-		JFXDialogLayout content = new JFXDialogLayout();
-		content.setHeading(new Text("Are you sure ?"));
-		JFXButton confirm = new JFXButton("Yes");
-		JFXButton cancel = new JFXButton("No");
-		StackPane stackPane = new StackPane();
-		stackPane.autosize();
-		stackPane.setPrefSize(600, 450);
-		JFXDialog popup = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
-
-		confirm.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				System.out.println(article.getIdArticle());
-				popup.close();
-			}
-		});
-		cancel.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				popup.close();
-			}
-		});
-
-		content.setActions(confirm, cancel);
-		popup.show();
-		System.out.println("-----");
 	}
 
 	@FXML

@@ -9,7 +9,13 @@ import javafx.scene.control.Button;
 import serverConection.ConnectionManager;
 import serverConection.exceptions.ServerCommunicationError;
 
+import java.io.IOException;
 
+/**
+ *
+ * The delete controller is in charge of dealing with the dialog popup
+ * It delete the current article from the database and the local application
+ */
 public class DeleteController implements ServiceRegistryAware, ControllerEvents, NewsController {
     protected ServiceRegistry serviceRegistry;
 
@@ -23,8 +29,11 @@ public class DeleteController implements ServiceRegistryAware, ControllerEvents,
 
     public DeleteController(){}
 
+    /**
+     * This event is handled when the user press the confirmation button from the delete dialog box
+     */
     @FXML
-    private void confirmAction(){
+    private void confirmAction() throws IOException {
         try {
             System.out.println(this.article);
         } catch (Exception e){
@@ -34,17 +43,21 @@ public class DeleteController implements ServiceRegistryAware, ControllerEvents,
         ConnectionManager connectionManager = serviceRegistry.get(ConnectionManager.class);
 
         try {
-            // this command will send the article to the server
-            connectionManager.deleteArticle(472);
+            connectionManager.deleteArticle(article.getIdArticle());
         } catch (ServerCommunicationError e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return;
         }
 
-
         SceneManager.getInstance().closeModal(AppScenes.DELETE);
+        SceneManager.getInstance().showSceneInPrimaryStage(AppScenes.READER, true);
     }
 
+
+    /**
+     * This event is handled when the user press the cancel button from the delete dialog box
+     */
     @FXML
     private void cancelAction(){
         SceneManager.getInstance().closeModal(AppScenes.DELETE);

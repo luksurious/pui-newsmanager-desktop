@@ -30,6 +30,8 @@ public class NewsReaderController extends NewsCommonController {
 	
 	private boolean loaded = false;
 
+	private Article openArticle;
+
 	@FXML
 	private Accordion newsList;
 	@FXML
@@ -197,5 +199,13 @@ public class NewsReaderController extends NewsCommonController {
 	@Override
 	protected NewsCommonModel getModel() {
 		return newsReaderModel;
+	}
+
+	public void setOpenArticle(Article openArticle) {
+		this.openArticle = openArticle;
+	}
+
+	public Article getOpenArticle() {
+		return openArticle;
 	}
 }

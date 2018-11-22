@@ -105,6 +105,9 @@ public class NewsDetailsController extends NewsCommonController {
 			btnDelete.setDisable(true);
 		}
 	}
+	public Article getArticle() {
+		return this.article;
+	}
 
 	@FXML
 	public void changeAbstractBody(ActionEvent event) throws IOException {
