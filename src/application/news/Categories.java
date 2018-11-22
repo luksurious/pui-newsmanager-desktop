@@ -9,6 +9,10 @@ public enum Categories {
 	TECHNOLOGY("Technology", "technology.png");
 	
 	private String name;
+	/**
+	 * The path to the image for this category. Should be inside the resource folder.
+	 * @author students
+	 */
 	private String imagePath = "";
 
 	private Categories(String name, String imagePath) {
@@ -20,6 +24,10 @@ public enum Categories {
 		return name;
 	}
 	
+	/**
+	 * @author students
+	 * @return The path to the image for this category
+	 */
 	public String getImagePath() {
 		return imagePath;
 	}

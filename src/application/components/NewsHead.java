@@ -22,23 +22,55 @@ import javafx.scene.layout.HBox;
  * scenes. To prevent repetition it is extracted as a separate template with
  * controller. Unfortunately, SceneBuilder does not easily work with it when
  * used in another template.
+ * 
+ * @author students
  */
 public class NewsHead extends HBox {
-	@FXML
-	private Label headline;
-	@FXML
-	private Label headlinePre;
-	@FXML
-	private SplitMenuButton btnAdd;
-	@FXML
-	private JFXButton btnLogin;
+	/**
+	 * The logo of the application
+	 */
 	@FXML
 	private ImageView headImage;
+	
+	/**
+	 * The label showing the main headline
+	 */
+	@FXML
+	private Label headline;
+	
+	/**
+	 * The label showing a short text above the headline (e.g. "These are the news...")
+	 */
+	@FXML
+	private Label headlinePre;
+	
+	/**
+	 * The button group to create a new article, offering a menu item to load from file
+	 */
+	@FXML
+	private SplitMenuButton btnAdd;
+	
+	/**
+	 * The Menu item inside the creation button group to load a news file
+	 */
 	@FXML
 	private MenuItem btnLoadNewsFile;
+	
+	/**
+	 * The button to open the login
+	 */
+	@FXML
+	private JFXButton btnLogin;
+	
+	/**
+	 * The button if the user is logged in, showing an item to logout
+	 */
 	@FXML
 	private MenuButton btnUser;
 
+	/**
+	 * Reference to the main controller this head component belongs to
+	 */
 	private NewsCommonController parentController;
 
 	public NewsHead(NewsCommonController parentController) {
@@ -60,9 +92,11 @@ public class NewsHead extends HBox {
 	public void initialize() {
 		assertControls();
 
+		// show the current date in the headline
 		SimpleDateFormat headFormat = new SimpleDateFormat("EEE, dd. MMMMM YYYY");
 		headline.setText(headFormat.format(new Date()));
 
+		// remove the user for logged in users from the layout
 		btnUser.setManaged(false);
 	}
 
@@ -78,6 +112,12 @@ public class NewsHead extends HBox {
 		assert parentController != null : "You must set a parent controller for this element to work!";
 	}
 
+	/**
+	 * Update the view if a user is logged in.
+	 * Removes the button to login, and shows the button with the current user with the option to logout
+	 * 
+	 * @param user The logged in user
+	 */
 	public void updateUiAfterLogin(User user) {
 		btnLogin.setVisible(false);
 		btnLogin.setManaged(false);
@@ -87,6 +127,10 @@ public class NewsHead extends HBox {
 		btnUser.setVisible(true);
 	}
 
+	/**
+	 * Update the view if a user is logged out
+	 * Shows the button to login, and hides the button with the user and logout
+	 */
 	public void updateUiAfterLogout() {
 		btnLogin.setVisible(true);
 		btnLogin.setManaged(true);
@@ -96,32 +140,53 @@ public class NewsHead extends HBox {
 		btnUser.setManaged(false);
 	}
 
+	/**
+	 * Show a different headline than the "These are the news for today". Removes the pre text in that case.
+	 * 
+	 * @param title The new headline of the head area
+	 */
 	public void setCustomTitle(String title) {
 		headline.setText(title);
 		headlinePre.setVisible(false);
 		headlinePre.setManaged(false);
 	}
 
+	/**
+	 * Proxy method for loading a news item from a file
+	 */
 	@FXML
 	public void loadNewsFile() {
 		parentController.loadNewsFile();
 	}
 
+	/**
+	 * Proxy method for showing the editor for a new article
+	 */
 	@FXML
 	public void openEditor() {
 		parentController.openEditor();
 	}
 
+	/**
+	 * Proxy method to logout
+	 */
 	@FXML
 	public void logout() {
 		parentController.logout();
 	}
 
+	/**
+	 * Proxy method to show the login
+	 */
 	@FXML
 	public void openLogin() {
 		parentController.openLogin();
 	}
 
+	/**
+	 * Proxy method to go back to the main view
+	 * @throws IOException
+	 */
 	@FXML
 	public void openMainView() throws IOException {
 		parentController.openMainView();

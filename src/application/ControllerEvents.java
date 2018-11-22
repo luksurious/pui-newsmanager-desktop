@@ -4,6 +4,7 @@ package application;
  * This interface enables controllers to listen on certain lifecycle event of a scene.
  * 
  * For our purposes only a method which is called when a scene is shown is implemented.
+ * @author students
  */
 public interface ControllerEvents {
 	

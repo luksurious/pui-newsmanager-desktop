@@ -17,6 +17,11 @@ public enum AppScenes {
 	ADMIN("AdminNews.fxml"),
 	/*IMAGE_PICKER("ImagePicker.fxml")*/
 	IMAGE_PICKER("ImagePickerMaterialDesign.fxml"),
+	
+	/**
+	 * New scene for deletion
+	 * @author students
+	 */
 	DELETE("Delete.fxml");
 
 

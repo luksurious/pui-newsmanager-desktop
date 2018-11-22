@@ -38,7 +38,13 @@ public class ConnectionManager {
 	private String idUser;
 	private String authType;
 	private String apikey;
+	
+	/**
+	 * Save the anonymous apikey as a separate property so we can revert to it if a user is logged out
+	 * @author students
+	 */
 	private String anonymousApikey;
+	
 	private boolean loggedOK = false;
 
 	private boolean isAdministrator = false;

@@ -55,6 +55,11 @@ public class ImagePickerController implements NewsController {
 			Path path = FileSystems.getDefault().getPath(selectedFile.getAbsolutePath());
 			idImageURL.setText(path.toUri().toString());
 
+			/**
+			 * Directly load the preview image after selecting a file.
+			 * 
+			 * @author students
+			 */
 			image = new Image(idImageURL.getText(), false);
 			imgPreview.setImage(image);
 		}

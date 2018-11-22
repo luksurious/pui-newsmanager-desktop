@@ -97,7 +97,7 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 	void openDeleteDialog(Article article){
 		SceneManager sceneManager = SceneManager.getInstance();
 		try {
-            sceneManager.showSceneInModal(AppScenes.DELETE, null, false);
+            sceneManager.showSceneInModal(AppScenes.DELETE, false);
             DeleteController controller = (DeleteController) sceneManager.getController(AppScenes.DELETE);
             controller.setArticle(article);
 		} catch (IOException e) {
@@ -109,7 +109,7 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 
 	@FXML
 	public void loadNewsFile() {
-		Stage stage = SceneManager.getInstance().getCurrentStage();
+		Stage stage = SceneManager.getInstance().getPrimaryStage();
 
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open JSON Article");

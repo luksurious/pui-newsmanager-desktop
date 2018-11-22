@@ -15,6 +15,8 @@ import com.jfoenix.controls.JFXButton;
 /**
  * The delete controller is in charge of dealing with the dialog popup
  * It delete the current article from the database and the local application
+ * 
+ * @author students
  */
 public class DeleteController implements ServiceRegistryAware, ControllerEvents, NewsController {
     protected ServiceRegistry serviceRegistry;
