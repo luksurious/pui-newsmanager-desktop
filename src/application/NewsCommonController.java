@@ -34,7 +34,10 @@ public abstract class NewsCommonController implements ServiceRegistryAware, Cont
 
 	@FXML
 	protected NewsHead newsHead;
-
+	
+	/**
+	 * Adding the news head to the BorderPane at the top, so all the scenes have the same headnews
+	 */
 	@FXML
 	public void initialize() {
 		assert rootPane != null : "fx:id=\"rootPane\" was not injected: check your FXML file 'NewsReader.fxml'.";
