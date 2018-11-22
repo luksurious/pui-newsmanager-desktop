@@ -13,6 +13,11 @@ import application.utils.JsonArticle;
 import application.utils.exceptions.ErrorMalFormedNews;
 import serverConection.ConnectionManager;
 
+
+/**
+ * This class NewsCommonModel is the model of NewsCommonController, it will set and get
+ * the connection manager
+ */
 class NewsCommonModel {
 	protected ConnectionManager connectionManager;
 
@@ -24,6 +29,9 @@ class NewsCommonModel {
 		this.connectionManager = connectionManager;
 	}
 
+	/**
+	 * This method will open a JSON file and convert it to an object Article
+	 */
 	Article createArticleFromFile(File file) {
 		if (file == null) {
 			return null;
@@ -37,11 +45,13 @@ class NewsCommonModel {
 			e1.printStackTrace();
 			return null;
 		}
+		//first creates an object from the jsonReader
 		JsonObject object = jsonReader.readObject();
 		jsonReader.close();
 
 		Article article;
 		try {
+			//converts the object to an article
 			article = JsonArticle.jsonToArticle(object);
 		} catch (ErrorMalFormedNews e1) {
 			// TODO Auto-generated catch block
@@ -52,6 +62,9 @@ class NewsCommonModel {
 		return article;
 	}
 
+	/**
+	 * Log out using connection manager
+	 */
 	void logout() {
 		this.connectionManager.logout();
 	}
