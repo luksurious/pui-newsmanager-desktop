@@ -84,6 +84,14 @@ class LoginModel {
 		return usr;
 	}
 
+	/**
+	 * Login through the connection manager
+	 * 
+	 * @author students
+	 * @param username The username
+	 * @param password The password
+	 * @return The logged in user or null
+	 */
 	User login(String username, String password) {
 		try {
 			this.connectionManager.login(username, password);

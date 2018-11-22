@@ -91,6 +91,7 @@ public class NewsReaderController extends NewsCommonController {
 
 	private void initCategoriesList() {
 		ObservableList<Categories> categoryDataList = this.newsReaderModel.getCategories();
+		
 		for (Categories category : categoryDataList) {
 			Label categoryLabel = new Label(category.getName());
 

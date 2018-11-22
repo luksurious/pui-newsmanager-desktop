@@ -22,6 +22,12 @@ public class Main extends Application {
 			 * AnchorPane ...
 			 */
 			// Code for reader main window
+			
+			/**
+			 * Set up the service registry, and give it the connection manager.
+			 * Afterwards, set up the SceneManager and use it to show the main view
+			 * @author students
+			 */
 			ServiceRegistry services = new ServiceRegistry();
 			services.set(ConnectionManager.class, createConnectionManager());
 
@@ -73,8 +79,14 @@ public class Main extends Application {
 		return prop;
 	}
 
+	/**
+	 * Read the configuration file from the resources folder
+	 * 
+	 * @author students
+	 * @return the loaded configuration
+	 * @throws IOException
+	 */
 	private Properties loadConfiguration() throws IOException {
-		// TODO: test with space in path
 		InputStream appConfigFile = getClass().getClassLoader().getResourceAsStream("config.properties");
 
 		Properties appProps = new Properties();
