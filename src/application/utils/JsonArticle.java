@@ -147,7 +147,7 @@ public class JsonArticle {
 	 * 
 	 * @param articleData The article data
 	 * @return The publication date if it is given and has a valid format, or null
-	 * @author students
+	 * @author group3 (litwin, giardina, brueckner)
 	 */
 	private static Date loadPublicationDate(JsonObject articleData) {
 		String publicationDateString = articleData.getString(keys.get("PublicationDate"), "0");
@@ -174,11 +174,11 @@ public class JsonArticle {
 	 */
 	private static BufferedImage StringToBufferedImage(String imageData) {
 		BufferedImage img = null;
-		ByteArrayInputStream arrayData = new ByteArrayInputStream(Base64.getDecoder().decode(imageData));
 		try {
+			ByteArrayInputStream arrayData = new ByteArrayInputStream(Base64.getDecoder().decode(imageData));
 			img = ImageIO.read(arrayData);
 			arrayData.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
