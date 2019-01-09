@@ -189,6 +189,10 @@ public class NewsReaderController extends NewsCommonController {
 
 			loaded = true;
 			loading = false;
+		}).whenComplete((t, ex) -> {
+			if (ex != null) {
+				ex.printStackTrace();
+			}
 		});
 	}
 

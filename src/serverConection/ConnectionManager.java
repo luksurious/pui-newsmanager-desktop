@@ -43,7 +43,7 @@ public class ConnectionManager {
 	 * Save the anonymous apikey as a separate property so we can revert to it if a
 	 * user is logged out
 	 * 
-	 * @author students
+	 * @author group3 (litwin, giardina, brueckner)
 	 */
 	private String anonymousApikey;
 
